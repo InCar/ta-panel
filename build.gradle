@@ -1,3 +1,4 @@
+import org.apache.tools.ant.taskdefs.condition.Os
 
 buildscript{
     repositories {
@@ -33,7 +34,18 @@ dependencies{
     testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
 }
 
+def npmBuild = tasks.register('npmBuild', Exec){
+    workingDir("$rootDir/src/main/resources/static")
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine("cmd.exe", "/C", "npm run build")
+    }
+    else{
+        commandLine("npm", "run", "build")
+    }
+}
+
 processResources{
+    dependsOn npmBuild
     exclude('static/node_modules', 'static/src')
 }
 

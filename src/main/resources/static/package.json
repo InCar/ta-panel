@@ -4,7 +4,8 @@
   "description": "The website for TensorAnalyzor",
   "main": "index.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "watch": "webpack --watch"
   },
   "keywords": [
     "TensorAnalyzor"

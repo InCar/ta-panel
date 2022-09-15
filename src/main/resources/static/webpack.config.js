@@ -11,7 +11,6 @@ module.exports = {
         filename: 'bundle.js',
         clean: true
     },
-    watch: true,
     watchOptions: {
         ignored: /node_modules/
     },
