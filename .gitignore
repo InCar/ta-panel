@@ -1,0 +1,21 @@
+# vscode
+.vscode
+
+# java
+.gradle
+.idea
+build
+
+gradle.properties
+application-*.yml
+log4j2-*.xml
+
+# log
+*.log
+
+# mac
+.DS_Store
+
+# nodejs
+node_modules
+
