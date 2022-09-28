@@ -1,6 +1,7 @@
 package com.incarcloud.tensoranalyzor.controller;
 
 import com.incarcloud.tensoranalyzor.jsonexpr.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,9 @@ import java.util.Map;
 @RestController
 @RequestMapping(path="api")
 public class PanelController {
+
+    @Value("${tensor-analyzor.fields-file}")
+    private String fieldsFile;
 
     @GetMapping("hello")
     public String greeting(){
@@ -35,10 +39,15 @@ public class PanelController {
         return sbBuf.toString();
     }
 
+    @GetMapping("fields")
+    public String getFields(){
+        return loadSample();
+    }
+
     private String loadSample(){
         StringBuilder sbJson = new StringBuilder();
         // reading sample
-        try(InputStream isJson = this.getClass().getResourceAsStream("/fields-sample.json")){
+        try(InputStream isJson = this.getClass().getResourceAsStream("/" + this.fieldsFile)){
             InputStreamReader reader = new InputStreamReader(isJson, StandardCharsets.UTF_8);
             final int nSize = 4096;
             char[] buf = new char[nSize];
@@ -52,6 +61,7 @@ public class PanelController {
         catch(IOException ex){
             System.err.println(ex.toString());
         }
+
         return sbJson.toString();
     }
 }

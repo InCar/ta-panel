@@ -9,6 +9,7 @@ build
 gradle.properties
 application-*.yml
 log4j2-*.xml
+fields-*.json
 
 # log
 *.log

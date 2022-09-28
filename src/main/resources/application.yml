@@ -4,3 +4,6 @@ server:
 spring.web.resources.static-locations:
     # - classpath:/static
     - file:./src/main/resources/static
+
+tensor-analyzor:
+  fields-file: fields-sample.json
