@@ -1,7 +1,7 @@
 import './styles.scss';
 // import * as bootstrap from 'bootstrap';
 
-import { createApp, App } from 'vue';
+import { createApp, App, version } from 'vue';
 import vueApp from './App.vue';
 
 class MainApp{
@@ -12,9 +12,8 @@ class MainApp{
     }
 
     public run(tag: string){
-        console.info("TensorAnalyzor is starting...");
+        console.info(`TensorAnalyzor(vue-${version})`);
         this.app.mount(tag);
-        console.info("TensorAnalyzor has been started.");
     }
 }
 
