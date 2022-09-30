@@ -1,6 +1,7 @@
 <script setup lang="ts">
-    import { ref, reactive, onMounted, shallowReactive } from 'vue';
-
+    import { useRouter, useRoute, RouterLink } from 'vue-router';
+    import { ref, shallowReactive, onMounted } from 'vue';
+    
     class HomePage{
         readonly text = "Hello Vue3!";
         count = ref(0);
@@ -32,10 +33,10 @@
             <div class="col-md-2 left-menu" >
                 <!--Left-->
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">分析结果</li>
+                    <li class="list-group-item"><router-link to="/">分析结果</router-link></li>
                     <li class="list-group-item">任务管理</li>
                     <li class="list-group-item">创建新任务</li>
-                    <li class="list-group-item">About</li>
+                    <li class="list-group-item"><router-link to="/about">About</router-link></li>
                 </ul>
             </div>
             <div class="col">
@@ -60,6 +61,8 @@
                             <button v-on:click="home.onClick" class="btn btn-primary">Click Me!</button><br/>
                     </div>
                 </div>
+
+                <router-view></router-view>
             </div>
         </div>
         
