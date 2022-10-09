@@ -3,7 +3,6 @@
 
     .left-menu {
         background-color: $light;
-        min-height: 600px;
 
         li {
             background-color: $light;
@@ -24,11 +23,11 @@
             <div class="col"><h1 class="text-center">TensorAnalyzor</h1></div>
         </div>
         <div class="row">
-            <div class="col-md-2 left-menu">
+            <div class="col-md-2 left-menu" :style="{ 'min-height': mainPage.windowHeight.value+'px'}">
                 <!--Left-->
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item" v-for="x in mainPage.listRoutes">
-                        <router-link :to="x">{{x.name}}</router-link>
+                        <router-link :to="x">{{x.meta['title']}}</router-link>
                     </li>
                 </ul>
             </div>
@@ -46,12 +45,11 @@
     import { ref, shallowReactive, onMounted } from 'vue';
 
     class MainPage {
-        listRoutes = useRouter().getRoutes();
+        listRoutes = useRouter().getRoutes().filter((x)=>x.meta['topLevel']);
         windowHeight = ref(600);
 
         init = async () => {
-            console.info(this.listRoutes[0]);
-            console.info(window.innerHeight);
+            this.windowHeight.value = window.innerHeight - 56;
 
             const resp = await fetch("/api/hello");
             const text = await resp.text()

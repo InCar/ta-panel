@@ -4,12 +4,11 @@ export interface TJsonFields {
 }
 
 export class TensorAnalyzor {
-    // ¿ÉÓÃµÄ×Ö¶Î
+    // å¯ç”¨å­—æ®µ
     private _jsonFields: TJsonFields | null = null;
 
-    // ³õÊ¼»¯
+    // åˆå§‹åŒ–
     public init = async (): Promise<number> => {
-        console.info(`TensorAnalyzor initialized.`);
         return 0;
     }
 

@@ -8,6 +8,8 @@ import { TensorAnalyzor } from './TensorAnalyzor';
 
 const Home = () => import(/* webpackChunkName: "home" */'./Home.vue');
 const NewAnalyzor = () => import(/* webpackChunkName: "new-analyzor" */'./NewAnalyzor.vue');
+const NewAnalyzor_Mode = () => import(/* webpackChunkName: "new-analyzor-mode" */'./analyzor/mode.vue');
+const NewAnalyzor_Step1 = () => import(/* webpackChunkName: "new-analyzor-step1" */'./analyzor/selector.vue');
 const About = () => import(/* webpackChunkName: "about" */'./About.vue');
 const ToDo = () => import(/* webpackChunkName: "todo" */'./todo.vue');
 
@@ -15,10 +17,15 @@ class MainApp{
     private app : App<Element>;
 
     private routes: Array<RouteRecordRaw> = [
-        { path: '/', name: "分析结果", component: Home },
-        { path: '/TaskManager', name: "任务管理", component: ToDo },
-        { path: '/NewAnalyzor', name: "创建新任务", component: NewAnalyzor },
-        { path: '/About', name: "About", component: About }
+        { path: '/', component: Home, meta: { topLevel: true, title: "分析结果" } },
+        { path: '/TaskManager', component: ToDo, meta: { topLevel: true, title: "任务管理" }  },
+        { path: '/NewAnalyzor', component: NewAnalyzor, meta: { topLevel: true, title: "创建新任务" },
+            children: [
+                { path: '', name: "create", component: NewAnalyzor_Mode },
+                { path: 'step1', component: NewAnalyzor_Step1 }
+            ]
+        },
+        { path: '/About', component: About, meta: { topLevel: true, title: "About" }  }
     ];
 
     public constructor(){

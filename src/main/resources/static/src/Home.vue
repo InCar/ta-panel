@@ -8,16 +8,12 @@
         margin: 0 auto;
         background-color: $dark;
     }
-
-    h5{
-        font-weight:600
-    }
 </style>
 
 <template>
     <div class="row" style="padding-top:1rem;">
-        <div class="col col-md-4" v-for="x in home.listResult">
-            <div class="card ">
+        <div class="col col-md-3 m-2" v-for="x in home.listResult">
+            <div class="card pt-2">
                 <img class="card-img-top img-hold" />
                 <div class="card-body">
                     <h5 class="text-center">{{x.title}}</h5>
