@@ -15,15 +15,16 @@
 </template>
 
 <script setup lang="ts">
-    import { ref, shallowReactive, onMounted } from 'vue';
+    import { ref, shallowReactive, onMounted, inject } from 'vue';
+    import { TensorAnalyzor, TJsonFields } from './TensorAnalyzor';
 
     class TaskAnalyzor{
-        jsonFields:{ [key:string]: {desc?:string, description?:string}} = shallowReactive({});
+        jsonFields: TJsonFields = shallowReactive({});
 
-        init = async()=>{
-            const resp = await fetch("/api/fields");
-            const data = await resp.json();
-            Object.assign(this.jsonFields, data.fields);
+        init = async () => {
+            const taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
+            const jsonFields = await taObj.fetchJsonFields();
+            Object.assign(this.jsonFields, jsonFields);
         };
     };
 

@@ -4,6 +4,7 @@ import './styles.scss';
 import { createApp, App, version } from 'vue';
 import { createRouter, RouteRecordRaw, createWebHashHistory } from 'vue-router';
 import vueApp from './App.vue';
+import { TensorAnalyzor } from './TensorAnalyzor';
 
 const Home = () => import(/* webpackChunkName: "home" */'./Home.vue');
 const NewAnalyzor = () => import(/* webpackChunkName: "new-analyzor" */'./NewAnalyzor.vue');
@@ -30,8 +31,12 @@ class MainApp{
             history: createWebHashHistory(),
             routes
         });
-        this.app.use(router);
-        this.app.mount(tag);
+        const taObj = new TensorAnalyzor();
+        taObj.init().then(() => {
+            this.app.provide('taObj', taObj);
+            this.app.use(router);
+            this.app.mount(tag);
+        });
     }
 }
 

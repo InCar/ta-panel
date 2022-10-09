@@ -16,7 +16,7 @@
 
 <template>
     <div class="row" style="padding-top:1rem;">
-        <div class="col col-md-3" v-for="x in home.listResult">
+        <div class="col col-md-4" v-for="x in home.listResult">
             <div class="card ">
                 <img class="card-img-top img-hold" />
                 <div class="card-body">
