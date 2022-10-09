@@ -1,27 +1,14 @@
-<script setup lang="ts">
-    import { useRouter, useRoute, RouterLink } from 'vue-router';
-    import { ref, shallowReactive, onMounted } from 'vue';
-    
-    class HomePage{
-        readonly text = "Hello Vue3!";
-        count = ref(0);
-        jsonFields:{ [key:string]: {desc?:string, description?:string}} = shallowReactive({});
+<style scoped lang="scss">
+    @import "theme.scss";
 
-        init = async()=>{
-            const resp = await fetch("/api/fields");
-            const data = await resp.json();
-            Object.assign(this.jsonFields, data.fields);
-        };
+    .left-menu {
+        background-color: $light;
 
-        onClick = (e: MouseEvent)=>{
-            this.count.value++;
+        li {
+            background-color: $light;
         }
-    };
-
-    const home = new HomePage();
-    onMounted(home.init);
-
-</script>
+    }
+</style>
 
 <template>
     <div class="container-fluid">
@@ -30,55 +17,44 @@
             <div class="col"><h1 class="text-center">TensorAnalyzor</h1></div>
         </div>
         <div class="row">
-            <div class="col-md-2 left-menu" >
+            <div class="col-md-2 left-menu">
                 <!--Left-->
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item"><router-link to="/">分析结果</router-link></li>
-                    <li class="list-group-item">任务管理</li>
-                    <li class="list-group-item">创建新任务</li>
-                    <li class="list-group-item"><router-link to="/about">About</router-link></li>
+                    <li class="list-group-item" v-for="x in mainPage.listMenuItems">
+                        <router-link v-if="x.link != null" :to="x.link">{{x.mi}}</router-link>
+                        <span v-else>{{x.mi}}</span>
+                    </li>
                 </ul>
             </div>
             <div class="col">
                 <!--right-->
-                <div class="row justify-content-center">
-                    <div class="col col-md-auto">
-                        <table class="table table-sm table-hover">
-                            <tbody>
-                                <tr v-for="(v, k) in home.jsonFields">
-                                    <td>{{v.desc??k}}</td>
-                                    <td><span class="badge rounded-pill text-bg-primary">{{k}}</span></td>
-                                    <td>{{v.description}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <div class="row justify-content-md-center mt-3">
-                    <div class="col-md-auto">
-                            <p>{{home.text}} => <span class="ss">{{home.count}}</span></p>
-                            <button v-on:click="home.onClick" class="btn btn-primary">Click Me!</button><br/>
-                    </div>
-                </div>
-
                 <router-view></router-view>
             </div>
         </div>
-        
+
     </div>
 </template>
 
-<style scoped lang="scss">
-    @import "theme.scss";
-    .left-menu{
-        background-color: $light;
-        li{
-            background-color: $light;
-        }
-    }
-    .ss{
-        color: crimson;
-        font-weight: bolder;
-    }
-</style>
+<script setup lang="ts">
+    // import { useRouter, useRoute, RouterLink } from 'vue-router';
+    import { ref, shallowReactive, onMounted } from 'vue';
+
+    class MainPage {
+        listMenuItems: Array<{ mi: string, link: string|null }> = [
+            { mi: "分析结果", link: "/" },
+            { mi: "任务管理", link: null },
+            { mi: "创建新任务", link: "/NewAnalyzor" },
+            { mi: "About", link: "/About" },
+        ];
+
+        init = async () => {
+            const resp = await fetch("/api/hello");
+            const text = await resp.text()
+            console.info(`received: ${text.length} bytes`);
+        };
+    };
+
+    const mainPage = new MainPage();
+    onMounted(mainPage.init);
+
+</script>
