@@ -1,4 +1,5 @@
 ﻿<template>
+
     <div class="row justify-content-center">
         <div class="col col-md-auto">
             <table class="table table-sm table-hover">

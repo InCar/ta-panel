@@ -3,10 +3,17 @@
 
     .left-menu {
         background-color: $light;
+        min-height: 600px;
 
         li {
             background-color: $light;
         }
+    }
+
+    .router-link-active{
+        width: 100%;
+        font-weight:800;
+        color: $warning;
     }
 </style>
 
@@ -20,9 +27,8 @@
             <div class="col-md-2 left-menu">
                 <!--Left-->
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item" v-for="x in mainPage.listMenuItems">
-                        <router-link v-if="x.link != null" :to="x.link">{{x.mi}}</router-link>
-                        <span v-else>{{x.mi}}</span>
+                    <li class="list-group-item" v-for="x in mainPage.listRoutes">
+                        <router-link :to="x">{{x.name}}</router-link>
                     </li>
                 </ul>
             </div>
@@ -36,18 +42,17 @@
 </template>
 
 <script setup lang="ts">
-    // import { useRouter, useRoute, RouterLink } from 'vue-router';
+    import { useRouter, useRoute, RouterLink } from 'vue-router';
     import { ref, shallowReactive, onMounted } from 'vue';
 
     class MainPage {
-        listMenuItems: Array<{ mi: string, link: string|null }> = [
-            { mi: "分析结果", link: "/" },
-            { mi: "任务管理", link: null },
-            { mi: "创建新任务", link: "/NewAnalyzor" },
-            { mi: "About", link: "/About" },
-        ];
+        listRoutes = useRouter().getRoutes();
+        windowHeight = ref(600);
 
         init = async () => {
+            console.info(this.listRoutes[0]);
+            console.info(window.innerHeight);
+
             const resp = await fetch("/api/hello");
             const text = await resp.text()
             console.info(`received: ${text.length} bytes`);

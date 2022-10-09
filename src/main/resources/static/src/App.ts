@@ -1,22 +1,24 @@
-import './styles.scss';
+﻿import './styles.scss';
 // import * as bootstrap from 'bootstrap';
 
 import { createApp, App, version } from 'vue';
-import { createRouter, RouteRecordRaw, createWebHashHistory } from 'vue-router';
+import { createRouter, RouteRecordRaw, createWebHistory } from 'vue-router';
 import vueApp from './App.vue';
 import { TensorAnalyzor } from './TensorAnalyzor';
 
 const Home = () => import(/* webpackChunkName: "home" */'./Home.vue');
 const NewAnalyzor = () => import(/* webpackChunkName: "new-analyzor" */'./NewAnalyzor.vue');
-const About = ()=>import(/* webpackChunkName: "about" */'./About.vue');
+const About = () => import(/* webpackChunkName: "about" */'./About.vue');
+const ToDo = () => import(/* webpackChunkName: "todo" */'./todo.vue');
 
 class MainApp{
     private app : App<Element>;
 
     private routes: Array<RouteRecordRaw> = [
-        { path: '/', component: Home },
-        { path: '/NewAnalyzor', component: NewAnalyzor },
-        { path: '/About', component: About }
+        { path: '/', name: "分析结果", component: Home },
+        { path: '/TaskManager', name: "任务管理", component: ToDo },
+        { path: '/NewAnalyzor', name: "创建新任务", component: NewAnalyzor },
+        { path: '/About', name: "About", component: About }
     ];
 
     public constructor(){
@@ -28,7 +30,7 @@ class MainApp{
         
         const routes = this.routes;
         const router = createRouter({
-            history: createWebHashHistory(),
+            history: createWebHistory(),
             routes
         });
         const taObj = new TensorAnalyzor();
