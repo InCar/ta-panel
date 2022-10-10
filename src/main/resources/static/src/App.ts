@@ -16,6 +16,7 @@ const ToDo = () => import(/* webpackChunkName: "todo" */'./todo.vue');
 class MainApp{
     private app : App<Element>;
 
+    // NOTE: 如果增加了一级路径,需要同步修改Java后端RouteController里的redirect表达式
     private routes: Array<RouteRecordRaw> = [
         { path: '/', component: Home, meta: { topLevel: true, title: "分析结果" } },
         { path: '/TaskManager', component: ToDo, meta: { topLevel: true, title: "任务管理" }  },
