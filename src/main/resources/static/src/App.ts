@@ -1,5 +1,4 @@
 ﻿import './styles.scss';
-// import * as bootstrap from 'bootstrap';
 
 import { createApp, App, version } from 'vue';
 import { createRouter, RouteRecordRaw, createWebHistory } from 'vue-router';
@@ -18,15 +17,15 @@ class MainApp{
 
     // NOTE: 如果增加了一级路径,需要同步修改Java后端RouteController里的redirect表达式
     private routes: Array<RouteRecordRaw> = [
-        { path: '/', component: Home, meta: { topLevel: true, title: "分析结果" } },
-        { path: '/TaskManager', component: ToDo, meta: { topLevel: true, title: "任务管理" }  },
-        { path: '/NewAnalyzor', component: NewAnalyzor, meta: { topLevel: true, title: "创建新任务" },
+        { path: '/', component: Home, meta: { topLevel: true, title: "分析结果", icon: "tenancy" } },
+        { path: '/TaskManager', component: ToDo, meta: { topLevel: true, title: "任务管理", icon: "task" }  },
+        { path: '/NewAnalyzor', component: NewAnalyzor, meta: { topLevel: true, title: "创建新任务", icon: "add_box" },
             children: [
                 { path: '', name: "create", component: NewAnalyzor_Mode },
                 { path: 'step1', component: NewAnalyzor_Step1 }
             ]
         },
-        { path: '/About', component: About, meta: { topLevel: true, title: "About" }  }
+        { path: '/About', component: About, meta: { topLevel: true, title: "About", icon: "info" }  }
     ];
 
     public constructor(){

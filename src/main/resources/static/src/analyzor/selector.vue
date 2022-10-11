@@ -1,21 +1,38 @@
-<template>    
-    <div class="row justify-content-center">
-        <div class="col col-md-auto">
-            <table class="table table-sm table-hover">
-                <tbody>
-                    <tr v-for="(v, k) in pageObj.jsonFields">
-                        <td>{{v.desc??k}}</td>
-                        <td><span class="badge rounded-pill text-bg-primary">{{k}}</span></td>
-                        <td>{{v.description}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+<style scoped lang="scss">
+@import "../theme.scss";
+.box-field{
+    display: flex;
+    border-bottom: 1px solid $light;
+    align-self: stretch;
+    @mixin field-gap{
+        padding: 4px 8px;
+    }
+    .desc{
+        flex: 0 0 8em;
+        @include field-gap;
+    }
+    .key{
+        flex: 0 0 10em;
+        @include field-gap;
+        font-weight: bold;
+    }
+    .description{
+        flex: 1 0 auto;
+        @include field-gap;
+    }
+}
+</style>
+
+<template>
+    <div class="box-field" v-for="(v, k) in pageObj.jsonFields">
+        <span class="desc">{{v.desc??k}}</span>
+        <span class="key">{{k}}</span>
+        <span class="description">{{v.description}}</span>
     </div>
 </template>
 
 <script setup lang="ts">
-    import { ref, shallowReactive, onMounted, inject } from 'vue';
+    import { shallowReactive, onMounted, inject } from 'vue';
     import { TensorAnalyzor, TJsonFields } from '../TensorAnalyzor';
 
     class PageSelectFields{

@@ -40,6 +40,12 @@ module.exports = {
                 },
                 { loader: 'sass-loader' }
             ]
+        },
+        {
+            test: /\.(css)$/,
+            use: {
+                loader: 'css-loader'
+            }
         }]
     },
     resolve: {

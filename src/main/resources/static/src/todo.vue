@@ -1,5 +1,11 @@
-﻿<template>
-    <div class="row text-center" style="padding-top:3rem">
-        <h1 class="text-info">Coming soon!</h1>
-    </div>
+﻿<style scoped lang="scss">
+p{
+    text-align: center;
+    font-size: 3em;
+    font-style: italic;
+}
+</style>
+
+<template>
+    <p>Coming soon!</p>
 </template>

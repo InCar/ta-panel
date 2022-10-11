@@ -1,32 +1,47 @@
 ﻿<style scoped lang="scss">
-    @import "theme.scss";
-
-    .img-hold {
-        width: 15rem;
-        height: 15rem;
-        display: block;
-        margin: 0 auto;
-        background-color: $dark;
+@import "theme.scss";
+.container{
+    display: flex;
+    flex-flow: row wrap;
+    align-self: flex-start;
+    gap: 8px;
+    padding: 8px;
+}
+.x-item{
+    border: 1px solid $primary;
+    width: 16em;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    &:hover{
+        background-color: $light;
     }
+
+    .box{
+        width: 12em;
+        height: 12em;
+        border-radius: 8px;
+    }
+    .title{
+        font-size: 1.2em;
+        font-weight: 600;
+    }
+}
 </style>
 
 <template>
-    <div class="row" style="padding-top:1rem;">
-        <div class="col col-md-3 m-2" v-for="x in home.listResult">
-            <div class="card pt-2">
-                <img class="card-img-top img-hold" />
-                <div class="card-body">
-                    <h5 class="text-center">{{x.title}}</h5>
-                    <p>{{x.description}}</p>
-                </div>
-            </div>
+    <div class="container">
+        <div class="x-item" v-for="x in home.listResult">
+            <img class="box" src="/img/ta.png" />
+            <span class="title">{{x.title}}</span>
+            <span>{{x.description}}</span>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-    import { ref, shallowReactive, onMounted } from 'vue';
-
     interface XEntry {
         title: string;
         description: string;

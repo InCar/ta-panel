@@ -1,56 +1,134 @@
 <style scoped lang="scss">
-    @import "theme.scss";
+@import "theme.scss";
 
-    .left-menu {
-        background-color: $light;
+@mixin frame-grid-config{
+    display: grid;
+    grid-template-columns: 10em 1fr;
+    grid-template-rows: 4em 1fr auto;
+    grid-template-areas: 
+        "frame-header frame-header"
+        "frame-left   frame-body"
+        "frame-footer frame-footer";
+    place-items: stretch;
 
-        li {
-            background-color: $light;
+    @media(max-width: 640px){
+        // 窄一点的侧边栏
+        grid-template-columns: 6em 1fr;
+    }
+}
+
+.frame{
+    min-height: 100vh;
+    @include frame-grid-config;
+    
+    .frame-header{
+        grid-area: frame-header;
+        color: $light;
+        background-color: $dark;
+        display: flex;
+        justify-content: space-around;
+        padding: 0 1em;
+
+        .logo{
+            padding-top: 8px;
         }
     }
 
-    .router-link-active{
-        width: 100%;
-        font-weight:800;
-        color: $warning;
+    .frame-left{
+        grid-area: frame-left;
+        background-color: $light;
+        display: flex;
+        flex-flow: column nowrap;
     }
+
+    .frame-body{
+        grid-area: frame-body;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .frame-footer{
+        grid-area: frame-footer;
+        color: $light;
+        background-color: $dark;
+        display: flex;
+        justify-content: space-around;
+    }
+}
+
+.title{
+    margin: auto;
+    font-size: 3em;
+    font-weight: normal;
+}
+
+.menu-left{
+    display: flex;
+    flex-flow: column nowrap;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    .menu-item {
+        padding: 4px;
+        border-bottom: 1px solid $primary;
+
+        &:first-child{
+            padding-top: 8px;
+        }
+        &:last-child{
+            border-bottom: none;
+        }
+        
+        &:hover{
+            background-color: $primary;
+        }
+
+        a{
+            display: block;
+            margin: 0px 1em;
+            text-decoration: none;
+            font-size: normal;
+
+            &.router-link-active{
+                font-weight: bold;
+                color: $dark;
+            }
+        }
+    }
+}
 </style>
 
 <template>
-    <div class="container-fluid">
-        <div class="row align-items-center bg-dark text-light">
-            <!--Top-->
-            <div class="col"><h1 class="text-center">TensorAnalyzor</h1></div>
+    <div class="frame">
+        <div class="frame-header">
+            <img class="logo" src="/favicon.ico" />
+            <h1 class="title">TensorAnalyzor</h1>
         </div>
-        <div class="row">
-            <div class="col-md-2 left-menu" :style="{ 'min-height': mainPage.windowHeight.value+'px'}">
-                <!--Left-->
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item" v-for="x in mainPage.listRoutes">
-                        <router-link :to="x">{{x.meta['title']}}</router-link>
-                    </li>
-                </ul>
-            </div>
-            <div class="col">
-                <!--right-->
-                <router-view></router-view>
-            </div>
+        <div class="frame-left">
+            <ul class="menu-left">
+                <li class="menu-item" v-for="x in mainPage.listRoutes">
+                    <router-link :to="x">
+                        <span class="material-symbols-outlined">{{x.meta['icon']}}</span>
+                        {{x.meta['title']}}
+                    </router-link>
+                </li>
+            </ul>
         </div>
-
+        <div class="frame-body"><router-view></router-view></div>
+        <div class="frame-footer">英卡科技@2014-2022</div>
     </div>
 </template>
 
 <script setup lang="ts">
-    import { useRouter, useRoute, RouterLink } from 'vue-router';
-    import { ref, shallowReactive, onMounted } from 'vue';
+    import { useRouter, RouterLink } from 'vue-router';
+    import { onMounted } from 'vue';
 
     class MainPage {
         listRoutes = useRouter().getRoutes().filter((x)=>x.meta['topLevel']);
-        windowHeight = ref(600);
 
         init = async () => {
-            this.windowHeight.value = window.innerHeight - 56;
-
             const resp = await fetch("/api/hello");
             const text = await resp.text()
             console.info(`received: ${text.length} bytes`);
