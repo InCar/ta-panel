@@ -15,6 +15,7 @@ fields-*.json
 
 # log
 *.log
+*.local
 
 # mac
 .DS_Store

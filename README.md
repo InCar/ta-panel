@@ -35,7 +35,7 @@ cd ../../../..
 gradle
 # c)启动
 gradle bootRun
-# d)热更新前端资源
+# d)开发环境热更新前端资源
 cd src/main/resources/static
-npm run watch
+npm run dev
 ```

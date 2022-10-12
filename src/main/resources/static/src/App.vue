@@ -124,13 +124,15 @@
 
 <script setup lang="ts">
     import { useRouter, RouterLink } from 'vue-router';
-    import { onMounted } from 'vue';
+    import { onMounted, inject } from 'vue';
+    import { TensorAnalyzor } from './TensorAnalyzor';
 
     class MainPage {
         listRoutes = useRouter().getRoutes().filter((x)=>x.meta['topLevel']);
 
         init = async () => {
-            const resp = await fetch("/api/hello");
+            const taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
+            const resp = await taObj.fetchHello();
             const text = await resp.text()
             console.info(`received: ${text.length} bytes`);
         };

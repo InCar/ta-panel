@@ -40,7 +40,7 @@ class MainApp{
             history: createWebHistory(),
             routes
         });
-        const taObj = new TensorAnalyzor();
+        const taObj = new TensorAnalyzor(import.meta.env);
         taObj.init().then(() => {
             this.app.provide('taObj', taObj);
             this.app.use(router);
