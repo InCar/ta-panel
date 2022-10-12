@@ -2,8 +2,8 @@ server:
   port: 8050
 
 spring.web.resources.static-locations:
-    # - classpath:/static
-    - file:./src/main/resources/static
+    # - classpath:/dist
+    - file:./src/main/resources/dist
 
 tensor-analyzor:
   fields-file: fields-sample.json

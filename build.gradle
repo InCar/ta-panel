@@ -48,7 +48,7 @@ def npmBuild = tasks.register('npmBuild', Exec){
 
 processResources{
     dependsOn npmBuild
-    exclude('static/node_modules', 'static/src')
+    exclude('static')
 }
 
 compileJava{

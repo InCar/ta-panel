@@ -31,6 +31,7 @@
 
         .logo{
             padding-top: 8px;
+            max-width: 4em;
         }
     }
 
