@@ -12,6 +12,7 @@ gradle.properties
 application-*.yml
 log4j2-*.xml
 fields-*.json
+vite.config-*.ts
 
 # log
 *.log
