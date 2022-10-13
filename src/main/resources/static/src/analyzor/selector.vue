@@ -32,19 +32,21 @@
 </template>
 
 <script setup lang="ts">
-    import { shallowReactive, onMounted, inject } from 'vue';
-    import { TensorAnalyzor, TJsonFields } from '../TensorAnalyzor';
+import { shallowReactive, onMounted, inject } from 'vue';
+import { TensorAnalyzor, TJsonFields } from '../TensorAnalyzor';
 
-    class PageSelectFields{
-        jsonFields: TJsonFields = shallowReactive({});
+const emit = defineEmits<{(e:"on-mode", mode:any):void}>();
 
-        init = async () => {
-            const taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
-            const jsonFields = await taObj.fetchJsonFields();
-            Object.assign(this.jsonFields, jsonFields);
-        };
+class PageSelectFields{
+    jsonFields: TJsonFields = shallowReactive({});
+
+    init = async () => {
+        const taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
+        const jsonFields = await taObj.fetchJsonFields();
+        Object.assign(this.jsonFields, jsonFields);
     };
+};
 
-    const pageObj = new PageSelectFields();
-    onMounted(pageObj.init);
+const pageObj = new PageSelectFields();
+onMounted(pageObj.init);
 </script>

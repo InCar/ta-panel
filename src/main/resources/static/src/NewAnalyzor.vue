@@ -30,7 +30,7 @@
 
 <template>
     <BreadCrumb class="bread-crumb" :items="data.listNavItems" @on-nav="data.OnNav"/>
-    <component :is="data.activeX.value" @on-mode-vvv="data.OnModet" />
+    <component :is="data.activeX.value" @on-mode="data.OnMode" />
 </template>
 
 <script setup lang="ts">
@@ -58,7 +58,7 @@ class NewTaskPage{
         this.activeX.value = this.listActiveX[i];
     };
 
-    public OnModet = (mode:TAModeBase)=>{
+    public OnMode = (mode:TAModeBase)=>{
         this.listNavItems.push({ text: mode.Title, data: mode});
         this.listActiveX.push(XSelect);
         this.activeX.value = XSelect;

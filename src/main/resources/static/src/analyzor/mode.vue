@@ -53,7 +53,7 @@
 <script setup lang="ts">
 import { TAModeBase, TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo } from "../TAModes";
 
-const emit = defineEmits<{(e:"onModeVvv", mode:TAModeBase):void}>();
+const emit = defineEmits<{(e:"on-mode", mode:TAModeBase):void}>();
 
 class AnalyzorMode{
     public listModes:Array<TAModeBase> = [
@@ -64,7 +64,7 @@ class AnalyzorMode{
 
     public onOK = (x:TAModeBase)=>{
         if(!x.Active) return;
-        emit('onModeVvv', x);
+        emit('on-mode', x);
     };
 }
 
