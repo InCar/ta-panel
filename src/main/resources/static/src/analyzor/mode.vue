@@ -42,35 +42,31 @@
 
 <template>
     <div class="container">
-        <div class="x-item">
-            <span class="title">数值分布</span>
-            <span class="content">分析一个指标的数值分布情况,对指标值进行区间计数统计,看看哪些区间的数据比较多,哪些比较少</span>
-            <button class="footer" @click="pageObj.clickMode1">OK</button>
-        </div>
-        <div class="x-item">
-            <span class="title">单值地理分布</span>
-            <span class="content">分析一个指标在地理维度上的分布情况</span>
-            <button class="footer disabled">OK</button>
-        </div>
-        <div class="x-item">
-            <span class="title">多数值地理分布</span>
-            <span class="content">将多个指标进行混合运算后,再进行地理分布分析</span>
-            <button class="footer disabled">OK</button>
+        <div class="x-item" v-for="x in data.listModes">
+            <span class="title">{{x.Title}}</span>
+            <span class="content">{{x.Description}}</span>
+            <button class="footer" :class="{disabled:!x.Active}" @click="data.onOK(x)">OK</button>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-    import { useRouter } from 'vue-router';
-    
-    class AnalyzorMode{
-        private _router = useRouter();
+import { TAModeBase, TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo } from "../TAModes";
 
-        clickMode1 = ()=>{
-            const step1 = `${this._router.currentRoute.value.path}/step1`;
-            this._router.push(step1);
-        };
-    }
+const emit = defineEmits<{(e:"onModeVvv", mode:TAModeBase):void}>();
 
-    const pageObj = new AnalyzorMode();
+class AnalyzorMode{
+    public listModes:Array<TAModeBase> = [
+        new TAModeSingleDistribution(),
+        new TAModeSingleGeo(),
+        new TAModeMultipleGeo()
+    ];
+
+    public onOK = (x:TAModeBase)=>{
+        if(!x.Active) return;
+        emit('onModeVvv', x);
+    };
+}
+
+const data = new AnalyzorMode();
 </script>

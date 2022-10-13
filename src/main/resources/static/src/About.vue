@@ -11,6 +11,13 @@
     color: $danger;
     font-weight: bolder;
 }
+.links{
+    display: flex;
+    justify-content: space-around;
+    a{
+        margin: 4px;
+    }
+}
 </style>
 
 <template>
@@ -18,7 +25,11 @@
         <img src="/img/ta.png" />
         <p>{{page.text}} => <span class="ss">{{page.count}}</span></p>
         <button v-on:click="page.onClick">Click Me!<span class="material-symbols-outlined">check_box</span></button>
-        
+        <div class="links">
+            <router-link to="/About">地址</router-link>
+            <router-link to="/About/tm">时间</router-link>
+        </div>
+        <router-view></router-view>
     </div>
 </template>
 
