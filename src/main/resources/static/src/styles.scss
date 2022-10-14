@@ -1,22 +1,29 @@
-@import "theme.scss";
-
+@use "theme.scss";
+@use "sass:color";
 // https://fonts.google.com/icons?icon.set=Material+Symbols
-@import 'material-symbols/outlined.css';
+@use 'material-symbols/outlined.css';
 
 body{
     margin: 0;
 }
 
 button{
-    background-color: $light;
+    color: theme.$dark;
+    background-color: theme.$light;
     font-weight:bolder;
     padding: 6px 8px;
     border-radius: 4px;
-    border: 1px solid $secondary;
+    border: 1px solid theme.$secondary;
     cursor: pointer;
-    &:hover{
-        background-color: darken($light, 10%);
+    &.disabled{
+        cursor: not-allowed;
+        color: color.grayscale(theme.$dark) !important;
+        background-color: color.grayscale(theme.$light) !important;
     }
+    &:hover{
+        background-color: color.scale(theme.$light, $lightness:-10%);
+    }
+    
 }
 
 

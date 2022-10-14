@@ -1,8 +1,8 @@
 <style scoped lang="scss">
-@import "../theme.scss";
+@use "../theme.scss";
 .box-field{
     display: flex;
-    border-bottom: 1px solid $light;
+    border-bottom: 1px solid theme.$light;
     align-self: stretch;
     @mixin field-gap{
         padding: 4px 8px;

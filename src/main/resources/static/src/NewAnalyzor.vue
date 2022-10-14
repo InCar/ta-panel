@@ -1,5 +1,5 @@
 ﻿<style scoped lang="scss">
-@import "theme.scss";
+@use "theme.scss";
 .nav{
     align-self: flex-start;
     margin: 4px;
@@ -7,15 +7,15 @@
     display: flex;
     flex-flow: row wrap;
     li{
-        color: $dark;
+        color: theme.$dark;
         display: inline;
         flex: 0 0 auto;
         margin: 0 2px;
-        text-decoration: underline dashed 1px $dark;
+        text-decoration: underline dashed 1px theme.$dark;
         text-underline-offset: 4px;
         cursor: pointer;
         &:hover{
-            color: $warning;
+            color: theme.$warning;
         }
         span{
             text-decoration: none;
@@ -44,24 +44,25 @@ import XSelect from "./analyzor/selector.vue";
 
 class NewTaskPage{
     public listNavItems:Array<BreadCrumbItem> = shallowReactive([]);
-    public listActiveX:Array<any> = [];
-    public activeX:any = shallowRef(XMode);
+    public activeX = shallowRef({}); // 激活的子界面组件
+    public activeMode:TAModeBase|null = null; // 激活的创建模式
 
     public constructor(){
-        this.listNavItems.push({ text: "创建新任务" });
-        this.listActiveX.push(this.activeX.value);
+        const item = { text: "创建新任务", data: XMode };
+        this.listNavItems.push(item);
+        this.activeX.value = item.data;
     }
 
     public OnNav = (item:BreadCrumbItem, i:number)=>{
         this.listNavItems.length = i+1;
-        this.listActiveX.length = i+1;
-        this.activeX.value = this.listActiveX[i];
+        this.activeX.value = item.data;
     };
 
     public OnMode = (mode:TAModeBase)=>{
-        this.listNavItems.push({ text: mode.Title, data: mode});
-        this.listActiveX.push(XSelect);
-        this.activeX.value = XSelect;
+        const item = { text: mode.Title, data: XSelect };
+        this.listNavItems.push(item);
+        this.activeX.value = item.data;
+        this.activeMode = mode;
     };
 }
 const data = new NewTaskPage();

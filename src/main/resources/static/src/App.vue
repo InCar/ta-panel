@@ -1,5 +1,5 @@
 <style scoped lang="scss">
-@import "theme.scss";
+@use "theme.scss";
 
 @mixin frame-grid-config{
     display: grid;
@@ -23,8 +23,8 @@
     
     .frame-header{
         grid-area: frame-header;
-        color: $light;
-        background-color: $dark;
+        color: theme.$light;
+        background-color: theme.$dark;
         display: flex;
         justify-content: space-around;
         padding: 0 1em;
@@ -37,7 +37,7 @@
 
     .frame-left{
         grid-area: frame-left;
-        background-color: $light;
+        background-color: theme.$light;
         display: flex;
         flex-flow: column nowrap;
     }
@@ -51,8 +51,8 @@
 
     .frame-footer{
         grid-area: frame-footer;
-        color: $light;
-        background-color: $dark;
+        color: theme.$light;
+        background-color: theme.$dark;
         display: flex;
         justify-content: space-around;
     }
@@ -73,7 +73,7 @@
 
     .menu-item {
         padding: 4px;
-        border-bottom: 1px solid $primary;
+        border-bottom: 1px solid theme.$primary;
 
         &:first-child{
             padding-top: 8px;
@@ -83,7 +83,7 @@
         }
         
         &:hover{
-            background-color: $primary;
+            background-color: theme.$primary;
         }
 
         a{
@@ -94,7 +94,7 @@
 
             &.router-link-active{
                 font-weight: bold;
-                color: $dark;
+                color: theme.$dark;
             }
         }
     }

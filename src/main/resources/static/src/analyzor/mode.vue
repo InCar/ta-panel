@@ -1,5 +1,7 @@
 ﻿<style scoped lang="scss">
-@import "../theme.scss";
+@use "../theme.scss";
+@use "sass:color";
+
 .container{
     align-self: flex-start;
     display: flex;
@@ -8,34 +10,30 @@
     gap: 8px;
 }
 .x-item{
-    border: 1px solid $dark;
+    border: 1px solid theme.$dark;
     border-radius: 4px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 16em;
+    width: 16em;
     .title{
         font-weight: 600;
-        color: $dark;
-        background-color: $light;
-        border-bottom: 1px solid $dark;
+        color: theme.$dark;
+        background-color: theme.$light;
+        border-bottom: 1px solid theme.$dark;
         align-self: stretch;
         padding: 4px;
     }
     .content{
         margin: 0.5em;
         flex-grow: 1;
+        align-self: flex-start;
     }
     .footer{
         min-width: 7em;
         margin: 0.5em;
         align-self: flex-end;
         justify-self: end;
-        &.disabled{
-            color: silver;
-            background-color: gray;
-            cursor: not-allowed;
-        }
     }
 }
 </style>

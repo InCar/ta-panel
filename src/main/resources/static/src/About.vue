@@ -1,5 +1,5 @@
 <style scoped lang="scss">
-@import "theme.scss";
+@use "theme.scss";
 
 .container{
     display: flex;
@@ -8,7 +8,7 @@
     margin: 1em 0;
 }
 .ss {
-    color: $danger;
+    color: theme.$danger;
     font-weight: bolder;
 }
 .links{
