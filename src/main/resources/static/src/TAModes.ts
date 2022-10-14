@@ -1,3 +1,4 @@
+
 export enum TAMode{
     SingleDistribution,
     SingleGeo,
@@ -12,6 +13,7 @@ export abstract class TAModeBase{
 }
 
 export class TAModeSingleDistribution extends TAModeBase{
+    public field = "";
     public constructor(){
         super();
         super.Mode = TAMode.SingleDistribution;

@@ -28,19 +28,21 @@
     <ol class="container">
         <template v-for="(x,i) in data.listItems">
             <span v-if="i>0" class="material-symbols-outlined">arrow_right</span>
-            <li  @click="data.onItemClicked(x, i)">{{x.text}}</li>
+            <li  @click="data.onItemClicked(x, i)">{{x.text.value}}</li>
         </template>
     </ol>
 </template>
 
 <script lang="ts">
 export interface BreadCrumbItem{
-    text: string;
+    text: Ref<string>;
     data?: any;
 }
 </script>
 
 <script setup lang="ts">
+import { Ref } from 'vue';
+
 const props = defineProps<{ items: BreadCrumbItem[]}>();
 const emit = defineEmits<{(e:"on-nav", item:BreadCrumbItem, i:number):void}>();
 
