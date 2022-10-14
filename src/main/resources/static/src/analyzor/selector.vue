@@ -1,4 +1,5 @@
 <style scoped lang="scss">
+@use "sass:color";
 @use "../theme.scss";
 @use "./analyzor.scss";
 
@@ -23,13 +24,17 @@
         flex: 1 0 auto;
         @include field-gap;
     }
+
+    &:hover{
+        background-color: theme.$light;
+    }
 }
 </style>
 
 <template>
     <span class="caption">选择待分析的数据</span>
-    <div class="box-field" v-for="(v, k) in data.jsonFields">
-        <input v-if="data.isRadio" type="radio" name="field" :value="k" v-model="data.picked.value"/>
+    <div class="box-field" v-for="(v, k) in data.jsonFields" @click="data.select(k)">
+        <input v-if="data.isRadio" type="radio" name="field" :value="k" v-model="data.picked.value" />
         <input v-else type="checkbox" name="field" :value="k" v-model="data.listPicked.value"/>
         <span class="desc">{{v.desc??k}}</span>
         <span class="key">{{k}}</span>
@@ -58,7 +63,7 @@ class PageSelectFields{
     public isRadio = true;
     public jsonFields: TJsonFields = shallowReactive({});
     public picked: Ref<string> = ref("");
-    public listPicked = ref([]);
+    public listPicked:Ref<string[]> = ref([]);
 
     public init = async () => {
         emit("on-ready", "选择指标");
@@ -106,6 +111,19 @@ class PageSelectFields{
         else{
             console.error(`尚未实现:${this.mode.Title}`);
             return;
+        }
+    };
+
+    public select = (k:string)=>{
+        if(this.isRadio){
+            this.picked.value = k;
+        }
+        else{
+            const found = this.listPicked.value.indexOf(k);
+            if(found < 0) this.listPicked.value.push(k);
+            else this.listPicked.value.splice(found, 1);
+
+            console.info(this.listPicked.value);
         }
     };
 };
