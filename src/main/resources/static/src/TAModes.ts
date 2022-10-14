@@ -25,7 +25,7 @@ export class TAModeSingleDistribution extends TAModeBase{
 export class TAModeSingleGeo extends TAModeBase{
     public constructor(){
         super();
-        super.Mode = TAMode.SingleDistribution;
+        super.Mode = TAMode.SingleGeo;
         super.Title = "单值地理分布";
         super.Description = "分析一个指标在地理维度上的分布情况";
         super.Active = false;
@@ -35,7 +35,7 @@ export class TAModeSingleGeo extends TAModeBase{
 export class TAModeMultipleGeo extends TAModeBase{
     public constructor(){
         super();
-        super.Mode = TAMode.SingleDistribution;
+        super.Mode = TAMode.MultipleGeo;
         super.Title = "多数值地理分布";
         super.Description = "将多个指标进行混合运算后";
         super.Active = false;

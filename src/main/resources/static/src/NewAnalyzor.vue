@@ -53,7 +53,9 @@ class NewTaskPage{
     public stepCaption = ref(""); // 用于接收子界面的标题
     public isFinished = ref(false);
     private taskStep:{[key:string]: Array<any>} = {
-        "数值分布": [ XSelect, XFilter, XSummary ]
+        "数值分布": [ XSelect, XFilter, XSummary ],
+        "单值地理分布": [ XSelect, XSummary ],
+        "多数值地理分布": [ XSelect, XSummary ]
     }
 
     public constructor(){
