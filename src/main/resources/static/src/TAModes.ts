@@ -1,3 +1,4 @@
+import { TJsonFields } from "./TensorAnalyzor";
 
 export enum TAMode{
     SingleDistribution,
@@ -9,11 +10,11 @@ export abstract class TAModeBase{
     public Mode: TAMode | null = null;
     public Title: string = "NA";
     public Description: string = "NA";
+    public Fields: TJsonFields = {};
     public Active = true;
 }
 
 export class TAModeSingleDistribution extends TAModeBase{
-    public field = "";
     public constructor(){
         super();
         super.Mode = TAMode.SingleDistribution;

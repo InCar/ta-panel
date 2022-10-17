@@ -88,7 +88,10 @@ class PageSelectFields{
         if(step > 0){
             if(!this.canNext.value) return;
             if(this.mode.Mode == TAMode.SingleDistribution){
-                (this.mode as TAModeSingleDistribution).field = this.picked.value;
+                const k = this.picked.value;
+                const target:any = {};
+                target[k] = this.jsonFields[k];
+                this.mode.Fields = target;
             }
             else{
                 console.error(`尚未实现:${this.mode.Title}`);
@@ -105,8 +108,10 @@ class PageSelectFields{
 
     private initPicked = ()=>{
         if(this.mode.Mode == TAMode.SingleDistribution){
-            const mode = this.mode as TAModeSingleDistribution;
-            this.picked.value = mode.field;
+            const keys = Object.keys(this.mode.Fields);
+            if(keys.length > 0){
+                this.picked.value = keys[0];
+            }
         }
         else{
             console.error(`尚未实现:${this.mode.Title}`);
@@ -122,8 +127,6 @@ class PageSelectFields{
             const found = this.listPicked.value.indexOf(k);
             if(found < 0) this.listPicked.value.push(k);
             else this.listPicked.value.splice(found, 1);
-
-            console.info(this.listPicked.value);
         }
     };
 };

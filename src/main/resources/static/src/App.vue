@@ -29,6 +29,10 @@
         justify-content: space-around;
         padding: 0 1em;
 
+        position: sticky;
+        top: 0;
+        z-index: 100;
+
         .logo{
             padding-top: 8px;
             max-width: 4em;
