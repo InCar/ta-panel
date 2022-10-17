@@ -18,3 +18,30 @@
         margin: 4px;
     }
 }
+
+.field-list{
+    align-self: stretch;
+    margin: 1em 0.5em;
+    padding : 0.5em;
+    border-top: 1px solid theme.$primary;
+    border-bottom: 1px solid theme.$primary;
+
+
+    display: flex;
+    align-items: center;
+    gap: 0 1em;
+
+    .field-key{
+        color: theme.$dark;
+        font-weight: bold;
+        
+    }
+
+    .field-desc{
+        flex: 1 0 auto;
+    }
+
+    .field-action{
+        flex: 0 0 auto;
+    }
+}

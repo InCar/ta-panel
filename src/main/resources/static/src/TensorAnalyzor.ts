@@ -1,3 +1,4 @@
+import { TAModeBase } from "./TAModes";
 
 export interface TJsonFields {
     [key: string]: { desc?: string, description?: string }
@@ -22,4 +23,8 @@ export class TensorAnalyzor {
         }
         return this._jsonFields ?? {};
     };
+
+    public submitTask = async(task: TAModeBase):Promise<{code:number, message:string}>=>{
+        return { code: -1, message: "还没有实现！" }
+    }
 }
