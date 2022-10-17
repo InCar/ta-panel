@@ -18,7 +18,7 @@
 
 <template>
     <span class="caption">摘要</span>
-    <span>{{data.mode.Title}}</span>
+    <span>{{data.mode.TaskName}}</span>
 
     <div class="field-list">
         <template v-for="(v, k) in data.mode.Fields">

@@ -62,6 +62,10 @@ class AnalyzorMode{
 
     public onOK = (x:TAModeBase)=>{
         if(!x.Active) return;
+
+        const tm = new Intl.DateTimeFormat('en-US', {month:'2-digit', day:'2-digit', hour12:false, hour:"2-digit", minute:'2-digit'})
+            .format(Date.now()).replaceAll(/\D/g, "");
+        x.TaskName = `${x.Title}#${tm}`;
         emit('on-step', +1, x);
     };
 }

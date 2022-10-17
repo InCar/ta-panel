@@ -10,6 +10,7 @@ export abstract class TAModeBase{
     public Mode: TAMode | null = null;
     public Title: string = "NA";
     public Description: string = "NA";
+    public TaskName = "新任务";
     public Fields: TJsonFields = {};
     public Active = true;
 }

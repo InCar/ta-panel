@@ -33,6 +33,7 @@
 
 <template>
     <span class="caption">选择待分析的数据</span>
+    <span>{{data.mode.TaskName}}</span>
     <div class="box-field" v-for="(v, k) in data.jsonFields" @click="data.select(k as string)">
         <input v-if="data.isRadio" type="radio" name="field" :value="k" v-model="data.picked.value" />
         <input v-else type="checkbox" name="field" :value="k" v-model="data.listPicked.value"/>

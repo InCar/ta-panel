@@ -5,7 +5,7 @@
 
 <template>
     <span class="caption">过滤条件</span>
-
+    <span>{{data.mode.TaskName}}</span>
     <div class="field-list">
         <template v-for="(v, k) in data.mode.Fields">
             <span class="field-key">{{k}}</span>
