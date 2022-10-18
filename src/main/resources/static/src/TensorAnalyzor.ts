@@ -51,8 +51,8 @@ export class TensorAnalyzor {
 
         const task = {
             name: mode.TaskName,
-            dataSources: this._dataSources,
-            fields: mode.Fields,
+            dataSources: this.objectsToArray(this._dataSources, "name", "ds"),
+            fields: this.objectsToArray(mode.Fields),
             operator: {
                 group: {
                     by: [{
@@ -69,4 +69,28 @@ export class TensorAnalyzor {
         };
         return task;
     }
+
+    // Java后端不擅于处理动态属性名称,因此转换为数组形式
+    private objectsToArray = (src: any, propKey?:string, propValue?:string)=>{
+        const arrayTarget:Array<Object> = [];
+
+        for(let key of Object.keys(src)){
+            if(src.hasOwnProperty(key)){
+                const attached:any = {};
+                attached[propKey??"name"] = key;
+
+                const x = src[key]
+                if(typeof x === "object" && !Array.isArray(x) && x !== null){
+                    arrayTarget.push(Object.assign(x, attached));
+                }
+                else{
+                    attached[propValue??"data"] = x;
+                    arrayTarget.push(attached);
+                }
+            }
+        }
+
+        console.info(arrayTarget);
+        return arrayTarget;
+    };
 }
