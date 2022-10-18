@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -19,8 +20,14 @@ public class PanelController {
     private String fieldsFile;
 
     @GetMapping("hello")
-    public String greeting(){
+    public String greeting(HttpServletResponse response){
         String json = loadSample();
+
+        if(!FieldsExpr.Validate(json)){
+            response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
+            return String.format("校验失败\n%s", json);
+        }
+
         FieldsExpr target = new FieldsExpr(json);
         Map<String, FieldRef> mapFields = target.getFields();
         StringBuilder sbBuf = new StringBuilder();
