@@ -1,11 +1,11 @@
 package com.incarcloud.tensoranalyzor.controller;
 
+import com.incarcloud.tensoranalyzor.entities.SubmitTaskResult;
 import com.incarcloud.tensoranalyzor.jsonexpr.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -14,7 +14,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(path="api")
 public class PanelController {
-
+    private static final Logger s_logger = LoggerFactory.getLogger(PanelController.class);
     @Value("${tensor-analyzor.fields-file}")
     private String fieldsFile;
 
@@ -64,5 +64,11 @@ public class PanelController {
         }
 
         return sbJson.toString();
+    }
+
+    @PostMapping("submit-task")
+    public SubmitTaskResult SubmitTask(@RequestBody String json){
+        s_logger.info("Received: {}", json);
+        return new SubmitTaskResult();
     }
 }

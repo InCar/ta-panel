@@ -74,6 +74,8 @@
     list-style-type: none;
     margin: 0;
     padding: 0;
+    position: sticky;
+    top: 4em;
 
     .menu-item {
         padding: 4px;

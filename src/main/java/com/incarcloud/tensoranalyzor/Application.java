@@ -26,7 +26,8 @@ public class Application implements CommandLineRunner {
             private String cors;
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**").allowedOrigins(this.cors);
+                if(this.cors != null)
+                    registry.addMapping("/api/**").allowedOrigins(this.cors);
             }
         };
     }
