@@ -54,15 +54,17 @@ export class TensorAnalyzor {
             dataSources: this.objectsToArray(this._dataSources, "name", "ds"),
             fields: this.objectsToArray(mode.Fields),
             operator: {
-                group: {
-                    by: [{
-                            field: `${key}`,
-                            from: 0,
-                            to: 100,
-                            step: 10
-                        }],
+                op: "group-aggregation",
+                opArgs: {
+                    groupBy: [{
+                        field: `${key}`,
+                        from: 0,
+                        to: 100,
+                        step: 10
+                    }],
                     aggregation: {
-                        count: {}
+                        fn: "count",
+                        fnArgs: {}
                     }
                 }
             }
