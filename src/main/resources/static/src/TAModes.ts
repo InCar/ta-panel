@@ -6,12 +6,19 @@ export enum TAMode{
     MultipleGeo
 }
 
+export interface Range{
+    from: number;
+    step: number;
+    to: number;
+}
+
 export abstract class TAModeBase{
     public Mode: TAMode | null = null;
     public Title: string = "NA";
     public Description: string = "NA";
     public TaskName = "新任务";
     public Fields: TJsonFields = {};
+    public Range: { [key:string]: Range|Object } = {};
     public Active = true;
 }
 

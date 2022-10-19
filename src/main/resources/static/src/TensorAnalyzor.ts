@@ -1,4 +1,4 @@
-import { TAModeBase, TAModeSingleDistribution } from "./TAModes";
+import { TAModeBase, TAModeSingleDistribution, Range } from "./TAModes";
 
 export interface TJsonFields {
     [key: string]: { desc?: string, description?: string }
@@ -58,9 +58,9 @@ export class TensorAnalyzor {
                 opArgs: {
                     groupBy: [{
                         field: `${key}`,
-                        from: 0,
-                        to: 100,
-                        step: 10
+                        from: (mode.Range[`${key}`] as Range).from,
+                        to: (mode.Range[`${key}`] as Range).to,
+                        step: (mode.Range[`${key}`] as Range).step
                     }],
                     aggregation: {
                         fn: "count",
@@ -91,8 +91,7 @@ export class TensorAnalyzor {
                 }
             }
         }
-
-        console.info(arrayTarget);
+        
         return arrayTarget;
     };
 }

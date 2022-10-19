@@ -21,11 +21,11 @@
     <span>{{data.mode.TaskName}}</span>
 
     <div class="field-list">
-        <template v-for="(v, k) in data.mode.Fields">
+        <div v-for="(v, k) in data.mode.Fields" class="box-field">
             <span class="field-key">{{k}}</span>
             <span class="field-desc">{{v.desc}}</span>
-            <span class="field-desc">无过滤条件</span>
-        </template>
+            <span class="field-range">无过滤条件</span>
+        </div>
     </div>
 
     <div class="action-result" v-if="data.isFinished.value">

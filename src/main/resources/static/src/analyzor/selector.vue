@@ -4,27 +4,6 @@
 @use "./analyzor.scss";
 
 .box-field{
-    display: flex;
-    padding: 0 1em;
-    border-bottom: 1px solid theme.$light;
-    align-self: stretch;
-    @mixin field-gap{
-        padding: 4px 8px;
-    }
-    .desc{
-        flex: 0 0 8em;
-        @include field-gap;
-    }
-    .key{
-        flex: 0 0 10em;
-        @include field-gap;
-        font-weight: bold;
-    }
-    .description{
-        flex: 1 0 auto;
-        @include field-gap;
-    }
-
     &:hover{
         background-color: theme.$light;
     }
@@ -34,12 +13,14 @@
 <template>
     <span class="caption">选择待分析的数据</span>
     <span>{{data.mode.TaskName}}</span>
-    <div class="box-field" v-for="(v, k) in data.jsonFields" @click="data.select(k as string)">
-        <input v-if="data.isRadio" type="radio" name="field" :value="k" v-model="data.picked.value" />
-        <input v-else type="checkbox" name="field" :value="k" v-model="data.listPicked.value"/>
-        <span class="desc">{{v.desc??k}}</span>
-        <span class="key">{{k}}</span>
-        <span class="description">{{v.description}}</span>
+    <div class="field-list">
+        <div class="box-field" v-for="(v, k) in data.jsonFields" @click="data.select(k as string)">
+            <input v-if="data.isRadio" type="radio" name="field" :value="k" v-model="data.picked.value" />
+            <input v-else type="checkbox" name="field" :value="k" v-model="data.listPicked.value"/>
+            <span class="field-desc">{{v.desc??k}}</span>
+            <span class="field-key">{{k}}</span>
+            <span class="field-description">{{v.description}}</span>
+        </div>
     </div>
     <div class="footer">
         <button @click="data.move(-1)">上一步</button>
