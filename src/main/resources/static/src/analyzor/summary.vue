@@ -24,7 +24,13 @@
         <div v-for="(v, k) in data.mode.Fields" class="box-field">
             <span class="field-key">{{k}}</span>
             <span class="field-desc">{{v.desc}}</span>
-            <span class="field-range">无过滤条件</span>
+            <div class="field-range">
+                范围: 
+                <span v-if="(data.mode.Range[k]as Range).from !== undefined">
+                    {{(data.mode.Range[k]as Range).from}} ~ {{(data.mode.Range[k]as Range).to}} [步长: {{(data.mode.Range[k]as Range).step}}]
+                </span>
+                <span v-else>离散</span>
+            </div>
         </div>
     </div>
 
@@ -43,6 +49,7 @@
 import { computed } from '@vue/reactivity';
 import { inject, ref , Ref, shallowRef } from 'vue';
 import { TAModeBase } from '../TAModes';
+import type { Range } from '../TAModes';
 import { TensorAnalyzor } from '../TensorAnalyzor';
 
 const props = defineProps<{mode: TAModeBase}>();

@@ -24,7 +24,7 @@
     <div class="container">
         <img src="/img/ta.png" />
         <p>{{page.text}} => <span class="ss">{{page.count}}</span></p>
-        <button v-on:click="page.onClick">Click Me!<span class="material-symbols-outlined">check_box</span></button>
+        <button v-on:click="page.onClick">Click Me!</button>
         <div class="links">
             <router-link to="/About">地址</router-link>
             <router-link to="/About/tm">时间</router-link>
@@ -34,7 +34,8 @@
 </template>
 
 <script setup lang="ts">
-    import { ref } from 'vue';
+    import { computed } from '@vue/reactivity';
+import { ref } from 'vue';
     class AboutPage {
         readonly text = "Hello Vue3!";
         count = ref(0);

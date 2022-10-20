@@ -27,7 +27,7 @@
     }
 
     button{
-        color: color.scale(theme.$success, $lightness:+20%);
+        color: theme.$light;
         background-color: theme.$dark;
         min-width: 6em;
     }
@@ -41,15 +41,22 @@
         <div v-for="(v, k) in data.mode.Fields" class="box-field">
             <span class="field-key">{{k}}</span>
             <span class="field-desc">{{v.desc}}</span>
-            <span class="field-range">
-                TODO: 设定区间
-            </span>
+            <div class="field-range">
+                范围: 
+                <span v-if="(data.mode.Range[k]as Range).from !== undefined">
+                    {{(data.mode.Range[k]as Range).from}} ~ {{(data.mode.Range[k]as Range).to}} [步长: {{(data.mode.Range[k]as Range).step}}]
+                </span>
+                <span v-else>离散</span>
+            </div>
             <button class="field-action" @click="data.ConfigRange(k as string)">设定</button>
         </div>
         <div class="popup-dialog" :class="{shown: data.bShowDialog.value }">
             <div class="dialog">
                 <div class="dialog-head">设定区间</div>
                 <div class="dialog-body">
+                    <div class="mode-select">
+                        <span class="lab">{{data.rangeField}}</span>
+                    </div>
                     <div class="mode-select">
                         <span class="lab">模式选择:</span>
                         <div class="mode-select-item">
@@ -61,15 +68,15 @@
                     </div>
                     <div class="mode-select" :class="{ hidden: data.rangeMode.value==0}">
                         <span class="lab">起始: </span>
-                        <input type="input" v-model="data.rangeFrom.value" />
+                        <input type="number" v-model="data.rangeFrom.value" />
                     </div>
                     <div class="mode-select" :class="{ hidden: data.rangeMode.value==0}">
                         <span class="lab">步长: </span>
-                        <input type="input" v-model="data.rangeStep.value" />
+                        <input type="number" v-model="data.rangeStep.value" />
                     </div>
                     <div class="mode-select" :class="{ hidden: data.rangeMode.value==0}">
                         <span class="lab">终止: </span>
-                        <input type="input" v-model="data.rangeTo.value" />
+                        <input type="number" v-model="data.rangeTo.value" />
                     </div>
                 </div>
                 <div class="dialog-footer">
@@ -88,7 +95,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { TAModeBase, Range } from '../TAModes';
+import { TAModeBase } from '../TAModes';
+import type { Range } from '../TAModes';
 const props = defineProps<{mode: TAModeBase}>();
 const emit = defineEmits<{
         (e:"on-ready", title:string):void,
@@ -102,9 +110,9 @@ class PageFilter{
 
     public rangeMode = ref(0);
     public rangeFrom = ref(0);
-    public rangeStep = ref(10);
-    public rangeTo = ref(100);
-    private rangeField = "";
+    public rangeStep = ref(0);
+    public rangeTo = ref(0);
+    public rangeField = "";
 
 
     public constructor(){
@@ -141,9 +149,9 @@ class PageFilter{
         else{
             // TODO: 检查是不是数值
             this.mode.Range[this.rangeField] = {
-                from: Number(this.rangeFrom.value),
-                step: Number(this.rangeStep.value),
-                to: Number(this.rangeTo.value)
+                from: this.rangeFrom.value,
+                step: this.rangeStep.value,
+                to: this.rangeTo.value
             }
         }
         this.rangeField = "";
@@ -157,14 +165,14 @@ class PageFilter{
     private initRange = ()=>{
         for(let k in this.mode.Fields){
             if(!this.mode.Range[k]){
-                this.mode.Range[k] = {};
+                this.mode.Range[k] = {
+                    from: 0,
+                    to: 100,
+                    step: 10
+                };
             }
         }
     }
-
-    private isNumber = (str:any)=>{
-        return !isNaN(str) && !isNaN(parseFloat(str));
-    };
 }
 
 const data = new PageFilter();
