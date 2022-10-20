@@ -25,7 +25,7 @@ dependencies{
     implementation(project('ta-json-expr:java'))
 
     implementation(platform('org.springframework.boot:spring-boot-dependencies:2.7.3'))
-    implementation('org.springframework.boot:spring-boot-starter-web:2.7.3'){
+    implementation('org.springframework.boot:spring-boot-starter-webflux:2.7.3'){
         exclude(module: "spring-boot-starter-logging")
     }
 

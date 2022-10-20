@@ -5,9 +5,11 @@ import com.incarcloud.tensoranalyzor.jsonexpr.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -19,37 +21,41 @@ public class PanelController {
     @Value("${tensor-analyzor.fields-file}")
     private String fieldsFile;
 
+    // private WebClient webClient;
+
     @GetMapping("hello")
-    public String greeting(HttpServletResponse response){
-        String json = loadSample();
+    public Mono<String> greeting(ServerHttpResponse response){
+        return Mono.fromCallable(()->{
+            String json = loadSample();
 
-        if(!FieldsExpr.Validate(json)){
-            response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
-            return String.format("校验失败\n%s", json);
-        }
+            if(!FieldsExpr.Validate(json)){
+                response.setStatusCode(HttpStatus.EXPECTATION_FAILED);
+                return String.format("校验失败\n%s", json);
+            }
 
-        FieldsExpr target = new FieldsExpr(json);
-        Map<String, FieldRef> mapFields = target.getFields();
-        StringBuilder sbBuf = new StringBuilder();
-        for(String k : mapFields.keySet()){
-            sbBuf.append(k);
-            FieldRef refV = mapFields.get(k);
-            sbBuf.append(" : ");
-            sbBuf.append(refV.getDataPath());
-            sbBuf.append(" : ");
-            if(refV.getDesc() != null)
-                sbBuf.append(refV.getDesc());
-            sbBuf.append(" : ");
-            if(refV.getDescription() != null)
-                sbBuf.append(refV.getDescription());
-            sbBuf.append('\n');
-        }
-        return sbBuf.toString();
+            FieldsExpr target = new FieldsExpr(json);
+            Map<String, FieldRef> mapFields = target.getFields();
+            StringBuilder sbBuf = new StringBuilder();
+            for(String k : mapFields.keySet()){
+                sbBuf.append(k);
+                FieldRef refV = mapFields.get(k);
+                sbBuf.append(" : ");
+                sbBuf.append(refV.getDataPath());
+                sbBuf.append(" : ");
+                if(refV.getDesc() != null)
+                    sbBuf.append(refV.getDesc());
+                sbBuf.append(" : ");
+                if(refV.getDescription() != null)
+                    sbBuf.append(refV.getDescription());
+                sbBuf.append('\n');
+            }
+            return sbBuf.toString();
+        });
     }
 
     @GetMapping("fields")
-    public String getFields(){
-        return loadSample();
+    public Mono<String> getFields(){
+        return Mono.fromCallable(this::loadSample);
     }
 
     private String loadSample(){
@@ -74,8 +80,8 @@ public class PanelController {
     }
 
     @PostMapping("submit-task")
-    public SubmitTaskResult SubmitTask(@RequestBody String json){
+    public Mono<SubmitTaskResult> SubmitTask(@RequestBody String json){
         s_logger.info("Received: {}", json);
-        return new SubmitTaskResult();
+        return Mono.fromCallable(()->new SubmitTaskResult());
     }
 }
