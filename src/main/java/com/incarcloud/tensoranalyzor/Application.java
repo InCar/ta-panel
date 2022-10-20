@@ -1,27 +1,34 @@
 package com.incarcloud.tensoranalyzor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.context.WebServerApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.reactive.config.CorsRegistry;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
+    private final static Logger s_logger = LoggerFactory.getLogger(Application.class);
+    @Autowired
+    private WebServerApplicationContext webAppCtx;
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("Yes!");
+        s_logger.info("WebServer is listening on: {}", webAppCtx.getWebServer().getPort());
     }
 
     @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
+    public WebFluxConfigurer corsConfigurer() {
+        return new WebFluxConfigurer() {
             @Value("${tensor-analyzor.allow-cors}")
             private String cors;
             @Override
