@@ -68,5 +68,10 @@
             white-space: nowrap;
             @include field-gap;
         }
+
+        input{
+            margin: 4px;
+            text-align: center;
+        }
     }
 }

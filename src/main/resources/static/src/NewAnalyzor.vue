@@ -44,6 +44,7 @@ import { ref, shallowRef, shallowReactive, nextTick } from "vue";
 import XMode from "./analyzor/mode.vue";
 import XSelect from "./analyzor/selector.vue";
 import XRange from "./analyzor/range.vue";
+import XLimit from "./analyzor/limit.vue";
 import XSummary from "./analyzor/summary.vue";
 
 class NewTaskPage{
@@ -53,9 +54,9 @@ class NewTaskPage{
     public stepCaption = ref(""); // 用于接收子界面的标题
     public isFinished = ref(false);
     private taskStep:{[key:string]: Array<any>} = {
-        "数值分布": [ XSelect, XRange, XSummary ],
-        "单值地理分布": [ XSelect, XSummary ],
-        "多数值地理分布": [ XSelect, XSummary ]
+        "数值分布": [ XSelect, XRange, XLimit, XSummary ],
+        "单值地理分布": [ XSelect, XLimit, XSummary ],
+        "多数值地理分布": [ XSelect, XLimit, XSummary ]
     }
 
     public constructor(){

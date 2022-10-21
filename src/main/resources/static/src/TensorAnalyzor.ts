@@ -80,7 +80,8 @@ export class TensorAnalyzor {
                         fnArgs: {}
                     }
                 }
-            }
+            },
+            limit: mode.LimitMax
         };
         return task;
     }
