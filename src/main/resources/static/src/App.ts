@@ -20,8 +20,8 @@ class MainApp{
         { path: '/NewAnalyzor', component: NewAnalyzor, meta: { topLevel: true, title: "创建新任务", icon: "add_box" } },
         { path: '/About', component: About, meta: { topLevel: true, title: "About", icon: "info" },
             children: [
-                { path: '', name: 'addr', component: ()=> import('./About_m.vue') },
-                { path: 'tm', component: ()=> import('./About_n.vue') },
+                { path: '', name: 'About', component: ()=> import('./About_0.vue') },
+                { path: 'dev', component: ()=> import('./About_dev.vue') },
              ]
         }
     ];

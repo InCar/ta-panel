@@ -23,27 +23,36 @@
 <template>
     <div class="container">
         <img src="/img/ta.png" />
-        <p>{{page.text}} => <span class="ss">{{page.count}}</span></p>
-        <button v-on:click="page.onClick">Click Me!</button>
-        <div class="links">
-            <router-link to="/About">地址</router-link>
-            <router-link to="/About/tm">时间</router-link>
+        
+        <div>
+            <input type="checkbox" v-model="data.IsDevChecked.value"/>
+            <span>开发设定</span>
         </div>
         <router-view></router-view>
     </div>
 </template>
 
 <script setup lang="ts">
-    import { computed } from '@vue/reactivity';
-import { ref } from 'vue';
-    class AboutPage {
-        readonly text = "Hello Vue3!";
-        count = ref(0);
+import { computed } from '@vue/reactivity';
+import { onMounted, ref, watch, watchEffect } from 'vue';
+import { useRouter } from "vue-router";
 
-        onClick = (e: MouseEvent) => {
-            this.count.value++;
-        }
-    };
 
-    const page = new AboutPage();
+class AboutPage {
+    private _router = useRouter();
+    public IsDevChecked = ref(false);
+
+    public init = ()=>{
+        watch(this.LinkForView, (value, last)=>{
+            this._router.push(value);
+        });
+    }
+
+    public LinkForView = computed(()=>{
+        return this.IsDevChecked.value?"/About/dev":"/About";
+    });
+};
+
+const data = new AboutPage();
+onMounted(data.init);
 </script>
