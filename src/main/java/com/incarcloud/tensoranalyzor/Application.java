@@ -23,7 +23,10 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        s_logger.info("WebServer is listening on: {}", webAppCtx.getWebServer().getPort());
+        GitVer version = new GitVer();
+        s_logger.info("WebServer (version: {}) is listening on: {}",
+                version.getVersion(),
+                webAppCtx.getWebServer().getPort());
     }
 
     @Bean

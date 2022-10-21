@@ -36,6 +36,29 @@ dependencies{
     testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
 }
 
+def markGitVer = tasks.register('markGitVer'){
+    doLast{
+        def git = "git -C " + projectDir + " "
+        def branch = (git + "symbolic-ref --short HEAD").execute().text.trim()
+        def rev = (git + "rev-list --count HEAD").execute().text.trim()
+        def hash = (git + "rev-parse --short HEAD").execute().text.trim()
+        def hash160 = (git + "rev-parse HEAD").execute().text.trim()
+        println("\tMark Git Version: " + branch + "." + rev + "@" + hash)
+
+        def packageName = "com.incarcloud.tensoranalyzor".replace('.', '/')
+        def javaFile = new File(projectDir, "src/main/java/$packageName/GitVer.jav_").text
+        javaFile = javaFile
+                .replace("\$branch\$", branch)
+                .replace("\$rev\$", rev)
+                .replace("\$hash\$", hash)
+                .replace("\$hash160\$", hash160)
+
+        def writer = new PrintWriter(new File(projectDir, "src/main/java/$packageName/GitVer.java"))
+        writer.print(javaFile)
+        writer.close()
+    }
+}
+
 def npmBuild = tasks.register('npmBuild', Exec){
     workingDir("$rootDir/src/main/resources/static")
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
@@ -52,6 +75,7 @@ processResources{
 }
 
 compileJava{
+    dependsOn markGitVer
     options.encoding = 'utf-8'
     options.compilerArgs << '-Xlint:unchecked'
 }

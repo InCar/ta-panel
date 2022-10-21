@@ -124,21 +124,21 @@
             </ul>
         </div>
         <div class="frame-body"><router-view></router-view></div>
-        <div class="frame-footer">英卡科技@2014-2022</div>
+        <div class="frame-footer">英卡科技 {{mainPage.version.value}}</div>
     </div>
 </template>
 
 <script setup lang="ts">
     import { useRouter, RouterLink } from 'vue-router';
-    import { onMounted } from 'vue';
+    import { ref, onMounted } from 'vue';
 
     class MainPage {
         listRoutes = useRouter().getRoutes().filter((x)=>x.meta['topLevel']);
+        version = ref("");
 
         init = async () => {
             const resp = await fetch("/api/hello");
-            const text = await resp.text()
-            console.info(`received: ${text.length} bytes`);
+            this.version.value = await resp.text();
         };
     };
 

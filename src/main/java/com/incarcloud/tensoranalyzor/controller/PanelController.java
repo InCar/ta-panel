@@ -1,5 +1,6 @@
 package com.incarcloud.tensoranalyzor.controller;
 
+import com.incarcloud.tensoranalyzor.GitVer;
 import com.incarcloud.tensoranalyzor.entities.SubmitTaskResult;
 import com.incarcloud.tensoranalyzor.jsonexpr.*;
 import org.slf4j.Logger;
@@ -39,38 +40,30 @@ public class PanelController {
     }
 
     @GetMapping("hello")
-    public Mono<String> greeting(ServerHttpResponse response){
-        return Mono.fromCallable(()->{
-            String json = loadSample();
+    public String greeting(ServerHttpResponse response){
+        GitVer version = new GitVer();
+        return version.getVersion();
+    }
 
+    @GetMapping("version")
+    public Mono<String> version(ServerHttpResponse response){
+        return Mono.fromCallable(()->{
+            GitVer version = new GitVer();
+            return version.getVersion();
+        });
+    }
+
+    @GetMapping("fields")
+    public Mono<String> getFields(ServerHttpResponse response){
+        return Mono.fromCallable(()->{
+            String json = this.loadSample();
             if(!FieldsExpr.Validate(json)){
                 response.setStatusCode(HttpStatus.EXPECTATION_FAILED);
                 return String.format("校验失败\n%s", json);
             }
 
-            FieldsExpr target = new FieldsExpr(json);
-            Map<String, FieldRef> mapFields = target.getFields();
-            StringBuilder sbBuf = new StringBuilder();
-            for(String k : mapFields.keySet()){
-                sbBuf.append(k);
-                FieldRef refV = mapFields.get(k);
-                sbBuf.append(" : ");
-                sbBuf.append(refV.getDataPath());
-                sbBuf.append(" : ");
-                if(refV.getDesc() != null)
-                    sbBuf.append(refV.getDesc());
-                sbBuf.append(" : ");
-                if(refV.getDescription() != null)
-                    sbBuf.append(refV.getDescription());
-                sbBuf.append('\n');
-            }
-            return sbBuf.toString();
+            return json;
         });
-    }
-
-    @GetMapping("fields")
-    public Mono<String> getFields(){
-        return Mono.fromCallable(this::loadSample);
     }
 
     private String loadSample(){
