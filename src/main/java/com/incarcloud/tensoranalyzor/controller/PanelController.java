@@ -7,21 +7,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
-import reactor.core.publisher.MonoSink;
 
 import java.io.*;
 import java.net.*;
 import java.net.URL;
 import java.net.http.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 @RestController
 @RequestMapping(path="api")
@@ -29,12 +27,12 @@ public class PanelController {
     private static final Logger s_logger = LoggerFactory.getLogger(PanelController.class);
     @Value("${tensor-analyzor.fields-file}")
     private String fieldsFile;
-    private URL backEndServer;
+    private URL _backPoint;
     private HttpClient httpClient = HttpClient.newHttpClient();
 
-    public PanelController(@Value("${tensor-analyzor.back-end-server}") String back_end_server){
+    public PanelController(@Value("${tensor-analyzor.back-point}") String back_point){
         try {
-            backEndServer = new URL(back_end_server);
+            _backPoint = new URL(back_point);
         } catch (MalformedURLException e) {
             s_logger.error(e.getMessage());
         }
@@ -97,17 +95,29 @@ public class PanelController {
     }
 
     @PostMapping("submit-task")
-    public Mono<SubmitTaskResult> SubmitTask(@RequestBody String json, ServerHttpResponse response){
-        s_logger.info("Received: {}", json);
+    public Mono<SubmitTaskResult> SubmitTask(@RequestBody String json, ServerHttpRequest request, ServerHttpResponse response){
+        s_logger.info("Received: {}", json.length());
+        URL backpoint = findBackPoint(request);
+
         return Mono.create(sink->{
             sink.onRequest(x->{
                 try{
-                    URL api = new URL(backEndServer, "/api/hello");
-                    HttpRequest request = HttpRequest.newBuilder().uri(api.toURI()).build();
-                    CompletableFuture<HttpResponse<String>> waitResp =  httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                    URL api = new URL(backpoint, "/api/task/start");
+                    s_logger.info("BackPoint: {}", api);
+                    HttpRequest backPointRequest = HttpRequest.newBuilder()
+                            .uri(api.toURI())
+                            .header("Content-Type", "application/json")
+                            .POST(HttpRequest.BodyPublishers.ofString(json))
+                            .timeout(Duration.ofMillis(3000))
+                            .build();
+                    CompletableFuture<HttpResponse<String>> waitResp =  httpClient.sendAsync(backPointRequest, HttpResponse.BodyHandlers.ofString());
                     waitResp.thenAccept(resp->{
                         response.setRawStatusCode(resp.statusCode());
                         sink.success(new SubmitTaskResult(0, resp.body()));
+                    }).exceptionally((e)->{
+                        response.setRawStatusCode(500);
+                        sink.success(new SubmitTaskResult(-1, e.getMessage()));
+                        return null;
                     });
                 }
                 catch (MalformedURLException | URISyntaxException e){
@@ -115,5 +125,19 @@ public class PanelController {
                 }
             });
         });
+    }
+
+    private URL findBackPoint(ServerHttpRequest  request){
+        List<String> listBackPoints = request.getHeaders().get("X-Back-Point");
+        if(listBackPoints != null && listBackPoints.size() > 0) {
+            String strBP = listBackPoints.get(0);
+            try {
+                return new URL(strBP);
+            } catch (MalformedURLException e) {
+                s_logger.error(e.getMessage());
+            }
+        }
+
+        return _backPoint;
     }
 }
