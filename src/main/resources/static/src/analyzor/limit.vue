@@ -47,13 +47,14 @@ const emit = defineEmits<{
 class Settings{
     public title = "全局参数";
     public mode = props.mode;
-    public limitMax = ref(10000);
+    public limitMax = ref(-1);
 
     public constructor(){
         emit("on-ready", this.title);
     }
 
     public init = ()=>{
+        this.limitMax.value = this.mode.LimitMax;
         watchEffect(()=>{
             this.mode.LimitMax = this.limitMax.value;
         });
