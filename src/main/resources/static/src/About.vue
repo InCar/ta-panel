@@ -26,7 +26,7 @@
         
         <div>
             <input type="checkbox" v-model="data.IsDevChecked.value"/>
-            <span>开发设定</span>
+            <span>显示开发设定</span>
         </div>
         <router-view></router-view>
     </div>
