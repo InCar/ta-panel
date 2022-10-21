@@ -1,5 +1,6 @@
 package com.incarcloud.tensoranalyzor;
 
+import org.apache.logging.log4j.core.util.FileWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,12 @@ import org.springframework.boot.web.context.WebServerApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -27,6 +34,13 @@ public class Application implements CommandLineRunner {
         s_logger.info("WebServer (version: {}) is listening on: {}",
                 version.getVersion(),
                 webAppCtx.getWebServer().getPort());
+
+        writePidFile();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(()->{
+            removePidFile();
+            s_logger.info("Quit.");
+        }));
     }
 
     @Bean
@@ -40,5 +54,34 @@ public class Application implements CommandLineRunner {
                     registry.addMapping("/api/**").allowedOrigins(this.cors);
             }
         };
+    }
+
+    private final String _pidFolder = "/var/tmp";
+    private final String _pidFileName = "ta-panel.pid";
+
+    private void writePidFile(){
+        if(Files.exists(Path.of(_pidFolder))){
+            File fPid = null;
+            try {
+                fPid = Path.of(_pidFolder, _pidFileName).toFile();
+                FileWriter writer = new FileWriter(fPid, false);
+                writer.write(Long.toString(ProcessHandle.current().pid()));
+                writer.close();
+            }catch (IOException e){
+                s_logger.warn("write pid file {} failed: {}", fPid.getPath(), e.getMessage());
+            }
+        }
+    }
+
+    private void removePidFile(){
+        Path path = Path.of(_pidFolder, _pidFileName);
+        if(Files.exists(path)){
+            try {
+                path.toFile().delete();
+            }catch (SecurityException e){
+                s_logger.warn("delete pid file {} failed: {}", path, e.getMessage());
+            }
+
+        }
     }
 }
