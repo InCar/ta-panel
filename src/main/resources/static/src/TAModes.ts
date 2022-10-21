@@ -19,6 +19,7 @@ export abstract class TAModeBase{
     public TaskName = "新任务";
     public Fields: TJsonFields = {};
     public Range: { [key:string]: Range|Object } = {};
+    public LimitMax: number = 10000;
     public Active = true;
 }
 
