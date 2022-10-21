@@ -9,3 +9,4 @@ tensor-analyzor:
   # set to "http://127.0.0.1:5173" or "*" in dev mode
   allow-cors: null
   fields-file: fields-sample.json
+  back-end-server: http://10.0.11.50:8050

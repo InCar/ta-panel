@@ -5,6 +5,10 @@ export interface TJsonFields {
 }
 
 export class TensorAnalyzor {
+    // 用于开发目的
+    private readonly _backPointKey = "back-point";
+    private readonly _backPointDef = "http://10.0.11.50:8060";
+    private _backPoint: string|null = null;
     // 可用数据源
     private _dataSources: any = null;
     // 可用字段
@@ -12,8 +16,10 @@ export class TensorAnalyzor {
 
     // 初始化
     public init = async (): Promise<number> => {
+        this.loadBackPointConfig();
         return 0;
     };
+
 
     public fetchJsonFields = async () : Promise<TJsonFields> => {
         if (this._jsonFields == null) {
@@ -30,11 +36,18 @@ export class TensorAnalyzor {
     public submitTask = async(mode: TAModeBase):Promise<{code:number, message:string}>=>{
         const task = this.makeTaskForSD(mode as TAModeSingleDistribution);
         const api = "/api/submit-task";
+        let  headers:any = { "Content-Type": "application/json" };
+        // 调试用途
+        if(this._backPoint != null){
+            headers["X-Back-Point"] = this._backPoint;
+        }
+
         const resp = await fetch(api, {
             method: "POST",
             body: JSON.stringify(task),
-            headers: { "Content-Type": "application/json" }
+            headers
         });
+
         const data = await resp.json();
         console.info(data);
         return { code: -1, message: "还没有实现！" };
@@ -93,5 +106,27 @@ export class TensorAnalyzor {
         }
         
         return arrayTarget;
+    };
+
+    public getBackPoint = ()=>{
+        return this._backPoint??this._backPointDef;
+    }
+
+    public updateBackPoint = (backPoint:string|null)=>{
+        if(backPoint === this._backPointDef || backPoint == null){
+            localStorage.removeItem(this._backPointKey);
+            this._backPoint = null;
+        }
+        else{
+            localStorage.setItem(this._backPointKey, backPoint);
+            this._backPoint = backPoint;
+        }
+    }
+
+    private loadBackPointConfig = ()=>{
+        const backPoint = localStorage.getItem(this._backPointKey);
+        if(backPoint != null){
+            this._backPoint = backPoint;
+        }
     };
 }

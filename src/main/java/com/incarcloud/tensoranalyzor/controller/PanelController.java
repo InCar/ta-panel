@@ -7,12 +7,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.MonoSink;
 
 import java.io.*;
+import java.net.*;
+import java.net.URL;
+import java.net.http.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 @RestController
 @RequestMapping(path="api")
@@ -20,8 +29,16 @@ public class PanelController {
     private static final Logger s_logger = LoggerFactory.getLogger(PanelController.class);
     @Value("${tensor-analyzor.fields-file}")
     private String fieldsFile;
+    private URL backEndServer;
+    private HttpClient httpClient = HttpClient.newHttpClient();
 
-    // private WebClient webClient;
+    public PanelController(@Value("${tensor-analyzor.back-end-server}") String back_end_server){
+        try {
+            backEndServer = new URL(back_end_server);
+        } catch (MalformedURLException e) {
+            s_logger.error(e.getMessage());
+        }
+    }
 
     @GetMapping("hello")
     public Mono<String> greeting(ServerHttpResponse response){
@@ -73,15 +90,30 @@ public class PanelController {
 
         }
         catch(IOException ex){
-            System.err.println(ex.toString());
+            s_logger.error(ex.getMessage());
         }
 
         return sbJson.toString();
     }
 
     @PostMapping("submit-task")
-    public Mono<SubmitTaskResult> SubmitTask(@RequestBody String json){
+    public Mono<SubmitTaskResult> SubmitTask(@RequestBody String json, ServerHttpResponse response){
         s_logger.info("Received: {}", json);
-        return Mono.fromCallable(()->new SubmitTaskResult());
+        return Mono.create(sink->{
+            sink.onRequest(x->{
+                try{
+                    URL api = new URL(backEndServer, "/api/hello");
+                    HttpRequest request = HttpRequest.newBuilder().uri(api.toURI()).build();
+                    CompletableFuture<HttpResponse<String>> waitResp =  httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString());
+                    waitResp.thenAccept(resp->{
+                        response.setRawStatusCode(resp.statusCode());
+                        sink.success(new SubmitTaskResult(0, resp.body()));
+                    });
+                }
+                catch (MalformedURLException | URISyntaxException e){
+                    sink.error(e);
+                }
+            });
+        });
     }
 }
