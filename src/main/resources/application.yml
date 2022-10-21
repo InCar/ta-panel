@@ -1,10 +1,14 @@
 server:
   port: 8050
 
+spring.web.resources.static-locations:
+    - classpath:/dist
+    # file:./src/main/resources/dist
+
 tensor-analyzor:
-  # index: classpath:/dist/index.html
-  index: file:./src/main/resources/dist/index.html
-  # set to "http://127.0.0.1:5173" or "*" in dev mode
-  allow-cors: null
-  fields-file: fields-sample.json
-  back-point: http://10.0.11.50:8060
+    index: classpath:/dist/index.html
+    # index: file:./src/main/resources/dist/index.html
+    # set to "http://127.0.0.1:5173" or "*" in dev mode
+    allow-cors: null
+    fields-file: fields-sample.json
+    back-point: http://10.0.11.50:8060
