@@ -6,10 +6,13 @@ import com.incarcloud.tensoranalyzor.jsonexpr.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.*;
@@ -20,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Flow;
 
 @RestController
 @RequestMapping(path="api")
@@ -109,6 +113,61 @@ public class PanelController {
                     }).exceptionally((e)->{
                         response.setRawStatusCode(500);
                         sink.success(new SubmitTaskResult(-1, e.getMessage()));
+                        return null;
+                    });
+                }
+                catch (MalformedURLException | URISyntaxException e){
+                    sink.error(e);
+                }
+            });
+        });
+    }
+
+    @RequestMapping("/{path:task}/**")
+    public Mono<String> ForwardBackPoint(ServerHttpRequest request,
+                                         ServerHttpResponse response){
+        URL backPoint = findBackPoint(request);
+        URI uri = request.getURI();
+        String path = uri.getPath();
+        String query = uri.getQuery();
+        final String api = query==null?path:path+"?"+query;
+
+        HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.fromPublisher(s->{
+            Flux<DataBuffer> fluxBody = request.getBody();
+            fluxBody.subscribe(buf->{
+                if(buf != null){
+                    s.onNext(buf.asByteBuffer());
+                }
+                s.onComplete();
+                s_logger.info("body completed!");
+            });
+            s.onSubscribe(new Flow.Subscription(){
+                public void request(long n){}
+                public void cancel(){}
+            });
+
+
+        });
+
+        return Mono.create(sink->{
+            sink.onRequest(x->{
+                try {
+                    URL backAPI = new URL(backPoint, api);
+                    String strMethod = request.getMethodValue();
+                    s_logger.info("BackPoint : {} : {}", strMethod, backAPI);
+                    HttpRequest backPointRequest = HttpRequest.newBuilder()
+                            .uri(backAPI.toURI())
+                            .method(strMethod, bodyPublisher)
+                            .timeout(Duration.ofMillis(3000))
+                            .build();
+
+                    CompletableFuture<HttpResponse<String>> waitResp =  httpClient.sendAsync(backPointRequest, HttpResponse.BodyHandlers.ofString());
+                    waitResp.thenAccept(resp->{
+                        response.setRawStatusCode(resp.statusCode());
+                        sink.success(resp.body());
+                    }).exceptionally((e)->{
+                        response.setRawStatusCode(500);
+                        sink.success(e.getMessage());
                         return null;
                     });
                 }
