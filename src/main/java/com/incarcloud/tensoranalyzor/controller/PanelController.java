@@ -130,23 +130,22 @@ public class PanelController {
         URI uri = request.getURI();
         String path = uri.getPath();
         String query = uri.getQuery();
+        HttpMethod method = request.getMethod();
         final String api = query==null?path:path+"?"+query;
 
         HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.fromPublisher(s->{
-            Flux<DataBuffer> fluxBody = request.getBody();
-            fluxBody.subscribe(buf->{
-                if(buf != null){
-                    s.onNext(buf.asByteBuffer());
-                }
-                s.onComplete();
-                s_logger.info("body completed!");
-            });
             s.onSubscribe(new Flow.Subscription(){
-                public void request(long n){}
+                public void request(long n){
+                    Flux<DataBuffer> fluxBody = request.getBody();
+                    fluxBody.subscribe(buf->{
+                        if(buf != null){
+                            s.onNext(buf.asByteBuffer());
+                        }
+                        s.onComplete();
+                    });
+                }
                 public void cancel(){}
             });
-
-
         });
 
         return Mono.create(sink->{
@@ -155,9 +154,11 @@ public class PanelController {
                     URL backAPI = new URL(backPoint, api);
                     String strMethod = request.getMethodValue();
                     s_logger.info("BackPoint : {} : {}", strMethod, backAPI);
-                    HttpRequest backPointRequest = HttpRequest.newBuilder()
-                            .uri(backAPI.toURI())
-                            .method(strMethod, bodyPublisher)
+
+                    HttpRequest.Builder builder = HttpRequest.newBuilder();
+                    if(method == HttpMethod.GET) builder.GET();
+                    else builder.method(strMethod, bodyPublisher);
+                    HttpRequest backPointRequest = builder.uri(backAPI.toURI())
                             .timeout(Duration.ofMillis(3000))
                             .build();
 

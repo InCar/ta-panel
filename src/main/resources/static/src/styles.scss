@@ -7,6 +7,10 @@ body{
     margin: 0;
 }
 
+div{
+    display: flex;
+}
+
 button{
     color: theme.$dark;
     background-color: theme.$light;

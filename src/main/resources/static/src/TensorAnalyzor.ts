@@ -33,6 +33,18 @@ export class TensorAnalyzor {
         return this._jsonFields ?? {};
     };
 
+    public fetchTaskList = async()=>{
+        const api = "/api/task/list";
+        let  headers:any = { "Content-Type": "application/json" };
+        headers = this.addDevHeader(headers);
+        const resp = await fetch(api, {
+            method: "GET",
+            headers
+        });
+        const data = await resp.json();
+        return data;
+    };
+
     public submitTask = async(mode: TAModeBase):Promise<{code:number, message:string}>=>{
         const task = this.makeTaskForSD(mode as TAModeSingleDistribution);
         const api = "/api/submit-task";
@@ -130,4 +142,12 @@ export class TensorAnalyzor {
             this._backPoint = backPoint;
         }
     };
+
+    private addDevHeader(headers:any){
+        // 调试用途
+        if(this._backPoint != null){
+            headers["X-Back-Point"] = this._backPoint;
+        }
+        return headers;
+    }
 }
