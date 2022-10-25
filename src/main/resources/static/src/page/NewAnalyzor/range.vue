@@ -1,6 +1,6 @@
 <style scoped lang="scss">
 @use "sass:color";
-@use "../theme.scss";
+@use "../../theme.scss";
 @use "./analyzor.scss";
 
 .popup-dialog{
@@ -27,8 +27,8 @@
     }
 
     button{
-        color: theme.$light;
-        background-color: theme.$dark;
+        color: theme.$color-bk;
+        background-color: theme.$color;
         min-width: 6em;
     }
 }
@@ -95,8 +95,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { TAModeBase } from '../TAModes';
-import type { Range } from '../TAModes';
+import { TAModeBase, Range } from 'logic';
 const props = defineProps<{mode: TAModeBase}>();
 const emit = defineEmits<{
         (e:"on-ready", title:string):void,

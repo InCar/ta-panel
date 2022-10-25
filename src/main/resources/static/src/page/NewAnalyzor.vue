@@ -1,5 +1,5 @@
 ﻿<style scoped lang="scss">
-@use "theme.scss";
+@use "../theme.scss";
 .nav{
     align-self: flex-start;
     margin: 4px;
@@ -7,15 +7,15 @@
     display: flex;
     flex-flow: row wrap;
     li{
-        color: theme.$dark;
+        color: theme.$color;
         display: inline;
         flex: 0 0 auto;
         margin: 0 2px;
-        text-decoration: underline dashed 1px theme.$dark;
+        text-decoration: underline dashed 1px theme.$color;
         text-underline-offset: 4px;
         cursor: pointer;
         &:hover{
-            color: theme.$warning;
+            @include theme.mx-warning;
         }
         span{
             text-decoration: none;
@@ -36,16 +36,16 @@
 </template>
 
 <script setup lang="ts">
-import BreadCrumb from "./cmx/BreadCrumb.vue";
-import { BreadCrumbItem } from "./cmx/BreadCrumb.vue";
-import { TAModeBase } from "./TAModes";
+import BreadCrumb from "../cmx/BreadCrumb.vue";
+import { BreadCrumbItem } from "../cmx/BreadCrumb.vue";
+import { TAModeBase } from "logic";
 import { ref, shallowRef, shallowReactive, nextTick } from "vue";
 
-import XMode from "./analyzor/mode.vue";
-import XSelect from "./analyzor/selector.vue";
-import XRange from "./analyzor/range.vue";
-import XLimit from "./analyzor/limit.vue";
-import XSummary from "./analyzor/summary.vue";
+import XMode from "./NewAnalyzor/mode.vue";
+import XSelect from "./NewAnalyzor/selector.vue";
+import XRange from "./NewAnalyzor/range.vue";
+import XLimit from "./NewAnalyzor/limit.vue";
+import XSummary from "./NewAnalyzor/summary.vue";
 
 class NewTaskPage{
     public listNavItems:Array<BreadCrumbItem> = shallowReactive([]);

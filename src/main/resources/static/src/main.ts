@@ -3,13 +3,14 @@
 import { createApp, App } from 'vue';
 import { createRouter, RouteRecordRaw, createWebHistory } from 'vue-router';
 import vueApp from './App.vue';
-import { TensorAnalyzor } from './TensorAnalyzor';
+
+import { TensorAnalyzor } from 'logic';
 
 const Home = ()=>import('./page/Home.vue');
 const TaskManager = ()=>import('./page/TaskManager.vue');
-// const NewAnalyzor = ()=>import('./NewAnalyzor.vue');
+const NewAnalyzor = ()=>import('./page/NewAnalyzor.vue');
 const About = ()=>import('./page/About.vue');
-const ToDo = ()=>import('./todo.vue');
+const ToDo = ()=>import('./page/todo.vue');
 
 class MainApp{
     private app : App<Element>;
@@ -18,7 +19,7 @@ class MainApp{
     private routes: Array<RouteRecordRaw> = [
         { path: '/', component: Home, meta: { topLevel: true, title: "分析结果", icon: "tenancy" } },
         { path: '/TaskManager', component: TaskManager, meta: { topLevel: true, title: "任务管理", icon: "task" } },
-        { path: '/NewAnalyzor', component: ToDo, meta: { topLevel: true, title: "创建新任务", icon: "add_box" } },
+        { path: '/NewAnalyzor', component: NewAnalyzor, meta: { topLevel: true, title: "创建新任务", icon: "add_box" } },
         { path: '/About', component: About, meta: { topLevel: true, title: "About", icon: "info" },
             children: [
                 { path: '', name: 'About', component: ()=> import('./page/About_0.vue') },

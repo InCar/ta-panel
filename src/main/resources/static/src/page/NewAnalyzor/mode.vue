@@ -1,5 +1,5 @@
 ﻿<style scoped lang="scss">
-@use "../theme.scss";
+@use "../../theme.scss";
 @use "sass:color";
 
 .container{
@@ -10,7 +10,7 @@
     gap: 8px;
 }
 .x-item{
-    border: 1px solid theme.$dark;
+    border: 1px solid theme.$color;
     border-radius: 4px;
     display: flex;
     flex-direction: column;
@@ -18,9 +18,9 @@
     width: 16em;
     .title{
         font-weight: 600;
-        color: theme.$dark;
-        background-color: theme.$light;
-        border-bottom: 1px solid theme.$dark;
+        color: theme.$color;
+        background-color: theme.$color-bk;
+        border-bottom: 1px solid theme.$color;
         align-self: stretch;
         padding: 4px;
     }
@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { TAModeBase, TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo } from "../TAModes";
+import { TAModeBase, TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo } from "logic";
 
 const emit = defineEmits<{(e:"on-step", step:number, mode:TAModeBase):void}>();
 

@@ -1,11 +1,11 @@
 <style scoped lang="scss">
 @use "sass:color";
-@use "../theme.scss";
+@use "../../theme.scss";
 @use "./analyzor.scss";
 
 .box-field{
     &:hover{
-        background-color: theme.$light;
+        background-color: theme.$color-bk-2nd;
     }
 }
 </style>
@@ -31,8 +31,7 @@
 <script setup lang="ts">
 import { computed } from '@vue/reactivity';
 import { ref, shallowReactive, onMounted, inject, Ref } from 'vue';
-import { TAMode, TAModeBase, TAModeSingleDistribution } from '../TAModes';
-import { TensorAnalyzor, TJsonFields } from '../TensorAnalyzor';
+import { TAMode, TAModeBase, TAModeSingleDistribution, TensorAnalyzor, TJsonFields } from 'logic';
 
 const props = defineProps<{mode: TAModeBase}>();
 const emit = defineEmits<{

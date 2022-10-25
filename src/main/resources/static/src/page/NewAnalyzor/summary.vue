@@ -1,18 +1,10 @@
 <style scoped lang="scss">
-@use "../theme.scss";
+@use "../../theme.scss";
 @use "./analyzor.scss";
 
 .action-result{
     font-size: large;
     font-weight: bold;
-
-    .success{
-        color: theme.$success;
-    }
-
-    .failed{
-        color: theme.$danger;
-    }
 }
 </style>
 
@@ -48,9 +40,7 @@
 <script setup lang="ts">
 import { computed } from '@vue/reactivity';
 import { inject, ref , Ref, shallowRef } from 'vue';
-import { TAModeBase } from '../TAModes';
-import type { Range } from '../TAModes';
-import { TensorAnalyzor } from '../TensorAnalyzor';
+import { TAModeBase, Range, TensorAnalyzor } from 'logic';
 
 const props = defineProps<{mode: TAModeBase}>();
 const emit = defineEmits<{

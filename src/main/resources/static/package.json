@@ -15,6 +15,7 @@
   "author": "ghxiong@incarcloud.com",
   "license": "BSD 3-Clause License",
   "dependencies": {
+    "@types/node": "^18.11.5",
     "material-symbols": "^0.2.13",
     "moment": "^2.29.4",
     "vue": "^3.2.40",

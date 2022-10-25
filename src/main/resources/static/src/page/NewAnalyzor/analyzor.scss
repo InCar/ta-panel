@@ -1,11 +1,11 @@
-@use "../theme.scss";
+@use "../../theme.scss";
 
 .caption{
     align-self: flex-start;
     font-size: larger;
     font-weight: 600;
     margin: 1em;
-    color: theme.$dark;
+    color: theme.$color;
 }
 
 .footer{
@@ -34,7 +34,7 @@
         display: flex;
         align-items: center;
         padding: 0 1em;
-        border-bottom: 1px solid theme.$light;
+        border-bottom: 1px solid theme.$color;
         align-self: stretch;
         flex: 0 0 auto;
 
@@ -43,7 +43,7 @@
         }
 
         .field-key{
-            color: theme.$dark;
+            color: theme.$color;
             font-weight: bold;
             width: 10em;
             @include field-gap;

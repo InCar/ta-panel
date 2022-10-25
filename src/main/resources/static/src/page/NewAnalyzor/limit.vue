@@ -1,19 +1,6 @@
 <style scoped lang="scss">
-@use "../theme.scss";
+@use "../../theme.scss";
 @use "./analyzor.scss";
-
-.action-result{
-    font-size: large;
-    font-weight: bold;
-
-    .success{
-        color: theme.$success;
-    }
-
-    .failed{
-        color: theme.$danger;
-    }
-}
 </style>
 
 <template>
@@ -36,7 +23,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watchEffect } from 'vue';
-import { TAModeBase } from '../TAModes';
+import { TAModeBase } from 'logic';
 
 const props = defineProps<{mode: TAModeBase}>();
 const emit = defineEmits<{

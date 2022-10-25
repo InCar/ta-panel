@@ -1,5 +1,8 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import * as Path from "path";
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+
+const logic : any = ()=>Path.resolve("./src/logic");
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,5 +19,8 @@ export default defineConfig({
             "^/api/.+": "http://127.0.0.1:8050"
         }
     },
-    plugins: [ vue() ]
+    plugins: [ vue() ],
+    resolve: {
+        alias: { logic }
+    }
 })

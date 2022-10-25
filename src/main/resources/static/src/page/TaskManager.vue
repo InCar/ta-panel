@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { onMounted, inject, shallowReactive, ShallowReactive } from 'vue';
-import { TensorAnalyzor } from '../TensorAnalyzor';
+import { TensorAnalyzor } from 'logic';
 import TaskView from "../cmx/TaskView.vue";
 
 const taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
