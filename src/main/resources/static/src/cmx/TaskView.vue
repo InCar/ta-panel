@@ -25,7 +25,8 @@
         background-color: theme.$color-bk-2nd;
     }
     .title{
-        @include theme.mx-success;
+        color: theme.$color-bk;
+        background-color: theme.$color;
         padding: 0 1em;
         max-width: 5em;
         display: flex;
