@@ -23,54 +23,47 @@
     
     .frame-header{
         grid-area: frame-header;
-        color: theme.$light;
-        background-color: theme.$dark;
-        display: flex;
-        justify-content: space-around;
-        padding: 0 1em;
-
+        color: theme.$color-bk;
+        background-color: theme.$color;
         position: sticky;
         top: 0;
         z-index: 100;
+        padding: 0 1em;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
 
         .logo{
-            padding-top: 8px;
+            margin-top: 8px;
             max-width: 4em;
+        }
+
+        .title{
+            margin: auto;
+            font-size: 3em;
+            font-weight: normal;
         }
     }
 
     .frame-left{
         grid-area: frame-left;
-        background-color: theme.$light;
-        display: flex;
-        flex-flow: column nowrap;
+        color: theme.$color;
+        background-color: theme.$color-bk;
     }
 
     .frame-body{
         grid-area: frame-body;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
     }
 
     .frame-footer{
         grid-area: frame-footer;
-        color: theme.$light;
-        background-color: theme.$dark;
-        display: flex;
-        justify-content: space-around;
+        color: theme.$color-bk;
+        background-color: theme.$color;
+        align-items: center;
     }
 }
 
-.title{
-    margin: auto;
-    font-size: 3em;
-    font-weight: normal;
-}
-
 .menu-left{
-    display: flex;
-    flex-flow: column nowrap;
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -78,8 +71,7 @@
     top: 4em;
 
     .menu-item {
-        padding: 4px;
-        border-bottom: 1px solid theme.$primary;
+        border-bottom: 1px solid theme.$color;
 
         &:first-child{
             padding-top: 8px;
@@ -87,20 +79,39 @@
         &:last-child{
             border-bottom: none;
         }
-        
-        &:hover{
-            background-color: theme.$primary;
-        }
 
         a{
-            display: block;
-            margin: 0px 1em;
+            color: theme.$color;
+            padding: 4px 1em;
             text-decoration: none;
             font-size: normal;
-
+            display: flex;
+            align-items: center;
+            .material-symbols-outlined{
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+            }
+            @media(max-width: 640px){
+                justify-content: center;
+                .material-symbols-outlined{
+                    font-size: 48px;
+                }
+            }
+        
+            &:hover{
+                background-color: theme.$color-bk-2nd;
+            }
             &.router-link-active{
                 font-weight: bold;
-                color: theme.$dark;
+                background-color: theme.$color-bk-2nd;
+                .material-symbols-outlined{
+                    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+                }
+            }
+        }
+
+        .text{
+            @media(max-width: 640px){
+                display: none;
             }
         }
     }
@@ -115,34 +126,30 @@
         </div>
         <div class="frame-left">
             <ul class="menu-left">
-                <li class="menu-item" v-for="x in mainPage.listRoutes">
+                <li class="menu-item" v-for="x in listRoutes">
                     <router-link :to="x">
                         <span class="material-symbols-outlined">{{x.meta['icon']}}</span>
-                        {{x.meta['title']}}
+                        <span class="text">{{x.meta['title']}}</span>
                     </router-link>
                 </li>
             </ul>
         </div>
         <div class="frame-body"><router-view></router-view></div>
-        <div class="frame-footer">英卡科技 {{mainPage.version.value}}</div>
+        <div class="frame-footer">英卡科技 {{version}}</div>
     </div>
 </template>
 
 <script setup lang="ts">
-    import { useRouter, RouterLink } from 'vue-router';
-    import { ref, onMounted } from 'vue';
+import { useRouter, RouterLink } from 'vue-router';
+import { ref, onMounted } from 'vue';
 
-    class MainPage {
-        listRoutes = useRouter().getRoutes().filter((x)=>x.meta['topLevel']);
-        version = ref("");
+const listRoutes = useRouter().getRoutes().filter((x)=>x.meta['topLevel']);
+const version = ref("");
 
-        init = async () => {
-            const resp = await fetch("/api/hello");
-            this.version.value = await resp.text();
-        };
-    };
+const init = async () => {
+    const resp = await fetch("/api/hello");
+    version.value = await resp.text();
+};
 
-    const mainPage = new MainPage();
-    onMounted(mainPage.init);
-
+onMounted(init);
 </script>

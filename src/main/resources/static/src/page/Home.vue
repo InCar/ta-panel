@@ -1,5 +1,5 @@
 ﻿<style scoped lang="scss">
-@use "theme.scss";
+@use "../theme.scss";
 .container{
     display: flex;
     flex-flow: row wrap;
@@ -8,7 +8,7 @@
     padding: 8px;
 }
 .x-item{
-    border: 1px solid theme.$primary;
+    border: 1px solid theme.$color;
     width: 16em;
     padding: 4px;
     display: flex;
@@ -16,7 +16,7 @@
     align-items: center;
     border-radius: 8px;
     &:hover{
-        background-color: theme.$light;
+        background-color: theme.$color-bk-2nd;
     }
 
     .box{

@@ -1,5 +1,4 @@
 @use "theme.scss";
-@use "sass:color";
 // https://fonts.google.com/icons?icon.set=Material+Symbols
 @use 'material-symbols/outlined.css';
 
@@ -9,23 +8,23 @@ body{
 
 div{
     display: flex;
+    flex-direction: column;
 }
 
 button{
-    color: theme.$dark;
-    background-color: theme.$light;
+    color: theme.$color-bk;
+    background-color: theme.$color;
     font-weight:bolder;
     padding: 6px 8px;
     border-radius: 4px;
-    border: 1px solid theme.$secondary;
+    border: 1px solid theme.$color-bk;
     cursor: pointer;
     &.disabled{
         cursor: not-allowed;
-        color: color.grayscale(theme.$dark) !important;
-        background-color: color.grayscale(theme.$light) !important;
+        @include theme.mx-disabled;
     }
     &:hover{
-        background-color: color.scale(theme.$light, $lightness:-10%);
+        background-color: theme.$color-2nd;
     }
     
 }
@@ -36,7 +35,7 @@ button{
 }
 
 .popup-dialog{
-    background-color: theme.$secondary;
+    background-color: theme.$color;
     opacity: 0.8;
 
     position: absolute;
@@ -51,21 +50,21 @@ button{
     align-items: center;
     justify-content: center;
     .dialog{
-        background-color: theme.$light;
-        border: 2px solid theme.$primary;
+        background-color: theme.$color-bk;
+        border: 2px solid theme.$color;
         border-radius: 8px;
-        box-shadow: 0 0 8px 4px color.scale(theme.$light, $lightness:+20%);
+        //box-shadow: 0 0 8px 4px color.scale(theme.$light, $lightness:+20%);
 
         display: flex;
         flex-flow: column nowrap;
         align-items: stretch;
 
         .dialog-head{
-            color: theme.$light;
+            color: theme.$color;
             margin: 1px;
             font-weight: bold;
             border-radius: 4px;
-            background-color: color.scale(theme.$dark, $lightness:-20%);
+            background-color: theme.$color-bk-2nd;
             padding: 4px;
         }
 
