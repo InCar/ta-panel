@@ -1,5 +1,5 @@
 <style scoped lang="scss">
-@use "theme.scss";
+@use "../theme.scss";
 
 .container{
     display: flex;
@@ -8,6 +8,7 @@
 
     .x-item {
         display: flex;
+        flex-flow: row nowrap;
         gap: 1em;
         align-items: center;
 
@@ -31,7 +32,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch, inject } from "vue";
-import { TensorAnalyzor } from "./TensorAnalyzor";
+import { TensorAnalyzor } from "../TensorAnalyzor";
 
 class DevSettings{
     private taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;

@@ -8,7 +8,7 @@ import { TensorAnalyzor } from './TensorAnalyzor';
 const Home = ()=>import('./page/Home.vue');
 const TaskManager = ()=>import('./page/TaskManager.vue');
 // const NewAnalyzor = ()=>import('./NewAnalyzor.vue');
-// const About = ()=>import('./About.vue');
+const About = ()=>import('./page/About.vue');
 const ToDo = ()=>import('./todo.vue');
 
 class MainApp{
@@ -19,10 +19,10 @@ class MainApp{
         { path: '/', component: Home, meta: { topLevel: true, title: "分析结果", icon: "tenancy" } },
         { path: '/TaskManager', component: TaskManager, meta: { topLevel: true, title: "任务管理", icon: "task" } },
         { path: '/NewAnalyzor', component: ToDo, meta: { topLevel: true, title: "创建新任务", icon: "add_box" } },
-        { path: '/About', component: ToDo, meta: { topLevel: true, title: "About", icon: "info" },
+        { path: '/About', component: About, meta: { topLevel: true, title: "About", icon: "info" },
             children: [
-                { path: '', name: 'About', component: ()=> import('./About_0.vue') },
-                { path: 'dev', component: ()=> import('./About_dev.vue') },
+                { path: '', name: 'About', component: ()=> import('./page/About_0.vue') },
+                { path: 'dev', component: ()=> import('./page/About_dev.vue') },
              ]
         }
     ];

@@ -1,5 +1,5 @@
 <style scoped lang="scss">
-@use "theme.scss";
+@use "../theme.scss";
 
 .container{
     display: flex;
@@ -7,10 +7,11 @@
     align-items: center;
     margin: 1em 0;
 }
-.ss {
-    color: theme.$danger;
-    font-weight: bolder;
+
+.check-item{
+    flex-direction: row;
 }
+
 .links{
     display: flex;
     justify-content: space-around;
@@ -24,7 +25,7 @@
     <div class="container">
         <img src="/img/ta.png" />
         
-        <div>
+        <div class="check-item">
             <input type="checkbox" v-model="data.IsDevChecked.value"/>
             <span>显示开发设定</span>
         </div>
