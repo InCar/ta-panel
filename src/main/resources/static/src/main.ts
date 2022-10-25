@@ -1,8 +1,8 @@
 ﻿import './styles.scss';
 
-import { createApp, App } from 'vue';
+import { createApp, App as AppT } from 'vue';
 import { createRouter, RouteRecordRaw, createWebHistory } from 'vue-router';
-import vueApp from './App.vue';
+import App from './App.vue';
 
 import { TensorAnalyzor } from 'logic';
 
@@ -12,8 +12,8 @@ const NewAnalyzor = ()=>import('./page/NewAnalyzor.vue');
 const About = ()=>import('./page/About.vue');
 const ToDo = ()=>import('./page/todo.vue');
 
-class MainApp{
-    private app : App<Element>;
+class Main{
+    private app : AppT
 
     // NOTE: 如果增加了一级路径,需要同步修改Java后端RouteController里的redirect表达式
     private routes: Array<RouteRecordRaw> = [
@@ -28,8 +28,8 @@ class MainApp{
         }
     ];
 
-    public constructor(){
-        this.app = createApp(vueApp);
+    public constructor(){        
+        this.app = createApp(App);
     }
 
     public run = (tag: string)=>{
@@ -49,5 +49,5 @@ class MainApp{
     }
 }
 
-var appMain = new MainApp();
-appMain.run('#app');
+const appInst = new Main();
+appInst.run('#app');

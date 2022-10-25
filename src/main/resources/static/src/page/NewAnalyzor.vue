@@ -29,17 +29,15 @@
 </style>
 
 <template>
-    <BreadCrumb class="bread-crumb" :items="data.listNavItems" @on-nav="data.OnNav"/>
-    <component :is="data.activeX.value" :mode="data.activeMode" 
-        @on-ready="data.OnChildReady"
-        @on-step="data.OnStep" />
+    <BreadCrumb ref="nav" class="bread-crumb" @on-nav="onNav" :disabled="!canNav"/>
+    <component ref="activeX" :is="activeType" :task-args="taskArgs" @on-step="onStep" />
 </template>
 
 <script setup lang="ts">
+import { ref, shallowRef, nextTick, onMounted, ShallowRef } from "vue";
 import BreadCrumb from "../cmx/BreadCrumb.vue";
 import { BreadCrumbItem } from "../cmx/BreadCrumb.vue";
 import { TAModeBase } from "logic";
-import { ref, shallowRef, shallowReactive, nextTick } from "vue";
 
 import XMode from "./NewAnalyzor/mode.vue";
 import XSelect from "./NewAnalyzor/selector.vue";
@@ -47,61 +45,54 @@ import XRange from "./NewAnalyzor/range.vue";
 import XLimit from "./NewAnalyzor/limit.vue";
 import XSummary from "./NewAnalyzor/summary.vue";
 
-class NewTaskPage{
-    public listNavItems:Array<BreadCrumbItem> = shallowReactive([]);
-    public activeX = shallowRef({}); // 激活的子界面组件
-    public activeMode:TAModeBase|null = null; // 激活的创建模式
-    public stepCaption = ref(""); // 用于接收子界面的标题
-    public isFinished = ref(false);
-    private taskStep:{[key:string]: Array<any>} = {
+// 导航组件
+const nav = ref<InstanceType<typeof BreadCrumb>|null>(null);
+const canNav = ref(true); // 是否允许面包屑导航
+
+const activeX:ShallowRef<any> = shallowRef(null);
+let activeType:ShallowRef<any> = shallowRef(null); // 激活的子界面组件
+let taskArgs: ShallowRef<TAModeBase|null> = shallowRef(null);
+
+interface TaskStepType{ [key:string]: Array<any> };
+
+const taskStep:TaskStepType = {
         "数值分布": [ XSelect, XRange, XLimit, XSummary ],
         "单值地理分布": [ XSelect, XLimit, XSummary ],
         "多数值地理分布": [ XSelect, XLimit, XSummary ]
-    }
+};
 
-    public constructor(){
-        const item = { text: ref("创建新任务"), data: XMode };
-        this.listNavItems.push(item);
-        this.activeX.value = item.data;
-    }
+const onNav = (item:BreadCrumbItem, i:number)=>{
+    activeType.value = item.data;
+};
 
-    public OnNav = (item:BreadCrumbItem, i:number)=>{
-        if(!this.isFinished.value){
-            this.listNavItems.length = i+1;
-            this.activeX.value = item.data;
-        }
-    };
-
-    public OnStep = (step:number, mode:TAModeBase)=>{
-        if(step == -1){
-            // move back
-            if(this.listNavItems.length <= 1) return;
-            const item = this.listNavItems.at(-2);
-            this.OnNav(item!, this.listNavItems.length-2);
-        }
-        else if(step == +1){
-            // move next
-            this.activeMode = mode;
-            const count = this.listNavItems.length;
-            const stepNext = this.taskStep[mode.Title][count-1];
-            if(stepNext){
-                this.activeX.value = stepNext;
-                const item = { text: ref(""), data: this.activeX.value};
-                this.listNavItems.push(item);
-            }
-            else{
-                // no more step
-                this.isFinished.value = true;
-            }
+const onStep = (step:number, data:TAModeBase)=>{
+    taskArgs.value = data;
+    if(step > 0){
+        const nextStep = nav.value!.total - 1;
+        const stepNext = findStep(taskStep, data.Title, nextStep);
+        if(stepNext){
+            activeType.value = stepNext;
+            pushNavItem();
         }
     }
+    else{
+        nav.value?.stepBack();
+    }
+};
 
-    public OnChildReady = (title:string)=>{
-        const item = this.listNavItems.at(-1);
-        if(item!.text.value.length == 0){
-            item!.text.value = title;
-        }
-    };
-}
-const data = new NewTaskPage();
+onMounted(()=>{
+    activeType.value = XMode;
+    pushNavItem();
+});
+
+const pushNavItem = ()=>{
+    nextTick(()=>{
+        const text = ref(activeX.value.caption);
+        nav.value?.appendItem({ text, data: activeType.value });
+    });
+};
+
+const findStep = (taskStep:TaskStepType, title:string, i:number)=>{
+    return taskStep[title][i];
+};
 </script>

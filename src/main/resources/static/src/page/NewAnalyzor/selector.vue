@@ -11,8 +11,10 @@
 </style>
 
 <template>
-    <span class="caption">选择待分析的数据</span>
-    <span>{{data.mode.TaskName}}</span>
+    <div class="field-header">
+        <span class="caption">选择待分析的数据</span>
+        <span class="title">{{data.mode.TaskName}}</span>
+    </div>
     <div class="field-list">
         <div class="box-field" v-for="(v, k) in data.jsonFields" @click="data.select(k as string)">
             <input v-if="data.isRadio" type="radio" name="field" :value="k" v-model="data.picked.value" />
@@ -33,21 +35,19 @@ import { computed } from '@vue/reactivity';
 import { ref, shallowReactive, onMounted, inject, Ref } from 'vue';
 import { TAMode, TAModeBase, TAModeSingleDistribution, TensorAnalyzor, TJsonFields } from 'logic';
 
-const props = defineProps<{mode: TAModeBase}>();
+const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{
-        (e:"on-ready", title:string):void,
         (e:"on-step", step:number, mode:TAModeBase):void
     }>();
 
 class PageSelectFields{
-    public mode = props.mode;
+    public mode = props.taskArgs;
     public isRadio = true;
     public jsonFields: TJsonFields = shallowReactive({});
     public picked: Ref<string> = ref("");
     public listPicked:Ref<string[]> = ref([]);
 
     public init = async () => {
-        emit("on-ready", "选择指标");
         // radio or checkbox
         switch(this.mode.Mode){
             case TAMode.MultipleGeo:
@@ -114,4 +114,9 @@ class PageSelectFields{
 
 const data = new PageSelectFields();
 onMounted(data.init);
+
+const caption = "选择指标";
+defineExpose({
+    caption
+});
 </script>

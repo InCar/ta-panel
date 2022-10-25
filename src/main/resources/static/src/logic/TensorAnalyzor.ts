@@ -1,4 +1,5 @@
-import { TAModeBase, TAModeSingleDistribution, Range } from "./TAModes";
+import { TAModeBase, TAModeSingleDistribution } from "./TAModes";
+import type { Range } from "./TAModes";
 
 export interface TJsonFields {
     [key: string]: { desc?: string, description?: string }

@@ -7,9 +7,19 @@
     &.shown{
         visibility: visible;
     }
+
+    .field-name{
+        color: theme.$color-bk;
+        background-color: theme.$color;
+        padding: 0 4px;
+        text-align: center;
+        margin: 0 1em;
+        border-radius: 4px;
+    }
     
     .mode-select{
         display: flex;
+        flex-flow: row nowrap;
         &.hidden{
             visibility: hidden;
         }
@@ -17,6 +27,7 @@
         .mode-select-item{
             display: flex;
             flex: 1 0 auto;
+            flex-flow: row nowrap;
         }
 
         .lab{
@@ -32,11 +43,16 @@
         min-width: 6em;
     }
 }
+.field-header{
+    margin: 1em;
+}
 </style>
 
 <template>
-    <span class="caption">{{data.title}}</span>
-    <span>{{data.mode.TaskName}}</span>
+    <div class="field-header">
+        <span class="caption">{{data.title}}</span>
+        <span class="title">{{data.mode.TaskName}}</span>
+    </div>
     <div class="field-list">
         <div v-for="(v, k) in data.mode.Fields" class="box-field">
             <span class="field-key">{{k}}</span>
@@ -52,11 +68,11 @@
         </div>
         <div class="popup-dialog" :class="{shown: data.bShowDialog.value }">
             <div class="dialog">
-                <div class="dialog-head">设定区间</div>
+                <div class="dialog-head">
+                    <span>设定区间</span>
+                    <span class="field-name">{{data.rangeField}}</span>
+                </div>
                 <div class="dialog-body">
-                    <div class="mode-select">
-                        <span class="lab">{{data.rangeField}}</span>
-                    </div>
                     <div class="mode-select">
                         <span class="lab">模式选择:</span>
                         <div class="mode-select-item">
@@ -95,16 +111,16 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { TAModeBase, Range } from 'logic';
-const props = defineProps<{mode: TAModeBase}>();
+import { TAModeBase } from 'logic';
+import type { Range } from 'logic';
+const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{
-        (e:"on-ready", title:string):void,
         (e:"on-step", step:number, mode:TAModeBase):void
     }>();
 
 class PageFilter{
     public title = "设定数值区间";
-    public mode = props.mode;
+    public mode = props.taskArgs;
     public bShowDialog = ref(false);
 
     public rangeMode = ref(0);
@@ -115,7 +131,6 @@ class PageFilter{
 
 
     public constructor(){
-        emit("on-ready", this.title);
         this.initRange();
     }
 
@@ -175,4 +190,7 @@ class PageFilter{
 }
 
 const data = new PageFilter();
+defineExpose({
+    caption: data.title
+});
 </script>

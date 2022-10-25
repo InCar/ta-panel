@@ -6,11 +6,16 @@
     font-size: large;
     font-weight: bold;
 }
+.field-header{
+    margin: 1em;
+}
 </style>
 
 <template>
-    <span class="caption">摘要</span>
-    <span>{{data.mode.TaskName}}</span>
+    <div class="field-header">
+        <span class="caption">摘要</span>
+        <span class="title">{{data.mode.TaskName}}</span>
+    </div>
 
     <div class="field-list">
         <div v-for="(v, k) in data.mode.Fields" class="box-field">
@@ -40,22 +45,22 @@
 <script setup lang="ts">
 import { computed } from '@vue/reactivity';
 import { inject, ref , Ref, shallowRef } from 'vue';
-import { TAModeBase, Range, TensorAnalyzor } from 'logic';
+import { TAModeBase, TensorAnalyzor } from 'logic';
+import type { Range } from 'logic';
 
-const props = defineProps<{mode: TAModeBase}>();
+const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{
-        (e:"on-ready", title:string):void,
         (e:"on-step", step:number, mode:TAModeBase):void
     }>();
 
 class Summary{
     private _taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
-    public mode = props.mode;
+    public mode = props.taskArgs;
     public isFinished = ref(false);
     public result: Ref<{code:number, message: string}> = shallowRef({code:0, message:""});
 
     public constructor(){
-        emit("on-ready", "摘要");
+        console.info(this.mode.Range)
     }
 
     public move = (step:number)=>{
@@ -78,4 +83,8 @@ class Summary{
 }
 
 const data = new Summary();
+const caption = "摘要";
+defineExpose({
+    caption
+});
 </script>

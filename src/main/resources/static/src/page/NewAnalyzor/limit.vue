@@ -1,11 +1,16 @@
 <style scoped lang="scss">
 @use "../../theme.scss";
 @use "./analyzor.scss";
+.field-header{
+    margin: 1em;
+}
 </style>
 
 <template>
-    <span class="caption">全局参数</span>
-    <span>{{data.mode.TaskName}}</span>
+    <div class="field-header">
+        <span class="caption">全局参数</span>
+        <span class="title">{{data.mode.TaskName}}</span>
+    </div>
 
     <div class="field-list">
         <div class="box-field">
@@ -25,19 +30,17 @@
 import { onMounted, ref, watchEffect } from 'vue';
 import { TAModeBase } from 'logic';
 
-const props = defineProps<{mode: TAModeBase}>();
+const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{
-        (e:"on-ready", title:string):void,
         (e:"on-step", step:number, mode:TAModeBase):void
     }>();
 
 class Settings{
     public title = "全局参数";
-    public mode = props.mode;
+    public mode = props.taskArgs;
     public limitMax = ref(-1);
 
     public constructor(){
-        emit("on-ready", this.title);
     }
 
     public init = ()=>{
@@ -54,4 +57,7 @@ class Settings{
 
 const data = new Settings();
 onMounted(data.init);
+defineExpose({
+    caption: data.title
+});
 </script>

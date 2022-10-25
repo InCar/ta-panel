@@ -5,7 +5,7 @@
 .container{
     align-self: flex-start;
     display: flex;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
     padding: 8px;
     gap: 8px;
 }
@@ -18,8 +18,8 @@
     width: 16em;
     .title{
         font-weight: 600;
-        color: theme.$color;
-        background-color: theme.$color-bk;
+        color: theme.$color-bk;
+        background-color: theme.$color;
         border-bottom: 1px solid theme.$color;
         align-self: stretch;
         padding: 4px;
@@ -49,8 +49,10 @@
 </template>
 
 <script setup lang="ts">
+import moment from "moment";
 import { TAModeBase, TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo } from "logic";
 
+const props = defineProps(["taskArgs"]);
 const emit = defineEmits<{(e:"on-step", step:number, mode:TAModeBase):void}>();
 
 class AnalyzorMode{
@@ -63,12 +65,15 @@ class AnalyzorMode{
     public onOK = (x:TAModeBase)=>{
         if(!x.Active) return;
 
-        const tm = new Intl.DateTimeFormat('en-US', {month:'2-digit', day:'2-digit', hour12:false, hour:"2-digit", minute:'2-digit'})
-            .format(Date.now()).replaceAll(/\D/g, "");
+        const tm = moment().format("MMDDHHmm");
         x.TaskName = `${x.Title}#${tm}`;
         emit('on-step', +1, x);
     };
 }
 
 const data = new AnalyzorMode();
+const caption = "创建新任务";
+defineExpose({
+    caption
+});
 </script>
