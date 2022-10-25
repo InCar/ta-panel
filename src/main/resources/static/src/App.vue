@@ -102,6 +102,7 @@
             }
             &.router-link-active{
                 font-weight: bold;
+                color: theme.$color-em;
                 background-color: theme.$color-bk-2nd;
                 .material-symbols-outlined{
                     font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
