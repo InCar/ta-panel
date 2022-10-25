@@ -11,6 +11,12 @@ div{
     flex-direction: column;
 }
 
+@media(max-width: 640px){
+    .mobile-none{
+        display: none;
+    }
+}
+
 button{
     color: theme.$color-bk;
     background-color: theme.$color;

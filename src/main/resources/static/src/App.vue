@@ -109,12 +109,6 @@
                 }
             }
         }
-
-        .text{
-            @media(max-width: 640px){
-                display: none;
-            }
-        }
     }
 }
 </style>
@@ -130,7 +124,7 @@
                 <li class="menu-item" v-for="x in listRoutes">
                     <router-link :to="x">
                         <span class="material-symbols-outlined">{{x.meta['icon']}}</span>
-                        <span class="text">{{x.meta['title']}}</span>
+                        <span class="mobile-none">{{x.meta['title']}}</span>
                     </router-link>
                 </li>
             </ul>

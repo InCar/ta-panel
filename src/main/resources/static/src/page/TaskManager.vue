@@ -1,8 +1,6 @@
 <style scoped lang="scss">
 .container{
-    align-self: stretch;
     padding: 1em;
-
     display: flex;
     flex-direction: column;
     gap: 1em;
@@ -19,8 +17,8 @@
 
 <script setup lang="ts">
 import { onMounted, inject, shallowReactive, ShallowReactive } from 'vue';
-import { TensorAnalyzor } from './TensorAnalyzor';
-import TaskView from "./cmx/TaskView.vue";
+import { TensorAnalyzor } from '../TensorAnalyzor';
+import TaskView from "../cmx/TaskView.vue";
 
 const taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
 const listTasks:ShallowReactive<any[]> = shallowReactive([]);
