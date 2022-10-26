@@ -18,6 +18,8 @@
 }
 
 .frame{
+    color: theme.$color;
+    background-color: theme.$color-bk;
     min-height: 100vh;
     @include frame-grid-config;
     

@@ -14,6 +14,8 @@
         z-index: 9999;
         display: flex;
         flex-flow: column nowrap;
+        filter: drop-shadow(8px 8px 4px theme.$color);
+
         &.pop-up{
             visibility: visible;
         }
