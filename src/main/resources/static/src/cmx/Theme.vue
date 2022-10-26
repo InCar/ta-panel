@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { computed } from "@vue/reactivity";
-import { ref, Ref } from "vue";
+import { onMounted, ref, Ref } from "vue";
 import Dropdown from "./Dropdown.vue";
 
 const emit = defineEmits<{(e:"on-theme", theme:string):void}>();
@@ -50,10 +50,11 @@ const dropdownMenu = ref<InstanceType<typeof Dropdown>|null>(null);
 
 const dictThemes = ref<{[k:string]:string}>({
     "theme": "默认主题",
-    "theme-black": "纯黑风格"
+    "theme-black": "纯黑风格",
+    "theme-green": "英卡青绿"
 });
 
-const activeTheme = ref("theme");
+const activeTheme = ref("theme-green");
 
 const activeThemeCaption = computed(()=>{
     return dictThemes.value[activeTheme.value];
@@ -62,9 +63,17 @@ const activeThemeCaption = computed(()=>{
 const onClick = (theme:string)=>{
     if(activeTheme.value != theme){
         activeTheme.value = theme;
+        localStorage.setItem("theme", theme);
         emit("on-theme", theme);
     }
     dropdownMenu.value?.closeMenu();
 }
+
+onMounted(()=>{
+    const theme = localStorage.getItem("theme");
+    if(theme != null){
+        onClick(theme);
+    }
+});
 
 </script>

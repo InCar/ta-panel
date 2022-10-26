@@ -146,7 +146,7 @@ import TODO from "./page/todo.vue";
 
 const listRoutes = useRouter().getRoutes().filter((x)=>x.meta['topLevel']);
 const version = ref("");
-const activeTheme = ref("theme");
+const activeTheme = ref("theme-green");
 
 const init = async () => {
     const resp = await fetch("/api/hello");
