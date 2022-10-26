@@ -1,5 +1,5 @@
 <style scoped lang="scss">
-@use "../theme.scss";
+@use "../../theme.scss";
 
 .container{
     display: flex;

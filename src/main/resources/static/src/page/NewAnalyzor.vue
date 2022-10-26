@@ -30,7 +30,7 @@
 
 <template>
     <BreadCrumb ref="nav" class="bread-crumb" @on-nav="onNav" :disabled="!canNav"/>
-    <component ref="activeX" :is="activeType" :task-args="taskArgs" @on-step="onStep" />
+    <component ref="activeX" :is="activeType" :task-args="taskArgs" @on-step="onStep" @on-can-back="onCanBack" />
 </template>
 
 <script setup lang="ts">
@@ -78,6 +78,10 @@ const onStep = (step:number, data:TAModeBase)=>{
     else{
         nav.value?.stepBack();
     }
+};
+
+const onCanBack = (canBack:boolean)=>{
+    canNav.value = canBack;
 };
 
 onMounted(()=>{

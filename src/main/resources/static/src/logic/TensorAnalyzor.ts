@@ -46,7 +46,7 @@ export class TensorAnalyzor {
         return data;
     };
 
-    public submitTask = async(mode: TAModeBase):Promise<{code:number, message:string}>=>{
+    public submitTask = async(mode: TAModeBase):Promise<{code:number, message:string, taskId?:string}>=>{
         const task = this.makeTaskForSD(mode as TAModeSingleDistribution);
         const api = "/api/submit-task";
         let  headers:any = { "Content-Type": "application/json" };
@@ -62,8 +62,14 @@ export class TensorAnalyzor {
         });
 
         const data = await resp.json();
-        console.info(data);
-        return { code: -1, message: "还没有实现！" };
+        // 在转发到BackPoint之前就出错了
+        if(data.code < 0) return data;
+        // 解出内层BackPoint的结果
+        const resultBP:{ result:boolean, data:string} = JSON.parse(data.code);
+        if(!resultBP.result)
+            return { code: -2, message: resultBP.data };
+        else
+            return { code: 0, message: "创建任务成功", taskId: resultBP.data };
     }
 
     private makeTaskForSD = (mode: TAModeSingleDistribution)=>{
