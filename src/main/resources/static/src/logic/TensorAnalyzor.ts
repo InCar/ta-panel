@@ -1,5 +1,6 @@
 import { TAModeBase, TAModeSingleDistribution } from "./TAModes";
 import type { Range } from "./TAModes";
+import { TaskBean } from "./BackPoint";
 
 export interface TJsonFields {
     [key: string]: { desc?: string, description?: string }
@@ -36,14 +37,12 @@ export class TensorAnalyzor {
 
     public fetchTaskList = async()=>{
         const api = "/api/task/list";
-        let  headers:any = { "Content-Type": "application/json" };
-        headers = this.addDevHeader(headers);
-        const resp = await fetch(api, {
-            method: "GET",
-            headers
-        });
-        const data = await resp.json();
-        return data;
+        return await this.fetchBackPoint(api);
+    };
+
+    public fetchTaskSingle = async(id:string)=>{
+        const api = `/api/task/list?id=${id}`;
+        return await this.fetchBackPoint(api);
     };
 
     public submitTask = async(mode: TAModeBase):Promise<{code:number, message:string, taskId?:string}>=>{
@@ -157,4 +156,24 @@ export class TensorAnalyzor {
         }
         return headers;
     }
+
+    private fetchBackPoint = async(api:string, headers?:any):Promise<{result:boolean, data?:any}>=>{
+        try{
+            if(headers == undefined || headers == null) headers = {};
+            headers = this.addDevHeader(headers);
+            const resp = await fetch(api, {
+                method: "GET",
+                headers
+            });
+
+            if(resp.ok) return await resp.json();
+            else{
+                return { result: false, data: resp.statusText };
+            }
+        }
+        catch(e){
+            console.error(`FetchBackPoint ${api} error => ${e}`);
+            return { result: false, data: e }
+        }
+    };
 }

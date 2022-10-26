@@ -1,5 +1,6 @@
 import { TAMode, Range, TAModeBase, TAModeSingleDistribution, TAModeSingleGeo, TAModeMultipleGeo } from "./TAModes";
 import { TJsonFields, TensorAnalyzor } from "./TensorAnalyzor";
+import { TaskStatus, TaskBean } from "./BackPoint";
 
 export {
     TAMode, TAModeBase, TAModeSingleDistribution, TAModeSingleGeo, TAModeMultipleGeo,
@@ -8,5 +9,6 @@ export {
 
 export type {
     Range,
-    TJsonFields
+    TJsonFields,
+    TaskStatus, TaskBean
 };

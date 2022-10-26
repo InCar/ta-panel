@@ -4,6 +4,7 @@ import { createApp, App as AppT } from 'vue';
 import { createRouter, RouteRecordRaw, createWebHistory } from 'vue-router';
 import { TensorAnalyzor } from 'logic';
 import App from './App.vue';
+import TaskPage from "./page/TaskManager/TaskPage.vue";
 import About0 from "./page/About/About_0.vue";
 import AboutDev from "./page/About/About_dev.vue";
 
@@ -19,8 +20,10 @@ class Main{
     // NOTE: 如果增加了一级路径,需要同步修改Java后端RouteController里的redirect表达式
     private routes: Array<RouteRecordRaw> = [
         { path: '/', component: Home, meta: { topLevel: true, title: "分析结果", icon: "tenancy" } },
-        { path: '/TaskManager', component: TaskManager, meta: { topLevel: true, title: "任务管理", icon: "task"} },
-        { path: '/TaskManager/:taskId', component: ToDo },
+        { path: '/TaskManager', component: TaskManager, meta: { topLevel: true, title: "任务管理", icon: "task"},
+            children: [ { path: ':taskId', component: TaskPage } ]
+        },
+        //{ path: '/TaskManager/:taskId', component: ToDo },
         { path: '/NewAnalyzor', component: NewAnalyzor, meta: { topLevel: true, title: "创建新任务", icon: "add_box" } },
         { path: '/About', component: About, meta: { topLevel: true, title: "About", icon: "info" },
             children: [

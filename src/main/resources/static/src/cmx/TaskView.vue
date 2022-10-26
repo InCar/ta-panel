@@ -73,8 +73,12 @@
 import { onMounted } from 'vue';
 import moment from "moment";
 import { computed } from '@vue/reactivity';
+import type { TaskBean } from 'logic';
 
-const props = defineProps(["index", "task"])
+const props = defineProps<{
+    index?: Number,
+    task: TaskBean
+}>();
 
 const startTime = computed(()=>{
     return moment(props.task.startTime)
@@ -84,14 +88,5 @@ const startTime = computed(()=>{
 const createTime = computed(()=>{
     return moment(props.task.createTime)
         .format("MM月DD日HH:mm");
-});
-
-onMounted(()=>{
-    if(props.index == 0){
-        console.info(props.task);
-
-        const x = JSON.parse(props.task.paramJson);
-        console.info(x);
-    }
 });
 </script>
