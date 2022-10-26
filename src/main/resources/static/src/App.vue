@@ -113,10 +113,11 @@
 </style>
 
 <template>
-    <div class="frame">
+    <div class="frame" :class="activeTheme">
         <div class="frame-header">
             <img class="logo" src="/favicon.ico" />
             <h1 class="title">TensorAnalyzor</h1>
+            <Theme @on-theme="onTheme" />
         </div>
         <div class="frame-left">
             <ul class="menu-left">
@@ -140,15 +141,20 @@
 <script setup lang="ts">
 import { useRouter, RouterLink } from 'vue-router';
 import { ref, onMounted } from 'vue';
-
+import Theme from "./cmx/Theme.vue";
 import TODO from "./page/todo.vue";
 
 const listRoutes = useRouter().getRoutes().filter((x)=>x.meta['topLevel']);
 const version = ref("");
+const activeTheme = ref("theme");
 
 const init = async () => {
     const resp = await fetch("/api/hello");
     version.value = await resp.text();
+};
+
+const onTheme = (theme:string)=>{
+    activeTheme.value = theme;
 };
 
 onMounted(init);
