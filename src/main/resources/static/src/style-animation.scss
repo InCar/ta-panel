@@ -1,0 +1,13 @@
+
+.ami-flip{
+    animation: rotate-3d-x 1s;
+}
+
+@keyframes rotate-3d-x{
+    0%{
+        transform: rotateX(0);
+    }
+    100%{
+        transform: rotateX(360deg);
+    }
+}

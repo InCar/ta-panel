@@ -30,7 +30,8 @@ class Main{
                 { path: '', name: 'About', component: About0 },
                 { path: 'dev', component: AboutDev },
             ]
-        }
+        },
+        { path: '/ToDo', component: ToDo }
     ];
 
     public constructor(){        
