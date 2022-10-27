@@ -1,4 +1,6 @@
 <style scoped lang="scss">
+@use "../theme.scss";
+
 .task-mgr{
     padding: 1em;
     display: flex;
@@ -8,6 +10,11 @@
     .task-item{
         cursor: pointer;
     }
+
+    .error{
+        padding: 0 1em;
+        @include theme.mx-error;
+    }
 }
 </style>
 
@@ -16,6 +23,9 @@
         <template class="container" v-for="(task, i) in listTasks">
             <TaskView :task="task" :index="i"  class="task-item" @click="onClickTask(task)"/>
         </template>
+        <div class="error">
+            <p>{{errorMessage}}</p>
+        </div>
     </div>
     <div class="task-mgr" v-else>
         <router-view></router-view>
@@ -23,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, inject, shallowReactive, ShallowReactive } from 'vue';
+import { ref, onMounted, inject, shallowReactive, ShallowReactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { TaskBean, TensorAnalyzor } from 'logic';
 import TaskView from "../cmx/TaskView.vue";
@@ -41,10 +51,19 @@ const onClickTask = (task: TaskBean)=>{
     router.push(`/TaskManager/${task.id}`);
 }
 
+const isError = ref(false);
+const errorMessage = ref("");
+
 onMounted(()=>{
     taObj.fetchTaskList().then((response)=>{
-        for(let x of response.data){
-            listTasks.push(x);
+        if(response.result){
+            for(let x of response.data){
+                listTasks.push(x);
+            }
+        }
+        else{
+            errorMessage.value = response.data;
+            isError.value = true;
         }
     });
 });
