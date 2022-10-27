@@ -153,7 +153,7 @@ public class PanelController {
                 try {
                     URL backAPI = new URL(backPoint, api);
                     String strMethod = request.getMethodValue();
-                    s_logger.info("BackPoint : {} : {}", strMethod, backAPI);
+                    // s_logger.info("BackPoint : {} : {}", strMethod, backAPI);
 
                     HttpRequest.Builder builder = HttpRequest.newBuilder();
                     if(method == HttpMethod.GET) builder.GET();

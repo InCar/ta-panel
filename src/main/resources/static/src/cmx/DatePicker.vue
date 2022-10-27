@@ -1,5 +1,7 @@
 <style scoped lang="scss">
 @use "../theme.scss";
+@use "../style-animation.scss";
+
 .date-picker{
     .date-picker-header{
         padding: 8px;
@@ -97,7 +99,7 @@
                 </Dropdown>
             </div>
         </div>
-        <div class="date-picker-date" :class="styleFlip">
+        <div ref="pickDateCtrl" class="date-picker-date" :class="styleFlip" @animationend="onAnimationFinished">
             <div class="box-date" v-for="(v, i) in listDatesInLastMonth" @click="onClickDate(v)" :class="stylePickedToday(v)">{{v.date}}</div>
             <div class="box-date box-this-month" v-for="(v, i) in listDatesInThisMonth" @click="onClickDate(v)" :class="stylePickedToday(v)">{{v.date}}</div>
             <div class="box-date" v-for="(v, i) in listDatesInNextMonth" @click="onClickDate(v)" :class="stylePickedToday(v)">{{v.date}}</div>
@@ -127,21 +129,24 @@ const picked = ref<TDate>({year:2022, month:10, date:27});
 const listMonthFixed12 = Array(12).fill(0).map((v, i)=>i+1);
 const listYear = Array(50).fill(0).map((v,i)=>2000+i);
 
+const pickDateCtrl = ref<HTMLDivElement|null>(null);
 const pickMonthCtrl = ref<InstanceType<typeof Dropdown>|null>(null);
 const pickYearCtrl = ref<InstanceType<typeof Dropdown>|null>(null);
 
 const onClickYear = (year: number)=>{
     if(presentMonth.value.year != year){
+        const diff = Math.abs(year-presentMonth.value.year);
         presentMonth.value.year = year;
-        triggerFlipAnimation();
+        triggerFlipAnimation(diff);
     }
     pickYearCtrl.value?.closeMenu();
 };
 
 const onClickMonth = (month: number)=>{
     if(presentMonth.value.month != month){
+        const diff = Math.abs(month - presentMonth.value.month);
         presentMonth.value.month = month;
-        triggerFlipAnimation();
+        triggerFlipAnimation(diff);
     }
     pickMonthCtrl.value?.closeMenu();
 };
@@ -208,12 +213,14 @@ const styleFlip = computed(()=>{
     else return "";
 });
 
-const triggerFlipAnimation = ()=>{
+const triggerFlipAnimation = (flipCount:number)=>{
+    if(flipCount > 10) flipCount = 10;
+    pickDateCtrl.value?.style.setProperty("--ami-flip-count", `${flipCount}`);
     isInFlipAnimation.value = true;
-    setTimeout(()=>{
-        isInFlipAnimation.value = false;
-    }, 1000);
 }
+const onAnimationFinished = ()=>{
+    isInFlipAnimation.value = false;
+};
 
 const stylePickedToday = (date: TDate)=>{
     const result:string[] = [];

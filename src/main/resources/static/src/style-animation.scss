@@ -1,11 +1,19 @@
 
 .ami-flip{
-    animation: rotate-3d-x 1s;
+    animation: rotate-3d-x 100ms;
+    animation-iteration-count: var(--ami-flip-count, 1);
+    transform-origin: top;
 }
 
 @keyframes rotate-3d-x{
     0%{
         transform: rotateX(0);
+    }
+    50%{
+        transform: rotateX(95deg);
+    }
+    51%{
+        transform: rotateX(265deg);
     }
     100%{
         transform: rotateX(360deg);

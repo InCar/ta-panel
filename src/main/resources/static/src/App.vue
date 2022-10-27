@@ -116,7 +116,7 @@
 
 <template>
     <div class="frame" :class="activeTheme">
-        <div class="frame-header">
+        <div ref="frameHeader" class="frame-header">
             <img class="logo" src="/favicon.ico" />
             <h1 class="title">TensorAnalyzor</h1>
             <Theme @on-theme="onTheme" />
