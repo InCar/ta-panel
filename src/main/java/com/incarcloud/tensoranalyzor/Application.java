@@ -21,6 +21,7 @@ import java.nio.file.Path;
 @SpringBootApplication
 public class Application implements CommandLineRunner {
     private final static Logger s_logger = LoggerFactory.getLogger(Application.class);
+
     @Autowired
     private WebServerApplicationContext webAppCtx;
     public static void main(String[] args) {
@@ -30,8 +31,9 @@ public class Application implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         GitVer version = new GitVer();
-        s_logger.info("WebServer (version: {}) is listening on: {}",
+        s_logger.info("WebServer (version: {}) is listening on \033[0;34m{}\033[0m\033[0;96m:{}\033[0m",
                 version.getVersion(),
+                "http://127.0.0.1",
                 webAppCtx.getWebServer().getPort());
 
         writePidFile();
