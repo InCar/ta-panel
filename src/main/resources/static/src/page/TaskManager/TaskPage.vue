@@ -4,6 +4,10 @@
     @include theme.mx-error;
     padding: 1em;
 }
+.task-item{
+    flex: 1 1 auto;
+    cursor: pointer;
+}
 .task-extra{
     margin: 1em 0;
 }
@@ -11,7 +15,7 @@
 
 <template>
     <div v-if="isFetchDone">
-        <TaskView :task="task!" />
+        <TaskView :task="task!" class="task-item" />
         <div class="task-extra">
             <span>{{task!.id}}</span>
             <span v-if="task?.message">{{task!.message}}</span>
@@ -73,6 +77,7 @@ const init = async()=>{
     }
     else if(result?.data?.length > 0){
         task.value = result.data[0];
+        task.value!.status = parseInt(result.data[0].status);
         isFetchDone.value = result.result;
     }
     else{

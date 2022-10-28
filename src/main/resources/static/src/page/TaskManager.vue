@@ -4,31 +4,36 @@
 .task-mgr{
     padding: 1em;
     display: flex;
-    flex-direction: column;
+    flex-flow: row wrap;
     gap: 1em;
-
-    .task-item{
-        cursor: pointer;
-    }
-
-    .error{
-        padding: 0 1em;
-        @include theme.mx-error;
-    }
+}
+.task-mgr-1{
+    padding: 1em;
+    display: flex;
+    flex-flow: column;
+    gap: 1em;
+}
+.task-item{
+    flex: 1 1 auto;
+    cursor: pointer;
+}
+.error{
+    padding: 0 1em;
+    @include theme.mx-error;
 }
 </style>
 
 <template>
     <div class="task-mgr" v-if="!isChildActive">
+        <div class="waiting-bar" :class="{paused: !isWaiting}" v-if="isWaiting">请稍候</div>
         <template class="container" v-for="(task, i) in listTasks">
             <TaskView :task="task" :index="i"  class="task-item" @click="onClickTask(task)"/>
         </template>
-        <div class="waiting-bar" :class="{paused: !isWaiting}">{{isWaiting?'请稍候':"&nbsp;"}}</div>
         <div class="error" v-if="isError">
             <p>{{errorMessage}}</p>
         </div>
     </div>
-    <div class="task-mgr" v-else>
+    <div class="task-mgr-1" v-else>
         <router-view></router-view>
     </div>
 </template>
@@ -61,6 +66,7 @@ onMounted(()=>{
         isWaiting.value = false;
         if(response.result){
             for(let x of response.data){
+                x.status = parseInt(x.status);
                 listTasks.push(x);
             }
         }

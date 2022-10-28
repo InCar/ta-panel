@@ -7,11 +7,12 @@ import { TaskStatus, TaskBean } from "./BackPoint";
 export {
     TAMode, TAModeBase,
     TAModeCount, TAModeSingleDistribution, TAModeSingleGeo, TAModeMultipleGeo,
-    TensorAnalyzor
+    TensorAnalyzor,
+    TaskStatus
 };
 
 export type {
     Range,
     TJsonFields,
-    TaskStatus, TaskBean
+    TaskBean
 };
