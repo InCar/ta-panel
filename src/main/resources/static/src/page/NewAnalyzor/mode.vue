@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import moment from "moment";
-import { TAModeBase, TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo } from "logic";
+import { TAModeBase, TAModeCount, TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo } from "logic";
 
 const props = defineProps(["taskArgs"]);
 const emit = defineEmits<{
@@ -59,6 +59,7 @@ const emit = defineEmits<{
 
 class AnalyzorMode{
     public listModes:Array<TAModeBase> = [
+        new TAModeCount(),
         new TAModeSingleDistribution(),
         new TAModeSingleGeo(),
         new TAModeMultipleGeo()

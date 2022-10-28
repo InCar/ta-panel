@@ -1,9 +1,16 @@
-import { TAModeBase, TAModeSingleDistribution } from "./TAModes";
-import type { Range } from "./TAModes";
-import { TaskBean } from "./BackPoint";
+import { TAModeBase } from "./TAModes";
+import { Operations, TaskOperation } from "./Operations";
 
 export interface TJsonFields {
     [key: string]: { desc?: string, description?: string }
+}
+
+interface TaskBody{
+    name: string;
+    dataSources: Array<any>,
+    fields: Array<any>,
+    operator: TaskOperation,
+    limit?: number
 }
 
 export class TensorAnalyzor {
@@ -46,7 +53,9 @@ export class TensorAnalyzor {
     };
 
     public submitTask = async(mode: TAModeBase):Promise<{code:number, message:string, taskId?:string}>=>{
-        const task = this.makeTaskForSD(mode as TAModeSingleDistribution);
+        const task = this.assembleTaskBody(mode);
+        if(task == null) return { code: -3, message: `尚不支持该操作: ${mode.TaskName}` };
+
         const api = "/api/submit-task";
         let  headers:any = { "Content-Type": "application/json" };
         // 调试用途
@@ -61,46 +70,28 @@ export class TensorAnalyzor {
         });
 
         const data = await resp.json();
-        // 在转发到BackPoint之前就出错了
+        // 出错了
         if(data.code < 0) return data;
         // 解出内层BackPoint的结果
-        const resultBP:{ result:boolean, data:string} = JSON.parse(data.code);
+        const resultBP:{ result:boolean, data:string} = JSON.parse(data.message);
         if(!resultBP.result)
             return { code: -2, message: resultBP.data };
         else
             return { code: 0, message: "创建任务成功", taskId: resultBP.data };
     }
 
-    private makeTaskForSD = (mode: TAModeSingleDistribution)=>{
-        const keys = Object.keys(mode.Fields);
-        if(keys.length == 0){
-            console.error("缺少字段");
-            return null;
-        }
-        if(keys.length > 1) console.warn("数值分布只使用一个字段,其它字段将会被忽略");
-        const key = keys[0];
+    private assembleTaskBody = (mode: TAModeBase):TaskBody|null=>{
+        const op = Operations.MakeOP(mode);
+        if(op == null) return null;
 
         const task = {
             name: mode.TaskName,
             dataSources: this.objectsToArray(this._dataSources, "name", "ds"),
             fields: this.objectsToArray(mode.Fields),
-            operator: {
-                op: "group-aggregation",
-                opArgs: {
-                    groupBy: [{
-                        field: `${key}`,
-                        from: (mode.Range[`${key}`] as Range).from,
-                        to: (mode.Range[`${key}`] as Range).to,
-                        step: (mode.Range[`${key}`] as Range).step
-                    }],
-                    aggregation: {
-                        fn: "count",
-                        fnArgs: {}
-                    }
-                }
-            },
+            operator: op,
             limit: mode.LimitMax
         };
+
         return task;
     }
 

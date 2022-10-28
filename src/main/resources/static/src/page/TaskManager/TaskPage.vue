@@ -57,7 +57,7 @@ const paramJson = computed(()=>{
 
 const resJson = computed(()=>{
     if(task.value?.resJson){
-        console.info(JSON.parse(task.value?.resJson));
+        // console.info(JSON.parse(task.value?.resJson));
         return JSON.parse(task.value?.resJson);
     }
     else{

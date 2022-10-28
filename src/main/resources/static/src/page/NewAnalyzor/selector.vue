@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import { computed } from '@vue/reactivity';
 import { ref, shallowReactive, onMounted, inject, Ref } from 'vue';
-import { TAMode, TAModeBase, TAModeSingleDistribution, TensorAnalyzor, TJsonFields } from 'logic';
+import { TAMode, TAModeBase, TAModeCount, TAModeSingleDistribution, TensorAnalyzor, TJsonFields } from 'logic';
 
 const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{
@@ -51,6 +51,7 @@ class PageSelectFields{
     public init = async () => {
         // radio or checkbox
         switch(this.mode.Mode){
+            case TAMode.Count:
             case TAMode.MultipleGeo:
                 this.isRadio = false;
                 break;
@@ -69,15 +70,18 @@ class PageSelectFields{
     public move = (step:number)=>{
         if(step > 0){
             if(!this.canNext.value) return;
-            if(this.mode.Mode == TAMode.SingleDistribution){
+            if(this.isRadio){
                 const k = this.picked.value;
                 const target:any = {};
                 target[k] = this.jsonFields[k];
                 this.mode.Fields = target;
             }
             else{
-                console.error(`尚未实现:${this.mode.Title}`);
-                return;
+                const target:any = {};
+                for(let k of this.listPicked.value){
+                    target[k] = this.jsonFields[k];
+                }
+                this.mode.Fields = target;
             }
         }
         

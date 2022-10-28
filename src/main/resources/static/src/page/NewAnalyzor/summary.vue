@@ -17,6 +17,9 @@
     font-weight: bold;
     align-items: center;
     margin: 1em;
+    p{
+        margin: 1em;
+    }
     &.success{
         @include theme.mx-success;
     }
@@ -37,7 +40,7 @@
         <div v-for="(v, k) in data.mode.Fields" class="box-field">
             <span class="field-key">{{k}}</span>
             <span class="field-desc">{{v.desc}}</span>
-            <div class="field-range">
+            <div class="field-range" v-if="data.mode.Range[k]">
                 范围: 
                 <span v-if="(data.mode.Range[k]as Range).from !== undefined">
                     {{(data.mode.Range[k]as Range).from}} ~ {{(data.mode.Range[k]as Range).to}} [步长: {{(data.mode.Range[k]as Range).step}}]

@@ -32,7 +32,7 @@ public class PanelController {
     @Value("${tensor-analyzor.fields-file}")
     private String fieldsFile;
     private URL _backPoint;
-    private HttpClient httpClient = HttpClient.newHttpClient();
+    private final HttpClient httpClient = HttpClient.newHttpClient();
 
     public PanelController(@Value("${tensor-analyzor.back-point}") String back_point){
         try {
@@ -109,7 +109,10 @@ public class PanelController {
                     CompletableFuture<HttpResponse<String>> waitResp =  httpClient.sendAsync(backPointRequest, HttpResponse.BodyHandlers.ofString());
                     waitResp.thenAccept(resp->{
                         response.setRawStatusCode(resp.statusCode());
-                        sink.success(new SubmitTaskResult(0, resp.body()));
+                        if(resp.statusCode() < 400)
+                            sink.success(new SubmitTaskResult(0, resp.body()));
+                        else
+                            sink.success(new SubmitTaskResult(-2, resp.body()));
                     }).exceptionally((e)->{
                         response.setRawStatusCode(500);
                         sink.success(new SubmitTaskResult(-1, e.getMessage()));

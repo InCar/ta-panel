@@ -37,7 +37,7 @@
 import { ref, shallowRef, nextTick, onMounted, ShallowRef } from "vue";
 import BreadCrumb from "../cmx/BreadCrumb.vue";
 import { BreadCrumbItem } from "../cmx/BreadCrumb.vue";
-import { TAModeBase } from "logic";
+import { TAMode, TAModeBase } from "logic";
 
 import XMode from "./NewAnalyzor/mode.vue";
 import XSelect from "./NewAnalyzor/selector.vue";
@@ -55,11 +55,14 @@ let taskArgs: ShallowRef<TAModeBase|null> = shallowRef(null);
 
 interface TaskStepType{ [key:string]: Array<any> };
 
-const taskStep:TaskStepType = {
-        "数值分布": [ XSelect, XRange, XLimit, XSummary ],
-        "单值地理分布": [ XSelect, XLimit, XSummary ],
-        "多数值地理分布": [ XSelect, XLimit, XSummary ]
-};
+const taskStep = ((step:TaskStepType)=>{
+    step[TAMode.Count] =  [ XSelect, XSummary ];
+    step[TAMode.SingleDistribution] = [ XSelect, XRange, XLimit, XSummary ];
+    step[TAMode.SingleGeo] = [ XSelect, XLimit, XSummary ];
+    step[TAMode.MultipleGeo] = [ XSelect, XLimit, XSummary ];
+    return step;
+})({});
+
 
 const onNav = (item:BreadCrumbItem, i:number)=>{
     activeType.value = item.data;
@@ -69,7 +72,7 @@ const onStep = (step:number, data:TAModeBase)=>{
     taskArgs.value = data;
     if(step > 0){
         const nextStep = nav.value!.total - 1;
-        const stepNext = findStep(taskStep, data.Title, nextStep);
+        const stepNext = findStep(taskStep, data.Mode!, nextStep);
         if(stepNext){
             activeType.value = stepNext;
             pushNavItem();
@@ -96,7 +99,7 @@ const pushNavItem = ()=>{
     });
 };
 
-const findStep = (taskStep:TaskStepType, title:string, i:number)=>{
-    return taskStep[title][i];
+const findStep = (taskStep:TaskStepType, mode:TAMode, i:number)=>{
+    return taskStep[mode][i];
 };
 </script>

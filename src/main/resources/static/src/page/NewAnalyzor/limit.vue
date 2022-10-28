@@ -45,10 +45,12 @@ class Settings{
     }
 
     public init = ()=>{
-        this.limitMax.value = this.mode.LimitMax;
-        watchEffect(()=>{
-            this.mode.LimitMax = this.limitMax.value;
-        });
+        if(this.mode.LimitMax != null){
+            this.limitMax.value = this.mode.LimitMax;
+            watchEffect(()=>{
+                this.mode.LimitMax = this.limitMax.value;
+            });
+        }
     };
 
     public move = (step:number)=>{

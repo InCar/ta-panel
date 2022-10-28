@@ -1,6 +1,7 @@
 import { TJsonFields } from "./TensorAnalyzor";
 
 export enum TAMode{
+    Count,
     SingleDistribution,
     SingleGeo,
     MultipleGeo
@@ -19,8 +20,18 @@ export abstract class TAModeBase{
     public TaskName = "新任务";
     public Fields: TJsonFields = {};
     public Range: { [key:string]: Range|Object } = {};
-    public LimitMax: number = 10000;
+    public LimitMax?: number = 10000;
     public Active = true;
+}
+
+export class TAModeCount extends TAModeBase{
+    public constructor(){
+        super();
+        super.Mode = TAMode.Count;
+        super.Title = "计数和极值";
+        super.Description = "统计指标的数据量和最大值最小值,通常数据量越大,进行同样的分析,所需时间就会越久";
+        delete this.LimitMax;
+    }
 }
 
 export class TAModeSingleDistribution extends TAModeBase{
