@@ -92,14 +92,14 @@ public class PanelController {
 
     @PostMapping("submit-task")
     public Mono<SubmitTaskResult> SubmitTask(@RequestBody String json, ServerHttpRequest request, ServerHttpResponse response){
-        s_logger.info("Received: {}", json.length());
+        // s_logger.info("Received: {}", json.length());
         URL backpoint = findBackPoint(request);
 
         return Mono.create(sink->{
             sink.onRequest(x->{
                 try{
                     URL api = new URL(backpoint, "/api/task/start");
-                    s_logger.info("BackPoint: {}", api);
+                    // s_logger.info("BackPoint: {}", api);
                     HttpRequest backPointRequest = HttpRequest.newBuilder()
                             .uri(api.toURI())
                             .header("Content-Type", "application/json")
