@@ -100,3 +100,27 @@ button{
         }
     }
 }
+
+.waiting-bar{
+    color: theme.$color-bk;
+    text-align: center;
+    background: linear-gradient(90deg, theme.$color, theme.$color-em, theme.$color);
+    border-radius: 4px;
+    min-height: 0.5em;
+    animation: ami-waiting-bar 0.5s infinite linear;
+    background-repeat: repeat-x;
+    background-size: 6em;
+    &.paused{
+        animation-play-state: paused;
+    }
+}
+
+@keyframes ami-waiting-bar {
+    0%{
+        background-position: 0;
+    }
+    100%{
+        background-position: 6em;
+    }
+    
+}

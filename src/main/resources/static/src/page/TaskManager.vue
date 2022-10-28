@@ -23,7 +23,8 @@
         <template class="container" v-for="(task, i) in listTasks">
             <TaskView :task="task" :index="i"  class="task-item" @click="onClickTask(task)"/>
         </template>
-        <div class="error">
+        <div class="waiting-bar" :class="{paused: !isWaiting}">{{isWaiting?'请稍候':"&nbsp;"}}</div>
+        <div class="error" v-if="isError">
             <p>{{errorMessage}}</p>
         </div>
     </div>
@@ -51,11 +52,13 @@ const onClickTask = (task: TaskBean)=>{
     router.push(`/TaskManager/${task.id}`);
 }
 
+const isWaiting = ref(true);
 const isError = ref(false);
 const errorMessage = ref("");
 
 onMounted(()=>{
     taObj.fetchTaskList().then((response)=>{
+        isWaiting.value = false;
         if(response.result){
             for(let x of response.data){
                 listTasks.push(x);

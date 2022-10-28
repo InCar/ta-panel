@@ -53,7 +53,9 @@ import moment from "moment";
 import { TAModeBase, TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo } from "logic";
 
 const props = defineProps(["taskArgs"]);
-const emit = defineEmits<{(e:"on-step", step:number, mode:TAModeBase):void}>();
+const emit = defineEmits<{
+        (e:"on-step", step:number, mode:TAModeBase):void
+    }>();
 
 class AnalyzorMode{
     public listModes:Array<TAModeBase> = [

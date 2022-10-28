@@ -47,16 +47,17 @@
         </div>
     </div>
 
-    <div class="action-result" v-if="data.isFinished.value" :class="data.resultStyle.value">
+    <div class="action-result" v-if="data.isFinished.value && !data.isWaiting.value" :class="data.resultStyle.value">
         <p>{{data.result.value.message}}</p>
     </div>
+    <div class="action-result waiting-bar" v-if="data.isWaiting.value" :class="{paused: !data.isWaiting.value}">请稍候</div>
     
 
     <div class="footer" v-if="!data.isFinished.value">
         <button @click="data.move(-1)">上一步</button>
         <button @click="data.move(+1)">确定</button>
     </div>
-    <div class="footer" v-else>
+    <div class="footer" v-else-if="!data.isWaiting.value">
         <button v-if="data.result.value.code<0" @click="data.retry()">重试</button>
         <button v-else @click="data.jump(data.result.value.taskId)">确定</button>
     </div>
@@ -80,6 +81,7 @@ class Summary{
     private _router = useRouter();
     public mode = props.taskArgs;
     public isFinished = ref(false);
+    public isWaiting = ref(false);
     public result: Ref<{code:number, message: string, taskId?:string }> = shallowRef({code:0, message:""});
 
     public constructor(){
@@ -88,11 +90,13 @@ class Summary{
     public move = (step:number)=>{
         if(step > 0){
             this.isFinished.value = true;
+            this.isWaiting.value = true;
             emit("on-can-back", false);
 
             // 向远程提交任务
             this._taObj.submitTask(this.mode).then((result)=>{
                 this.result.value = result;
+                this.isWaiting.value = false;
             });
         }
         else{

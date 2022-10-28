@@ -37,7 +37,8 @@ import { TAMode, TAModeBase, TAModeSingleDistribution, TensorAnalyzor, TJsonFiel
 
 const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{
-        (e:"on-step", step:number, mode:TAModeBase):void
+        (e:"on-step", step:number, mode:TAModeBase):void,
+        (e:"on-can-back", canBack:boolean):void
     }>();
 
 class PageSelectFields{

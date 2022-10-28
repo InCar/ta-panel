@@ -167,8 +167,13 @@ public class PanelController {
                         response.setRawStatusCode(resp.statusCode());
                         sink.success(resp.body());
                     }).exceptionally((e)->{
+                        if(e.getCause() != null && e.getCause().getClass().equals(ConnectException.class)){
+                            response.setRawStatusCode(504);
+                            sink.success("BackPoint响应超时");
+                            return null;
+                        }
                         response.setRawStatusCode(500);
-                        sink.success(e.getMessage());
+                        sink.success(e.toString());
                         return null;
                     });
                 }

@@ -168,7 +168,8 @@ export class TensorAnalyzor {
 
             if(resp.ok) return await resp.json();
             else{
-                return { result: false, data: resp.statusText };
+                const err = await resp.text();
+                return { result: false, data: `${resp.statusText} -> ${err}` };
             }
         }
         catch(e){

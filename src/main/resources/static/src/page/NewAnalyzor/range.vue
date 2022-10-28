@@ -115,7 +115,8 @@ import { TAModeBase } from 'logic';
 import type { Range } from 'logic';
 const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{
-        (e:"on-step", step:number, mode:TAModeBase):void
+        (e:"on-step", step:number, mode:TAModeBase):void,
+        (e:"on-can-back", canBack:boolean):void
     }>();
 
 class PageFilter{

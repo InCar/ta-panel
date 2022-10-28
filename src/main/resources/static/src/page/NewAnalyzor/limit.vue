@@ -32,7 +32,8 @@ import { TAModeBase } from 'logic';
 
 const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{
-        (e:"on-step", step:number, mode:TAModeBase):void
+        (e:"on-step", step:number, mode:TAModeBase):void,
+        (e:"on-can-back", canBack:boolean):void
     }>();
 
 class Settings{
