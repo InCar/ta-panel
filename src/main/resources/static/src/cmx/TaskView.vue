@@ -16,6 +16,7 @@
         flex-flow: row wrap;
         gap: 1em;
         justify-content: space-between;
+        min-height: 1.5em;
     }
     .c4-stat{
         flex-flow: row nowrap;

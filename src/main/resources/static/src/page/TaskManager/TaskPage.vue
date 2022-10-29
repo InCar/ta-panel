@@ -16,6 +16,7 @@
 <template>
     <div v-if="isFetchDone">
         <TaskView :task="task!" class="task-item" />
+        <BarChart :data="diagramData" />
         <div class="task-extra">
             <span>{{task!.id}}</span>
             <span v-if="task?.message">{{task!.message}}</span>
@@ -38,11 +39,12 @@
 
 <script setup lang="ts">
 import { inject, onMounted, ref, Ref } from 'vue';
+import { computed } from '@vue/reactivity';
 import { useRoute } from 'vue-router';
 import moment from "moment";
 import { TaskBean, TensorAnalyzor } from 'logic';
 import TaskView from "../../cmx/TaskView.vue";
-import { computed } from '@vue/reactivity';
+import BarChart from "../../cmx/BarChart.vue";
 
 const route = useRoute();
 const taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
@@ -68,6 +70,12 @@ const resJson = computed(()=>{
         return null;
     }
 });
+
+const diagramData = computed(
+    ()=>Object.keys(resJson.value??[])
+        .map(k=>({x: Number(k), y: Number(resJson.value[k])}))
+        .sort((a, b)=>a.x-b.x)
+    );
 
 const init = async()=>{
     const taskId = route.params.taskId as string;

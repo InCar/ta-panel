@@ -57,11 +57,14 @@ const onClickTask = (task: TaskBean)=>{
     router.push(`/TaskManager/${task.id}`);
 }
 
-const isWaiting = ref(true);
+const isWaiting = ref(false);
 const isError = ref(false);
 const errorMessage = ref("");
 
 onMounted(()=>{
+    if(isChildActive.value) return;
+
+    isWaiting.value = true;
     taObj.fetchTaskList().then((response)=>{
         isWaiting.value = false;
         if(response.result){
