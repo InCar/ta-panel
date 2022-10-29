@@ -102,14 +102,15 @@ button{
 }
 
 .waiting-bar{
-    color: theme.$color-bk;
+    color: theme.$color-em;
     text-align: center;
-    background: linear-gradient(90deg, theme.$color, theme.$color-em, theme.$color);
-    border-radius: 4px;
-    min-height: 0.5em;
+    background-image: linear-gradient(45deg, theme.$color 25%,
+        theme.$color-bk-2nd 25%, theme.$color-bk-2nd 50%,
+        theme.$color 50%, theme.$color 75%,
+        theme.$color-bk-2nd 75%, theme.$color-bk-2nd 100%);
     animation: ami-waiting-bar 0.5s infinite linear;
     background-repeat: repeat-x;
-    background-size: 6em;
+    background-size: 6em 6em;
     &.paused{
         animation-play-state: paused;
     }

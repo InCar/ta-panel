@@ -24,8 +24,8 @@
 </style>
 
 <template>
+    <div class="waiting-bar" :class="{paused: !isWaiting}" v-if="isWaiting">请稍候</div>
     <div class="task-mgr" v-if="!isChildActive">
-        <div class="waiting-bar" :class="{paused: !isWaiting}" v-if="isWaiting">请稍候</div>
         <template class="container" v-for="(task, i) in listTasks">
             <TaskView :task="task" :index="i"  class="task-item" @click="onClickTask(task)"/>
         </template>
