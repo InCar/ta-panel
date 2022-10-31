@@ -12,7 +12,8 @@ export interface TaskOperation{
     opArgs: {
         groupBy?: FieldOption[],
         aggregation: {
-            fn: string|string[];
+            fn?: string;
+            fns?: string[];
             fnArgs: any
         }
     }
