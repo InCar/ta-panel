@@ -35,7 +35,7 @@ opFn[TAMode.Count] = (arg: TAModeBase) =>{
         op: "aggregation",
         opArgs: {
             aggregation: {
-                fn: ["count", "min", "max"],
+                fns: ["count", "min", "max"],
                 fnArgs: {}
             }
         }

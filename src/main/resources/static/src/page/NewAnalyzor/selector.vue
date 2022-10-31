@@ -100,8 +100,8 @@ class PageSelectFields{
             }
         }
         else{
-            console.error(`尚未实现:${this.mode.Title}`);
-            return;
+            const selectedFields = Object.keys(this.mode.Fields);
+            this.listPicked.value.push(...selectedFields);
         }
     };
 
