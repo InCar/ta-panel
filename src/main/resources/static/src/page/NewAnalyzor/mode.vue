@@ -3,7 +3,8 @@
 @use "sass:color";
 
 .container{
-    align-self: flex-start;
+    align-self: center;
+    justify-content: center;
     display: flex;
     flex-flow: row wrap;
     padding: 8px;

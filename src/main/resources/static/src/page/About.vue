@@ -101,9 +101,6 @@ class AboutPage {
             agents.value[m[1]] = m[2];
             
         }
-        console.info(agents)
-        
-
     };
 };
 

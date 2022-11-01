@@ -13,7 +13,7 @@
 
     @media(max-width: theme.$size-mobile-max-width){
         // 窄一点的侧边栏
-        grid-template-columns: 6em 1fr;
+        grid-template-columns: 3em 1fr;
     }
 }
 
@@ -44,6 +44,9 @@
             margin: auto;
             font-size: 3em;
             font-weight: normal;
+            @media(max-width: theme.$size-mobile-max-width){
+                font-size: 1.5em;
+            }
         }
     }
 

@@ -28,7 +28,7 @@
     <div class="theme-main" :class="activeTheme">
         <div class="box-color">
             <Dropdown ref="dropdownMenu">
-                <span class="mobile-none">{{activeThemeCaption}}</span>
+                <span>{{activeThemeCaption}}</span>
                 <template v-slot:menu>
                     <div class="menu">
                         <span v-for="(v,k) in dictThemes" :class="k" @click="onClick(k as string)">{{v}}</span>

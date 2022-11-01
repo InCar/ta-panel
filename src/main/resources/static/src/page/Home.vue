@@ -3,7 +3,8 @@
 .container{
     display: flex;
     flex-flow: row wrap;
-    align-self: flex-start;
+    align-self: center;
+    justify-content: center;
     gap: 8px;
     padding: 8px;
 }
