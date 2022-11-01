@@ -19,14 +19,34 @@
         margin: 4px;
     }
 }
+.version{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    span:nth-of-type(2n+1){
+        font-weight: bold;
+    }span:nth-of-type(2n){
+        margin-left: 1em;
+        font-style: italic;
+    }
+}
 </style>
 
 <template>
     <div class="container">
         <img src="/img/ta.png" />
-        
+        <span>{{widthViewPort}} x {{heightViewPort}}</span>
+        <span>({{data.pixelSize.value}} @ {{devPixelRatio}})</span>
+        <div class="version" >
+            <template v-for="(v,k) in agents">
+                <span>{{k}}</span>
+                <span>{{v}}</span>
+            </template>
+        </div>
+        <hr/>
+
         <div class="check-item">
             <input type="checkbox" v-model="data.IsDevChecked.value"/>
+            
             <span>显示开发设定</span>
         </div>
         <router-view></router-view>
@@ -42,6 +62,11 @@ import { useRouter } from "vue-router";
 
 import DatePicker from "../cmx/DatePicker.vue";
 
+const widthViewPort = ref(window.innerWidth);
+const heightViewPort = ref(window.innerHeight);
+const devPixelRatio = window.devicePixelRatio.toFixed(2);
+const agents:any = ref({});
+
 class AboutPage {
     private _router = useRouter();
     public IsDevChecked = ref(false);
@@ -50,11 +75,36 @@ class AboutPage {
         watch(this.LinkForView, (value, last)=>{
             this._router.push(value);
         });
+
+        addEventListener("resize", ()=>{
+            widthViewPort.value = window.innerWidth;
+            heightViewPort.value = window.innerHeight;
+        });
+
+        this.parseUserAgent();
     }
+
+    public pixelSize = computed(()=>{
+        const w = widthViewPort.value * window.devicePixelRatio;
+        const h = heightViewPort.value * window.devicePixelRatio;
+        return `${w.toFixed(0)} x ${h.toFixed(0)}`;
+    });
 
     public LinkForView = computed(()=>{
         return this.IsDevChecked.value?"/About/dev":"/About";
     });
+
+    private parseUserAgent = ()=>{
+        const match = navigator.userAgent.matchAll(/(\w+)\/([\d\.]+)/g);
+        for(let m of match){
+            if(m[1].startsWith("Ver")) continue;
+            agents.value[m[1]] = m[2];
+            
+        }
+        console.info(agents)
+        
+
+    };
 };
 
 const data = new AboutPage();
