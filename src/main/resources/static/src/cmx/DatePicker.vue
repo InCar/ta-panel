@@ -47,6 +47,9 @@
             border-right: 1px dashed theme.$color-2nd;
             border-bottom: 1px dashed theme.$color-2nd;
             padding: 1em;
+            @media(max-width: theme.$size-mobile-max-width){
+                padding: 0.5em;
+            }
             text-align: center;
             &.box-picked{
                 background-color: theme.$color-bk-2nd;

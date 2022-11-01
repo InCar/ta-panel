@@ -17,7 +17,7 @@ input{
     color: theme.$color;
 }
 
-@media(max-width: 640px){
+@media(max-width: theme.$size-mobile-max-width){
     .mobile-none{
         display: none;
     }

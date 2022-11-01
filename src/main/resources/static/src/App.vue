@@ -11,7 +11,7 @@
         "frame-footer frame-footer";
     place-items: stretch;
 
-    @media(max-width: 640px){
+    @media(max-width: theme.$size-mobile-max-width){
         // 窄一点的侧边栏
         grid-template-columns: 6em 1fr;
     }
@@ -103,7 +103,7 @@
             font-size: normal;
             display: flex;
             align-items: center;
-            @media(max-width: 640px){
+            @media(max-width: theme.$size-mobile-max-width){
                 justify-content: center;
                 .material-symbols-outlined{
                     font-size: 48px;
