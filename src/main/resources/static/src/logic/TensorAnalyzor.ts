@@ -52,6 +52,11 @@ export class TensorAnalyzor {
         return await this.fetchBackPoint(api);
     };
 
+    public cancelTask = async(id:string)=>{
+        const api = `/api/task/cancel`;
+        return await this.putBackPoint(api, { id });
+    };
+
     public submitTask = async(mode: TAModeBase):Promise<{code:number, message:string, taskId?:string}>=>{
         const task = this.assembleTaskBody(mode);
         if(task == null) return { code: -3, message: `尚不支持该操作: ${mode.TaskName}` };
@@ -154,6 +159,28 @@ export class TensorAnalyzor {
             headers = this.addDevHeader(headers);
             const resp = await fetch(api, {
                 method: "GET",
+                headers
+            });
+
+            if(resp.ok) return await resp.json();
+            else{
+                const err = await resp.text();
+                return { result: false, data: `${resp.statusText} -> ${err}` };
+            }
+        }
+        catch(e){
+            console.error(`FetchBackPoint ${api} error => ${e}`);
+            return { result: false, data: e }
+        }
+    };
+
+    private putBackPoint = async(api:string, body?:any, headers?:any):Promise<{result:boolean, data?:any}>=>{
+        try{
+            if(headers == undefined || headers == null) headers = {};
+            headers = this.addDevHeader(headers);
+            const resp = await fetch(api, {
+                method: "PUT",
+                body: body?JSON.stringify(body):undefined,
                 headers
             });
 

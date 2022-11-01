@@ -11,12 +11,25 @@
 .task-extra{
     margin: 1em 0;
 }
+.task-action{
+    margin: 1em;
+    flex-flow: row nowrap;
+    justify-content: center;
+
+    button{
+        padding: 0.5em 2em;
+    }
+}
+
 </style>
 
 <template>
     <div v-if="isFetchDone">
         <TaskView :task="task!" class="task-item" />
-        <BarChart :data="diagramData" />
+        <div class="task-action" v-if="isCancellable">
+            <button v-if="isCancellable" @click="onCancel">取消</button>
+        </div>
+        <BarChart v-if="hasResult" :data="diagramData" />
         <div class="task-extra">
             <span>{{task!.id}}</span>
             <span v-if="task?.message">{{task!.message}}</span>
@@ -32,7 +45,7 @@
             </div>
         </div>
     </div>
-    <div class="error" v-if="isFetchDone === false">
+    <div class="error" v-if="errorMessage?.length > 0">
         <span>{{errorMessage}}</span>
     </div>
 </template>
@@ -42,7 +55,7 @@ import { inject, onMounted, ref, Ref } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRoute } from 'vue-router';
 import moment from "moment";
-import { TaskBean, TensorAnalyzor } from 'logic';
+import { TaskBean, TaskStatus, TensorAnalyzor } from 'logic';
 import TaskView from "../../cmx/TaskView.vue";
 import BarChart from "../../cmx/BarChart.vue";
 
@@ -90,6 +103,26 @@ const init = async()=>{
     }
     else{
         errorMessage.value = "没有结果";        
+    }
+};
+
+
+const isCancellable = computed(()=>{
+    if(task.value?.status == TaskStatus.Pending || task.value?.status == TaskStatus.Running)
+        return true;
+    else
+        return false;
+});
+
+const hasResult = computed(()=>{
+    return task.value?.status == TaskStatus.Succeeded;
+});
+
+const onCancel = async (e:Event)=>{
+    // e.stopPropagation();
+    const response = await taObj.cancelTask(task.value?.id as string);
+    if(!response.result){
+        errorMessage.value = JSON.stringify(response.data);
     }
 };
 

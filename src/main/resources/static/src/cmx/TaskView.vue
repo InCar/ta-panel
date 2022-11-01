@@ -61,7 +61,10 @@
         padding: 2px;
     }
 
-    
+    .btn{
+        padding: 0.125em 1em;
+        
+    }
         
 
     .success{
