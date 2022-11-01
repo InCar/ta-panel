@@ -29,7 +29,9 @@
         <div class="task-action" v-if="isCancellable">
             <button v-if="isCancellable" @click="onCancel">取消</button>
         </div>
-        <BarChart v-if="hasResult" :data="diagramData" />
+        <template v-if="hasResult">
+            <CurveLineChart :data="diagramData" />
+        </template>
         <div class="task-extra">
             <span>{{task!.id}}</span>
             <span v-if="task?.message">{{task!.message}}</span>
@@ -57,7 +59,7 @@ import { useRoute } from 'vue-router';
 import moment from "moment";
 import { TaskBean, TaskStatus, TensorAnalyzor } from 'logic';
 import TaskView from "../../cmx/TaskView.vue";
-import BarChart from "../../cmx/BarChart.vue";
+import CurveLineChart from "../../cmx/CurveLineChart.vue";
 
 const route = useRoute();
 const taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
