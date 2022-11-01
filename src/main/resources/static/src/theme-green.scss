@@ -15,4 +15,10 @@
     --color-bk-warning: #F5A500;
     --color-bk-error: #A60000;
     --color-bk-disabled: #808080;
+
+    img{
+        &.hue-205{
+            filter: hue-rotate(-100deg);
+        }
+    }
 }

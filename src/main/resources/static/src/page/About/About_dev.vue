@@ -11,6 +11,10 @@
         flex-flow: row nowrap;
         gap: 1em;
         align-items: center;
+        @media(max-width: theme.$size-mobile-max-width){
+            flex-flow: column nowrap;
+            gap: 0.25em;
+        }
 
         input{
             font-size: 1.5em;

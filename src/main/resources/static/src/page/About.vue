@@ -33,7 +33,7 @@
 
 <template>
     <div class="container">
-        <img src="/img/ta.png" />
+        <img src="/img/ta.png" class="hue-205"/>
         <span>{{widthViewPort}} x {{heightViewPort}}</span>
         <span>({{data.pixelSize.value}} @ {{devPixelRatio}})</span>
         <div class="version" >

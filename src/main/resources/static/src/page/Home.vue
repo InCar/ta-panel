@@ -36,7 +36,7 @@
 <template>
     <div class="container">
         <div class="x-item" v-for="x in home.listResult">
-            <img class="box" src="/img/ta.png" />
+            <img class="box hue-205" src="/img/ta.png" />
             <span class="title">{{x.title}}</span>
             <span>{{x.description}}</span>
         </div>
