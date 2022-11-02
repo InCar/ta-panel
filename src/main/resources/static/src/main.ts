@@ -2,6 +2,7 @@
 
 import { createApp, App as AppT } from 'vue';
 import { createRouter, RouteRecordRaw, createWebHistory } from 'vue-router';
+import { createPinia } from 'pinia';
 import { TensorAnalyzor } from 'logic';
 import App from './App.vue';
 import TaskPage from "./page/TaskManager/TaskPage.vue";
@@ -38,7 +39,7 @@ class Main{
         this.app = createApp(App);
     }
 
-    public run = (tag: string)=>{
+    public run = async (tag: string)=>{
         console.info(`TensorAnalyzor(vue-${this.app.version})`);
         
         const routes = this.routes;
@@ -46,14 +47,22 @@ class Main{
             history: createWebHistory(),
             routes
         });
+        
+        const pinia = createPinia();
+        this.app.use(pinia);
+
         const taObj = new TensorAnalyzor();
-        taObj.init().then(() => {
-            this.app.provide('taObj', taObj);
-            this.app.use(router);
-            this.app.mount(tag);
-        });
+        const nRet = await taObj.init();
+        this.app.provide('taObj', taObj);
+        this.app.use(router);
+        this.app.mount(tag);
+        return nRet;
     }
 }
 
 const appInst = new Main();
-appInst.run('#app');
+appInst.run('#app').then((v)=>{
+    if(v != 0){
+        console.error("startup failed!");
+    }
+});
