@@ -111,8 +111,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { TAModeBase } from 'logic';
-import type { Range } from 'logic';
+import { TAModeBase } from "@logic";
+import type { Range } from "@logic";
 const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{
         (e:"on-step", step:number, mode:TAModeBase):void,

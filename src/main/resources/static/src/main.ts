@@ -3,7 +3,7 @@
 import { createApp, App as AppT } from 'vue';
 import { createRouter, RouteRecordRaw, createWebHistory } from 'vue-router';
 import { createPinia } from 'pinia';
-import { TensorAnalyzor } from 'logic';
+import { TensorAnalyzor } from '@logic';
 import App from './App.vue';
 import TaskPage from "./page/TaskManager/TaskPage.vue";
 import About0 from "./page/About/About_0.vue";

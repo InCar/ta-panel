@@ -41,7 +41,7 @@
 <script setup lang="ts">
 import { ref, onMounted, inject, shallowReactive, ShallowReactive } from 'vue';
 import { useRouter } from 'vue-router';
-import { TaskBean, TensorAnalyzor } from 'logic';
+import { TaskBean, TensorAnalyzor } from "@logic";
 import TaskView from "../cmx/TaskView.vue";
 import { computed } from '@vue/reactivity';
 

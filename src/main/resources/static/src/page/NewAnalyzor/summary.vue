@@ -70,8 +70,8 @@
 import { inject, ref , Ref, shallowRef } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRouter } from 'vue-router';
-import { TAModeBase, TensorAnalyzor } from 'logic';
-import type { Range } from 'logic';
+import { TAModeBase, TensorAnalyzor } from "@logic";
+import type { Range } from "@logic";
 
 const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{

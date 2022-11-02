@@ -50,7 +50,6 @@
             <span>显示开发设定</span>
         </div>
         <router-view></router-view>
-        
         <DatePicker />
     </div>
 </template>
@@ -59,7 +58,7 @@
 import { computed } from '@vue/reactivity';
 import { onMounted, ref, watch, watchEffect } from 'vue';
 import { useRouter } from "vue-router";
-
+import { useTaskStore } from "@store";
 import DatePicker from "../cmx/DatePicker.vue";
 
 const widthViewPort = ref(window.innerWidth);

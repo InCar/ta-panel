@@ -110,7 +110,7 @@
 import moment from "moment";
 import { onMounted, ref } from "vue";
 import { computed } from '@vue/reactivity';
-import { TaskBean, TaskStatus } from 'logic';
+import { TaskBean, TaskStatus } from "@logic";
 
 const props = defineProps<{
     index?: Number,

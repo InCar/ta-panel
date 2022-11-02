@@ -36,7 +36,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch, inject } from "vue";
-import { TensorAnalyzor } from "logic";
+import { TensorAnalyzor } from "@logic";
 
 class DevSettings{
     private taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
