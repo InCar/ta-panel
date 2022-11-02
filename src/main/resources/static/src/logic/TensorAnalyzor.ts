@@ -13,6 +13,11 @@ interface TaskBody{
     limit?: number
 }
 
+export interface BackPointResult{
+    result: boolean;
+    data?: any;
+}
+
 export class TensorAnalyzor {
     // 用于开发目的
     private readonly _backPointKey = "back-point";
