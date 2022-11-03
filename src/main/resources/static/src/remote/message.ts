@@ -1,9 +1,11 @@
 import { MessageAction } from "./actions";
+
 import { WorkerContext } from "./WorkerContext";
 
 export interface ActionData<T=any>{
     id: MessageAction;
     ok?: boolean;
+    broadcast?: boolean;
     args?: T;
     error?: ActionError;
 }
@@ -21,6 +23,6 @@ export const ActionFailed = (id:MessageAction, message:string, data?:any, error?
 
 export interface ActionProc{
     action: MessageAction;
-    actionForWorker?: (data: ActionData<any>)=>Promise<ActionData<any>>;
+    actionForWorker?: (data: ActionData<any>)=>Promise<ActionData<any>|void>;
     actionForPage?:   (data: ActionData<any>, ctx:WorkerContext)=>Promise<void>;
 }

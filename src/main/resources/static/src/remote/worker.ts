@@ -11,11 +11,23 @@ class Worker{
         this._sink.init();
     }
 
-    public onMessage = (event: MessageEvent<ActionDataSn>, port?:MessagePort)=>{
+    public onMessage = async (event: MessageEvent<ActionDataSn>, port?:MessagePort)=>{
         const data = event.data
         const action  = this._dictActions[data.id];
         if(action?.actionForWorker){
-            action.actionForWorker.call(action, data);
+            const dataRet = await action.actionForWorker(data);
+            if(typeof dataRet !== "undefined"){
+                const dataRetSn = dataRet as ActionDataSn;
+                if(dataRet.broadcast){
+                    dataRetSn.sn = 0;
+                    this._sink.broadcast(dataRetSn);
+                }
+                else{
+                    
+                    dataRetSn.sn = data.sn;
+                    this._sink.postMessage(dataRetSn, port);
+                }
+            }
         }
         else{
             console.warn(`There isn't any action for ${MessageAction[data.id]??""}(${data.id})`)

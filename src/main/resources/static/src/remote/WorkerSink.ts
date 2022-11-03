@@ -1,5 +1,5 @@
 import { MessageAction } from "./actions";
-import { ActionDataSn } from "./message";
+import { ActionData, ActionDataSn } from "./message";
 declare var onconnect: ((event:MessageEvent<any>)=>void)|undefined;
 
 
@@ -20,9 +20,15 @@ export class WorkerSink{
 
     public OnMessage: ((event: MessageEvent<any>, port?: MessagePort)=>void)|null = null;
 
-    public postMessage = <T>(data:ActionDataSn<T>, port?: MessagePort)=>{
+    public postMessage = (data:ActionDataSn, port?: MessagePort)=>{
         if(this.isInSharedWorker) port?.postMessage(data);
         else postMessage(data);
+    };
+
+    public broadcast = (data:ActionDataSn)=>{
+        for(let portSink of this._listPorts){
+            this.postMessage(data, portSink.getPort());
+        }
     };
 
     private onWorkerConnect = (event: MessageEvent<any>)=>{
@@ -58,8 +64,10 @@ class PortSink{
         this._port.postMessage({ id: MessageAction.WorkerReady, sn: 0, args: { total } });
     }
 
+    public getPort = ()=>{ return this._port; }
+
     private onWorkerMessage = (event: MessageEvent<any>)=>{
-        if(this._sink.OnMessage) this._sink.OnMessage(event);
+        if(this._sink.OnMessage) this._sink.OnMessage(event, this._port);
     }
     
     private onWorkerMessageError = (e: MessageEvent<any>)=>{

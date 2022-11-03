@@ -1,5 +1,6 @@
 import { ActionProc } from "../message";
 import { WorkerReadyAction } from "./WorkerReadyAction";
+import { DispatchSharedAction } from "./DispatchSharedAction";
 
 export enum MessageAction{
     WorkerReady,
@@ -9,7 +10,10 @@ export enum MessageAction{
 }
 
 const createActions = ():ActionProc[]=>{
-    return [new WorkerReadyAction()];
+    return [
+        new WorkerReadyAction(),
+        new DispatchSharedAction()
+    ];
 }
 
 export const useActions = ()=>{

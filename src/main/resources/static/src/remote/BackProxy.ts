@@ -1,13 +1,13 @@
 import { MessageAction } from "./actions";
-import { ActionData, ActionOk } from "./message";
 import { WorkerContext } from "./WorkerContext";
 
 class BackProxy{
-    private readonly _workerCtx = new WorkerContext();
-
-    public readonly IsSharedWorkerSupported = this._workerCtx.IsSharedWorkerSupported;
+    private readonly _workerCtx;
+    public readonly IsSharedWorkerSupported;
 
     public constructor(){
+        this._workerCtx = new WorkerContext();
+        this.IsSharedWorkerSupported = this._workerCtx.IsSharedWorkerSupported;
         this._workerCtx.OnMessage = this.onMsg;
     }
 

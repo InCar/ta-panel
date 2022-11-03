@@ -47,12 +47,12 @@ export class WorkerContext{
         return ActionOk<any>(data.id);
     }
 
-    private onWorkerMessage = (event: MessageEvent<ActionDataSn>)=>{
+    private onWorkerMessage = async (event: MessageEvent<ActionDataSn>)=>{
         const data = event.data
         if(data.sn == 0){
             const action  = this._dictActions[data.id];
             if(action?.actionForPage){
-                action.actionForPage(data, this);
+                await action.actionForPage(data, this);
             }
             else{
                 console.warn(`There isn't any action for ${MessageAction[data.id]??""}(${data.id})`);
