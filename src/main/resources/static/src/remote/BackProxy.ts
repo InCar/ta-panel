@@ -1,15 +1,23 @@
-import { MessageAction, ActionData } from "./message";
-
+import { MessageAction } from "./actions";
+import { ActionData, ActionOk } from "./message";
+import { WorkerContext } from "./WorkerContext";
 
 class BackProxy{
-    public readonly IsWorkerSupported = !!window.Worker;
-    public readonly IsSharedWorkerSupported = !!window.SharedWorker;
+    private readonly _workerCtx = new WorkerContext();
+
+    public readonly IsSharedWorkerSupported = this._workerCtx.IsSharedWorkerSupported;
 
     public constructor(){
+        this._workerCtx.OnMessage = this.onMsg;
     }
 
-    public doAboutDispatch = async(data:any)=>{
-         
+    public dispatchShared = async(data:any):Promise<void>=>{
+        await this._workerCtx.postMessage({ id: MessageAction.DispatchShared, args: data });
+    }
+
+    private onMsg = (event: MessageEvent)=>{
+        // only for broadcasting of sharedWorker 
+        console.warn(event.data);
     }
 }
 

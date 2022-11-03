@@ -1,0 +1,22 @@
+import { ActionProc } from "../message";
+import { WorkerReadyAction } from "./WorkerReadyAction";
+
+export enum MessageAction{
+    WorkerReady,
+    WorkerError,
+    DispatchShared,
+    FetchTaskForAll
+}
+
+const createActions = ():ActionProc[]=>{
+    return [new WorkerReadyAction()];
+}
+
+export const useActions = ()=>{
+    const actions = createActions();
+    const dictActions : { [index: number]: ActionProc|undefined} = {};
+    for(let action of actions){
+        dictActions[action.action] = action;
+    }
+    return dictActions;
+}

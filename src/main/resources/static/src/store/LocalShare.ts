@@ -5,10 +5,12 @@ import { useBackProxy } from "@remote";
 class LocalShareStore{
     private _backProxy = useBackProxy();
 
+    public IsSharedWorkerSupported = this._backProxy.IsSharedWorkerSupported;
     public Count = ref(0);
 
     public increment = async()=>{
-        this.Count.value++;
+        const count = this.Count.value + 1;
+        await this._backProxy.dispatchShared(count);
     }
 }
 

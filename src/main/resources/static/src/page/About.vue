@@ -51,8 +51,9 @@
                 <span>{{k}}</span>
                 <span>{{v}}</span>
             </template>
-            <span>Worker</span><span>{{data.IsWorkerSupported?"Supported":"NA"}}</span>
-            <span>SharedWorker</span><span>{{data.IsSharedWorkerSupported?"Supported":"NA"}}</span>
+            <span>Worker</span><span>{{IsWorkerSupported?"Supported":"NA"}}</span>
+            <span>SharedWorker</span><span>{{IsSharedWorkerSupported?"Supported":"NA"}}</span>
+            <span>WorkerMode</span><span>{{ localShareStore.IsSharedWorkerSupported?"Shared":"NotShared" }}</span>
         </div>
         <hr />
         <div class="dev-test">
@@ -75,7 +76,6 @@
 import { computed } from '@vue/reactivity';
 import { onMounted, ref, watch } from 'vue';
 import { useRouter } from "vue-router";
-import { useBackProxy } from "@remote";
 import { useLocalShareStore } from "@store";
 
 import DatePicker from "../cmx/DatePicker.vue";
@@ -84,12 +84,13 @@ const widthViewPort = ref(window.innerWidth);
 const heightViewPort = ref(window.innerHeight);
 const devPixelRatio = window.devicePixelRatio.toFixed(2);
 const agents:any = ref({});
-const localShareStore = useLocalShareStore();
+const IsWorkerSupported = !!window.Worker;
+const IsSharedWorkerSupported = !!window.SharedWorker;
 
+const localShareStore = useLocalShareStore();
 
 class AboutPage {
     private _router = useRouter();
-    private _backProxy = useBackProxy();
     public IsDevChecked = ref(false);
 
     public init = ()=>{
@@ -114,9 +115,6 @@ class AboutPage {
     public LinkForView = computed(()=>{
         return this.IsDevChecked.value?"/About/dev":"/About";
     });
-
-    public IsWorkerSupported = this._backProxy.IsWorkerSupported;
-    public IsSharedWorkerSupported = this._backProxy.IsSharedWorkerSupported;
 
     private parseUserAgent = ()=>{
         const match = navigator.userAgent.matchAll(/(\w+)\/([\d\.]+)/g);
