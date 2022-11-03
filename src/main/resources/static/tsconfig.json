@@ -17,6 +17,7 @@
         "skipLibCheck": true,
         "baseUrl": "./",
         "paths": {
+            "@remote": [ "./src/remote" ],
             "@store": [ "./src/store" ],
             "@logic": [ "./src/logic" ]
         }

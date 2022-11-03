@@ -29,6 +29,16 @@
         font-style: italic;
     }
 }
+.dev-test{
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 1em;
+}
+
+.em{
+    color: theme.$color-em;
+    font-weight: bold;
+}
 </style>
 
 <template>
@@ -41,6 +51,13 @@
                 <span>{{k}}</span>
                 <span>{{v}}</span>
             </template>
+            <span>Worker</span><span>{{data.IsWorkerSupported?"Supported":"NA"}}</span>
+            <span>SharedWorker</span><span>{{data.IsSharedWorkerSupported?"Supported":"NA"}}</span>
+        </div>
+        <hr />
+        <div class="dev-test">
+            <span class="em">{{localShareStore.Count}}</span>
+            <button @click="localShareStore.increment">Click</button>
         </div>
         <hr/>
 
@@ -56,18 +73,23 @@
 
 <script setup lang="ts">
 import { computed } from '@vue/reactivity';
-import { onMounted, ref, watch, watchEffect } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRouter } from "vue-router";
-import { useTaskStore } from "@store";
+import { useBackProxy } from "@remote";
+import { useLocalShareStore } from "@store";
+
 import DatePicker from "../cmx/DatePicker.vue";
 
 const widthViewPort = ref(window.innerWidth);
 const heightViewPort = ref(window.innerHeight);
 const devPixelRatio = window.devicePixelRatio.toFixed(2);
 const agents:any = ref({});
+const localShareStore = useLocalShareStore();
+
 
 class AboutPage {
     private _router = useRouter();
+    private _backProxy = useBackProxy();
     public IsDevChecked = ref(false);
 
     public init = ()=>{
@@ -92,6 +114,9 @@ class AboutPage {
     public LinkForView = computed(()=>{
         return this.IsDevChecked.value?"/About/dev":"/About";
     });
+
+    public IsWorkerSupported = this._backProxy.IsWorkerSupported;
+    public IsSharedWorkerSupported = this._backProxy.IsSharedWorkerSupported;
 
     private parseUserAgent = ()=>{
         const match = navigator.userAgent.matchAll(/(\w+)\/([\d\.]+)/g);
