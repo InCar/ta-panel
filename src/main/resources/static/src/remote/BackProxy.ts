@@ -8,16 +8,12 @@ class BackProxy{
     public constructor(){
         this._workerCtx = new WorkerContext();
         this.IsSharedWorkerSupported = this._workerCtx.IsSharedWorkerSupported;
-        this._workerCtx.OnMessage = this.onMsg;
     }
 
     public dispatchShared = async(data:any):Promise<void>=>{
-        await this._workerCtx.postMessage({ id: MessageAction.DispatchShared, args: data });
-    }
-
-    private onMsg = (event: MessageEvent)=>{
-        // only for broadcasting of sharedWorker 
-        console.warn(event.data);
+        const dataRet = await this._workerCtx.postMessage({ id: MessageAction.DispatchShared, args: data });
+        // TODO:
+        console.info(dataRet);
     }
 }
 

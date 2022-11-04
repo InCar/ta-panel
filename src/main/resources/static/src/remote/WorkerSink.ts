@@ -25,9 +25,18 @@ export class WorkerSink{
         else postMessage(data);
     };
 
-    public broadcast = (data:ActionDataSn)=>{
+    public broadcast = (data:ActionDataSn, portFrom?: MessagePort)=>{
         for(let portSink of this._listPorts){
-            this.postMessage(data, portSink.getPort());
+            const portTo = portSink.getPort()
+            if(portTo === portFrom){
+                // with sn to self
+                this.postMessage(data, portTo);
+            }
+            else{
+                // without sn to others
+                data.sn = 0;
+                this.postMessage(data, portTo);
+            }
         }
     };
 

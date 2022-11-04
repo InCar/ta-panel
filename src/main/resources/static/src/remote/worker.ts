@@ -18,13 +18,11 @@ class Worker{
             const dataRet = await action.actionForWorker(data);
             if(typeof dataRet !== "undefined"){
                 const dataRetSn = dataRet as ActionDataSn;
+                dataRetSn.sn = data.sn;
                 if(dataRet.broadcast){
-                    dataRetSn.sn = 0;
-                    this._sink.broadcast(dataRetSn);
+                    this._sink.broadcast(dataRetSn, port);
                 }
                 else{
-                    
-                    dataRetSn.sn = data.sn;
                     this._sink.postMessage(dataRetSn, port);
                 }
             }
