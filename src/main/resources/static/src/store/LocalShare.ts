@@ -10,7 +10,8 @@ class LocalShareStore{
 
     public increment = async()=>{
         const count = this.Count.value + 1;
-        await this._backProxy.dispatchShared(count);
+        const dataRet = await this._backProxy.dispatchShared(count);
+        console.info(dataRet);
     }
 }
 

@@ -1,4 +1,5 @@
 import { MessageAction } from "./actions";
+import { ActionError } from "./message";
 import { WorkerContext } from "./WorkerContext";
 
 class BackProxy{
@@ -10,10 +11,13 @@ class BackProxy{
         this.IsSharedWorkerSupported = this._workerCtx.IsSharedWorkerSupported;
     }
 
-    public dispatchShared = async(data:any):Promise<void>=>{
-        const dataRet = await this._workerCtx.postMessage({ id: MessageAction.DispatchShared, args: data });
-        // TODO:
-        console.info(dataRet);
+    public dispatchShared = async(data:any):Promise<any>=>{
+        try{
+            const dataRet = await this._workerCtx.postMessage({ id: MessageAction.DispatchShared, args: data });
+            return dataRet;
+        }catch(e){
+            console.info(e);
+        }
     }
 }
 

@@ -1,11 +1,20 @@
-import { ActionData, ActionOk, ActionDataSn, ActionProc } from "./message";
+import { ActionData, ActionError, ActionDataSn } from "./message";
 import { useActions, MessageAction } from "./actions";
+
+interface PromiseFnArgs{
+    sn: number,
+    resolve: (ActionData:any)=>void;
+    reject:  (reason?:ActionError)=>void;
+    timeout: any;
+}
 
 export class WorkerContext{
     public readonly IsSharedWorkerSupported = !!window.SharedWorker;
-    private readonly _worker: Worker|SharedWorker;
-    private _sn = 0;
+    private _defaultTimeout = 5000; // milliseconds
     private _dictActions = useActions();
+    private readonly _worker: Worker|SharedWorker;
+    private _dictWaiting : { [sn:number]: PromiseFnArgs }= {};
+    private _sn = 0;
 
     public constructor(){
         if(this.IsSharedWorkerSupported){
@@ -30,9 +39,25 @@ export class WorkerContext{
 
     public OnMessage: ((event: MessageEvent<any>)=>void)|null = null;
 
-    public postMessage = async(data: ActionData):Promise<ActionData>=>{
+    public postMessage = async(data: ActionData, maxWait?:number):Promise<ActionData>=>{
         const dataSN = data as ActionDataSn;
         dataSN.sn = this.fetchSN();
+
+        const actionReturn = new Promise<ActionData>((resolve, reject)=>{
+            // waiting for the reply
+            const sn = dataSN.sn;
+            const timeout = setTimeout(()=>{
+                const waiting = this._dictWaiting[sn];
+                if(waiting){
+                    delete this._dictWaiting[sn];
+                    waiting.reject({message: "timeout"});
+                }
+                else{
+                    console.warn(`The waiting object(${sn}) missing.`);
+                }
+            }, maxWait??this._defaultTimeout);
+            this._dictWaiting[dataSN.sn] = {sn, resolve, reject, timeout};
+        });
 
         if(this.IsSharedWorkerSupported){
             const worker = this._worker as SharedWorker;
@@ -43,8 +68,7 @@ export class WorkerContext{
             worker.postMessage(dataSN);
         }
 
-        // TODO: waiting back
-        return ActionOk<any>(data.id);
+        return actionReturn;
     }
 
     private onWorkerMessage = async (event: MessageEvent<ActionDataSn>)=>{
@@ -59,8 +83,15 @@ export class WorkerContext{
             }
         }
         else{
-            // TODO: .....
-            console.info(event.data);
+            const waiting = this._dictWaiting[data.sn];
+            if(waiting !== null){
+                clearTimeout(waiting.timeout);
+                delete this._dictWaiting[data.sn];
+                waiting.resolve(data);
+            }
+            else{
+                console.warn(`The waiting object(${data.sn}) missing.`);
+            }
         }
     }
 
