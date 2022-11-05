@@ -1,5 +1,5 @@
 import { useActions, MessageAction } from "./actions";
-import { ActionDataSn } from "./message";
+import { ActionDataSn, ActionResponseSn, DataSn } from "./message";
 import { WorkerSink } from "./WorkerSink";
 
 class Worker{
@@ -8,28 +8,34 @@ class Worker{
 
     public run = ()=>{
         this._sink.OnMessage = this.onMessage;
-        this._sink.init();
+        this._sink.init(this.createInitData);
     }
 
-    public onMessage = async (event: MessageEvent<ActionDataSn>, port?:MessagePort)=>{
+    public onMessage = async (event: MessageEvent<ActionDataSn>, portFrom?:MessagePort)=>{
         const data = event.data
-        const action  = this._dictActions[data.id];
+        const action  = this._dictActions[data.action];
         if(action?.actionForWorker){
-            const dataRet = await action.actionForWorker(data);
-            if(typeof dataRet !== "undefined"){
-                const dataRetSn = dataRet as ActionDataSn;
-                dataRetSn.sn = data.sn;
-                if(dataRet.broadcast){
-                    this._sink.broadcast(dataRetSn, port);
+            const response = await action.actionForWorker(data);
+            if(typeof response !== "undefined"){
+                const responseSN = response as unknown as ActionResponseSn;
+                responseSN.sn = data.sn;
+                this._sink.postMessage(responseSN, portFrom);
+                if(response.broadcast){
+                    this._sink.broadcastToOthers(responseSN, portFrom);
                 }
-                else{
-                    this._sink.postMessage(dataRetSn, port);
-                }
+            }
+            else{
+                // 代表不需要回复
             }
         }
         else{
-            console.warn(`There isn't any action for ${MessageAction[data.id]??""}(${data.id})`)
+            console.warn(`There isn't any action for ${MessageAction[data.action]??""}(${data.action})`)
         }
+    }
+
+    private createInitData = ():ActionDataSn=>{
+        const total = this._sink.ConnectionCount;
+        return { action: MessageAction.WorkerReady, sn: 0, data: { total } };
     }
 }
 

@@ -1,28 +1,39 @@
 import { MessageAction } from "./actions";
-
-import { WorkerContext } from "./WorkerContext";
+import { BackProxy } from "./BackProxy";
 
 export interface ActionData<T=any>{
-    id: MessageAction;
-    ok?: boolean;
-    broadcast?: boolean;
-    args?: T;
-    error?: ActionError;
+    action: MessageAction;
+    data?: T;
+}
+
+export interface ActionResponseData<T=any> extends ActionData<T>{
+    ok: boolean;
 }
 
 export interface ActionError{
-    message: string;
-    data?: any;
-    error?: ActionError;
+    cause: string;
+    errorData?: any;
+    innerError?: ActionError;
 }
 
-export type ActionDataSn<T=any> = ActionData<T> & { sn: number };
+export interface ActionResponseError{
+    ok: boolean;
+    cause: string;
+    errorData?: any;
+    innerError?: ActionError
+}
 
-export const ActionOk = <T>(id:MessageAction, data?:T)=>({ id, ok: true, data});
-export const ActionFailed = (id:MessageAction, message:string, data?:any, error?:ActionError)=>({ id, ok: false, message, data, error});
+export type ActionResonse<T=any> = ActionResponseData<T> | ActionResponseError;
 
-export interface ActionProc{
+export interface Broadcast{ broadcast: boolean }
+export interface DataSn{ sn: number }
+
+export type ActionDataSn<T=any> = ActionData<T> & DataSn;
+export type ActionResponseSn<T=any> =  ActionResonse<T> & DataSn;
+export type ActionResponseBoardcast<T=any> = ActionResonse<T> & Broadcast;
+
+export interface ActionProc<T=any, R=any>{
     action: MessageAction;
-    actionForWorker?: (data: ActionData<any>)=>Promise<ActionData<any>|void>;
-    actionForPage?:   (data: ActionData<any>, ctx:WorkerContext)=>Promise<void>;
+    actionForWorker?: (data: ActionData<T>)=>Promise<ActionResponseBoardcast<R>|void>;
+    actionForNotify?: (data: ActionData<R>, ctx:BackProxy)=>Promise<void>;
 }

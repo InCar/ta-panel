@@ -1,18 +1,12 @@
 import { MessageAction } from ".";
-import { ActionData, ActionProc } from "../message";
-import { WorkerContext } from "../WorkerContext";
+import { BackProxy } from "../BackProxy";
+import { ActionData, ActionProc, ActionResponseBoardcast } from "../message";
 
 export class WorkerReadyAction implements ActionProc{
-    public readonly action: MessageAction = MessageAction.WorkerReady;
-    
-    public actionForPage = async (data: ActionData<{total:number}>, ctx: WorkerContext)=>{
+    public readonly action = MessageAction.WorkerReady;
+    public actionForNotify = async(data: ActionData<{ total: number}>, ctx: BackProxy)=>{
         const message = "the worker is ready";
-        if(data.args){
-            const total = data.args.total;
-            console.info(`${message}, total ${total} connection${total>1?"s":""}`);
-        }
-        else{
-            console.info(message);
-        }
+        const total = data.data?.total ?? -1;
+        console.info(`${message}, total ${total} connection${total>1?"s":""}`);
     }
 }

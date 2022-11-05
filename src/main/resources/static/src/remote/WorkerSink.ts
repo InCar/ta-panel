@@ -1,59 +1,59 @@
-import { MessageAction } from "./actions";
-import { ActionData, ActionDataSn } from "./message";
 declare var onconnect: ((event:MessageEvent<any>)=>void)|undefined;
 
+type InitDataFn = (isInSharedWorker:boolean)=>unknown;
 
 export class WorkerSink{
     private readonly isInSharedWorker = (typeof onconnect !== "undefined");
+    private _initDataFn: InitDataFn|null = null;
     private _listPorts: PortSink[] = [];
 
-    public init = ()=>{
+    public get TotalPorts(){ return this._listPorts.length; }
+
+    public init = (initDataFn:InitDataFn)=>{
         if(this.isInSharedWorker){
+            // 保存起来,待connecting使用
+            this._initDataFn = initDataFn;
             onconnect = this.onWorkerConnect;
         }
         else{
             onmessage = this.onWorkerMessage;
             onmessageerror = this.onWorkerMessageError;
-            this.postMessage({ id: MessageAction.WorkerReady, sn: 0 })
+            this.postMessage(initDataFn(this.isInSharedWorker));
         }
     }
 
-    public OnMessage: ((event: MessageEvent<any>, port?: MessagePort)=>void)|null = null;
+    public get ConnectionCount(){
+        return this.isInSharedWorker ? this._listPorts.length : 1;
+    }
 
-    public postMessage = (data:ActionDataSn, port?: MessagePort)=>{
+    public OnMessage: ((event: MessageEvent, portFrom?: MessagePort)=>void)|null = null;
+
+    public postMessage = (data:unknown, port?: MessagePort)=>{
         if(this.isInSharedWorker) port?.postMessage(data);
         else postMessage(data);
     };
 
-    public broadcast = (data:ActionDataSn, portFrom?: MessagePort)=>{
+    /**不会发送到portFrom*/
+    public broadcastToOthers = (data:unknown, portFrom?: MessagePort)=>{
         for(let portSink of this._listPorts){
-            const portTo = portSink.getPort()
-            if(portTo === portFrom){
-                // with sn to self
-                this.postMessage(data, portTo);
-            }
-            else{
-                // without sn to others
-                data.sn = 0;
-                this.postMessage(data, portTo);
-            }
+            const portTo = portSink.Port;
+            if(portTo !== portFrom) portTo.postMessage(data);
         }
     };
 
-    private onWorkerConnect = (event: MessageEvent<any>)=>{
-        let total = this._listPorts.length;
+    private onWorkerConnect = (event: MessageEvent)=>{
         for(let port of event.ports){
             const portSink = new PortSink(port, this);
-            total = this._listPorts.unshift(portSink);
-            portSink.init(total);
+            this._listPorts.unshift(portSink);
+            portSink.init(this._initDataFn!(this.isInSharedWorker));
         }
     }
 
-    private onWorkerMessage = (event: MessageEvent<any>)=>{
+    private onWorkerMessage = (event: MessageEvent)=>{
         if(this.OnMessage) this.OnMessage(event);
     };
 
-    private onWorkerMessageError = (e: MessageEvent<any>)=>{
+    private onWorkerMessageError = (e: MessageEvent)=>{
         console.error(e);
     }
 }
@@ -67,19 +67,19 @@ class PortSink{
         this._sink = sink;
     }
 
-    public init = (total: number)=>{
+    public init = (initData: unknown)=>{
         this._port.onmessage = this.onWorkerMessage;
         this._port.onmessageerror = this.onWorkerMessageError;
-        this._port.postMessage({ id: MessageAction.WorkerReady, sn: 0, args: { total } });
+        this._port.postMessage(initData);
     }
 
-    public getPort = ()=>{ return this._port; }
+    public get Port(){ return this._port; }
 
-    private onWorkerMessage = (event: MessageEvent<any>)=>{
+    private onWorkerMessage = (event: MessageEvent)=>{
         if(this._sink.OnMessage) this._sink.OnMessage(event, this._port);
     }
     
-    private onWorkerMessageError = (e: MessageEvent<any>)=>{
+    private onWorkerMessageError = (e: MessageEvent)=>{
         console.error(e);
     }
 }

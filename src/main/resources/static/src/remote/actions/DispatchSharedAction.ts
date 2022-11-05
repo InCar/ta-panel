@@ -1,16 +1,24 @@
 import { MessageAction } from ".";
-import { ActionData, ActionProc } from "../message";
+import { BackProxy } from "../BackProxy";
+import { ActionData, ActionProc, ActionResponseBoardcast } from "../message";
 import { WorkerContext } from "../WorkerContext";
 
-export class DispatchSharedAction implements ActionProc{
+export class DispatchSharedAction implements ActionProc<number, number>{
     public readonly action = MessageAction.DispatchShared;
-
-    public actionForWorker = async(data:ActionData<number>)=>{
-       return { id: data.id, broadcast: true, args: data.args };
+    
+    public actionForWorker = async(data : ActionData<number>)=>{
+        const response: ActionResponseBoardcast<number> = {
+            action: data.action,
+            ok: true,
+            data: data.data,
+            broadcast: true
+        };
+        return response;
     }
 
-    public actionForPage = async(data: ActionData, ctx: WorkerContext)=>{
-        // TODO: update store????
+    public actionForNotify = async(data: ActionData<number>, ctx: BackProxy)=>{
+        // TODO: how to update store???
         console.info(data);
     }
+
 }
