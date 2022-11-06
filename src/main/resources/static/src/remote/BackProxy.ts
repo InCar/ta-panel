@@ -1,5 +1,5 @@
 import { MessageAction, useActions } from "./actions";
-import { ActionData, ActionDataSn, ActionResonse, ActionResponseData, ActionResponseError, ActionResponseSn } from "./message";
+import { ActionData, ActionDataSn, ActionResonse, ActionResponseData, ActionResponseSn } from "./message";
 import { WorkerContext } from "./WorkerContext";
 
 interface PromiseFnArgs{
@@ -13,14 +13,15 @@ export class BackProxy{
     private readonly _workerCtx;
     public readonly IsSharedWorkerSupported;
     private readonly _defaultTimeout = 5000; // milliseconds
-    private _dictActions = useActions();
+    private readonly _dictActions;
     private _dictWaiting : { [sn:number]: PromiseFnArgs }= {};
     private _sn = 0;
 
     public constructor(){
-        this._workerCtx = new WorkerContext();
+        this.IsSharedWorkerSupported = !!window?.SharedWorker;
+        this._dictActions = useActions();
+        this._workerCtx = new WorkerContext(this.IsSharedWorkerSupported);
         this._workerCtx.OnMessage = this.onMessage;
-        this.IsSharedWorkerSupported = this._workerCtx.IsSharedWorkerSupported;
     }
 
     public dispatchShared = async(data:any):Promise<ActionResonse>=>{
@@ -41,7 +42,7 @@ export class BackProxy{
             this._dictWaiting[sn] = {sn, resolve, reject, timeout};
         });
 
-        this._workerCtx.postMessage(data);
+        await this._workerCtx.postMessage(data);
         return actionReturn;
     }
 
@@ -90,6 +91,11 @@ export class BackProxy{
     }
 }
 
-const backProxy = new BackProxy();
+let backProxy:BackProxy|null = null;
 
-export const useBackProxy = ()=>backProxy;
+export const useBackProxy = ()=>{
+    if(typeof window === "undefined") return null;
+
+    if(backProxy === null) backProxy = new BackProxy();
+    return backProxy;
+}

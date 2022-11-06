@@ -14,6 +14,7 @@ class Worker{
     public onMessage = async (event: MessageEvent<ActionDataSn>, portFrom?:MessagePort)=>{
         const data = event.data
         const action  = this._dictActions[data.action];
+        console.info(action);
         if(action?.actionForWorker){
             const response = await action.actionForWorker(data);
             if(typeof response !== "undefined"){

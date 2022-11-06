@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { useBackProxy } from "@remote";
 
 class LocalShareStore{
-    private _backProxy = useBackProxy();
+    private _backProxy = useBackProxy()!;
 
     public IsSharedWorkerSupported = this._backProxy.IsSharedWorkerSupported;
     public Count = ref(0);
