@@ -21,6 +21,7 @@ class Worker{
                 responseSN.sn = data.sn;
                 this._sink.postMessage(responseSN, portFrom);
                 if(response.broadcast){
+                    responseSN.sn = 0;
                     this._sink.broadcastToOthers(responseSN, portFrom);
                 }
             }
