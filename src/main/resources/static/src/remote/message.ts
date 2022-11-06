@@ -33,7 +33,7 @@ export type ActionResponseSn<T=any> =  ActionResonse<T> & DataSn;
 export type ActionResponseBoardcast<T=any> = ActionResonse<T> & Broadcast;
 
 export interface ActionProc<T=any, R=any>{
-    action: MessageAction;
+    readonly action: MessageAction;
     actionForWorker?: (data: ActionData<T>)=>Promise<ActionResponseBoardcast<R>|void>;
     actionForNotify?: (data: ActionData<R>, ctx:BackProxy)=>Promise<void>;
 }

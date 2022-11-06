@@ -4,7 +4,7 @@ import { WorkerSink } from "./WorkerSink";
 
 class Worker{
     private _sink = new WorkerSink();
-    private _dictActions = useActions();
+    private _dictActions = useActions(true);
 
     public run = ()=>{
         this._sink.OnMessage = this.onMessage;
@@ -14,7 +14,6 @@ class Worker{
     public onMessage = async (event: MessageEvent<ActionDataSn>, portFrom?:MessagePort)=>{
         const data = event.data
         const action  = this._dictActions[data.action];
-        console.info(action);
         if(action?.actionForWorker){
             const response = await action.actionForWorker(data);
             if(typeof response !== "undefined"){
@@ -31,7 +30,16 @@ class Worker{
             }
         }
         else{
-            console.warn(`There isn't any action for ${MessageAction[data.action]??""}(${data.action})`)
+            const responseSN: ActionResponseSn = {
+                ok: false,
+                sn: data.sn,
+                cause: `There isn't any action for ${MessageAction[data.action]??""}(${data.action})`,
+                errorData: {
+                    action: data.action,
+                    actoinName: MessageAction[data.action]??""
+                }
+            };
+            this._sink.postMessage(responseSN, portFrom);
         }
     }
 

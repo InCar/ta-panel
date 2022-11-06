@@ -1,4 +1,4 @@
-import { MessageAction, useActions } from "./actions";
+import { DictActionProc, MessageAction, useActions } from "./actions";
 import { ActionData, ActionDataSn, ActionResonse, ActionResponseData, ActionResponseSn } from "./message";
 import { WorkerContext } from "./WorkerContext";
 
@@ -13,13 +13,12 @@ export class BackProxy{
     private readonly _workerCtx;
     public readonly IsSharedWorkerSupported;
     private readonly _defaultTimeout = 5000; // milliseconds
-    private readonly _dictActions;
+    private _dictActions: DictActionProc|null = null;
     private _dictWaiting : { [sn:number]: PromiseFnArgs }= {};
     private _sn = 0;
 
     public constructor(){
         this.IsSharedWorkerSupported = !!window?.SharedWorker;
-        this._dictActions = useActions();
         this._workerCtx = new WorkerContext(this.IsSharedWorkerSupported);
         this._workerCtx.OnMessage = this.onMessage;
     }
@@ -62,6 +61,9 @@ export class BackProxy{
             }
         }
         else{
+            if(this._dictActions === null){
+                this._dictActions = useActions(false);
+            }
             // notify
             const data = response as ActionResponseData;
             const action = this._dictActions[data.action];
