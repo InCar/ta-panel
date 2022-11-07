@@ -13,7 +13,10 @@ div{
     flex-direction: column;
 }
 
-hr{ width: 100% }
+hr{
+    width: 99%;
+    margin: 0.5em 0;
+}
 
 input{
     color: theme.$color;

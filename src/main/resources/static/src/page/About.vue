@@ -20,6 +20,7 @@
     }
 }
 .version{
+    
     display: grid;
     grid-template-columns: 1fr 1fr;
     span:nth-of-type(2n+1){
@@ -56,11 +57,8 @@
             
         </div>
         <hr />
-        <hr/>
-
         <div class="check-item">
             <input type="checkbox" v-model="data.IsDevChecked.value"/>
-            
             <span>显示开发设定</span>
         </div>
         <router-view></router-view>
