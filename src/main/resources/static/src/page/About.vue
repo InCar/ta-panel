@@ -53,13 +53,9 @@
             </template>
             <span>Worker</span><span>{{IsWorkerSupported?"Supported":"NA"}}</span>
             <span>SharedWorker</span><span>{{IsSharedWorkerSupported?"Supported":"NA"}}</span>
-            <span>WorkerMode</span><span>{{ localShareStore.IsSharedWorkerSupported?"Shared":"NotShared" }}</span>
+            
         </div>
         <hr />
-        <div class="dev-test">
-            <span class="em">{{localShareStore.Count}}</span>
-            <button @click="localShareStore.increment">Click</button>
-        </div>
         <hr/>
 
         <div class="check-item">
@@ -76,7 +72,6 @@
 import { computed } from '@vue/reactivity';
 import { onMounted, ref, watch } from 'vue';
 import { useRouter } from "vue-router";
-import { useLocalShareStore } from "@store";
 
 import DatePicker from "../cmx/DatePicker.vue";
 
@@ -86,8 +81,6 @@ const devPixelRatio = window.devicePixelRatio.toFixed(2);
 const agents:any = ref({});
 const IsWorkerSupported = !!window.Worker;
 const IsSharedWorkerSupported = !!window.SharedWorker;
-
-const localShareStore = useLocalShareStore();
 
 class AboutPage {
     private _router = useRouter();

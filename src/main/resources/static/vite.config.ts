@@ -10,12 +10,6 @@ const alias = Object.entries(compilerOptions.paths)
 
 export const userConfig = {
     build: {
-        rollupOptions: {
-            input: {
-                main: resolve("index.html"),
-                worker: resolve("src/remote/worker")
-            }
-        },
         outDir: "../dist",
         emptyOutDir: true,
         manifest: true
