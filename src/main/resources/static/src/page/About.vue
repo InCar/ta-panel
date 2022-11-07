@@ -54,7 +54,12 @@
             </template>
             <span>Worker</span><span>{{IsWorkerSupported?"Supported":"NA"}}</span>
             <span>SharedWorker</span><span>{{IsSharedWorkerSupported?"Supported":"NA"}}</span>
-            
+            <span>WorkerMode</span><span>{{store.WorkerMode}}</span>
+        </div>
+        <hr />
+        <div class="dev-test">
+            <span class="em">{{store.Count}}</span>
+            <button @click="store.increment">Click</button>
         </div>
         <hr />
         <div class="check-item">
@@ -67,6 +72,7 @@
 </template>
 
 <script setup lang="ts">
+import { useAboutStore } from '@store';
 import { computed } from '@vue/reactivity';
 import { onMounted, ref, watch } from 'vue';
 import { useRouter } from "vue-router";
@@ -79,6 +85,8 @@ const devPixelRatio = window.devicePixelRatio.toFixed(2);
 const agents:any = ref({});
 const IsWorkerSupported = !!window.Worker;
 const IsSharedWorkerSupported = !!window.SharedWorker;
+
+const store = useAboutStore();
 
 class AboutPage {
     private _router = useRouter();
