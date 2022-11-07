@@ -8,6 +8,7 @@ class AboutStore{
 
     public constructor(){
         Browser.register(AboutStore.name, this.onNotifyCount);
+        Browser.broadcast(AboutStore.name);
     }
 
     public increment = ()=>{
@@ -15,8 +16,13 @@ class AboutStore{
         Browser.broadcast(AboutStore.name, this.Count.value);
     }
 
-    private onNotifyCount = (data: number)=>{
+    private onNotifyCount = (data?: number)=>{
+        if(data !== undefined){
             this.Count.value = data;
+        }
+        else{
+            Browser.broadcast(AboutStore.name, this.Count.value);
+        }
     }
 }
 
