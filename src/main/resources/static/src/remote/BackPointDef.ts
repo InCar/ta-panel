@@ -1,7 +1,7 @@
 
-export interface BackPointResult{
+export interface BackPointResult<T=any>{
     result: boolean;
-    data?: any;
+    data?: T;
 }
 
 export enum TaskStatus{

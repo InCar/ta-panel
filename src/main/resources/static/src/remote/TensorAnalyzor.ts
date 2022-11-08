@@ -2,23 +2,20 @@ import { TAModeBase } from "./TAModes";
 import { TJsonFields } from "./TADef";
 import { TaskBody } from "./BackPointDef";
 import { Operations } from "./Operations";
+import { BackPoint } from "./BackPoint";
 
 export class TensorAnalyzor {
-    // 用于开发目的
-    private readonly _backPointKey = "back-point";
-    private readonly _backPointDef = "http://10.0.11.50:8060";
-    private _backPoint: string|null = null;
     // 可用数据源
     private _dataSources: any = null;
     // 可用字段
     private _jsonFields: TJsonFields | null = null;
+    // 用于开发目的
+    private _backPoint = new BackPoint();
 
     // 初始化
     public init = async (): Promise<number> => {
-        this.loadBackPointConfig();
         return 0;
     };
-
 
     public fetchJsonFields = async () : Promise<TJsonFields> => {
         if (this._jsonFields == null) {
@@ -30,21 +27,6 @@ export class TensorAnalyzor {
             this._jsonFields = data.fields;
         }
         return this._jsonFields ?? {};
-    };
-
-    public fetchTaskList = async()=>{
-        const api = "/api/task/list";
-        return await this.fetchBackPoint(api);
-    };
-
-    public fetchTaskSingle = async(id:string)=>{
-        const api = `/api/task/list?id=${id}`;
-        return await this.fetchBackPoint(api);
-    };
-
-    public cancelTask = async(id:string)=>{
-        const api = `/api/task/cancel`;
-        return await this.putBackPoint(api, { id });
     };
 
     public submitTask = async(mode: TAModeBase):Promise<{code:number, message:string, taskId?:string}>=>{
@@ -74,6 +56,21 @@ export class TensorAnalyzor {
         else
             return { code: 0, message: "创建任务成功", taskId: resultBP.data };
     }
+
+    public fetchTaskList = async()=>{
+        const api = "/api/task/list";
+        return await this._backPoint.get(api);
+    };
+
+    public fetchTaskSingle = async(id:string)=>{
+        const api = `/api/task/list?id=${id}`;
+        return await this._backPoint.get(api);
+    };
+
+    public cancelTask = async(id:string)=>{
+        const api = `/api/task/cancel`;
+        return await this._backPoint.put(api, { id });
+    };
 
     private assembleTaskBody = (mode: TAModeBase):TaskBody|null=>{
         const op = Operations.MakeOP(mode);
@@ -111,78 +108,13 @@ export class TensorAnalyzor {
         }
         
         return arrayTarget;
-    };
-
-    public getBackPoint = ()=>{
-        return this._backPoint??this._backPointDef;
     }
 
-    public updateBackPoint = (backPoint:string|null)=>{
-        if(backPoint === this._backPointDef || backPoint == null){
-            localStorage.removeItem(this._backPointKey);
-            this._backPoint = null;
-        }
-        else{
-            localStorage.setItem(this._backPointKey, backPoint);
-            this._backPoint = backPoint;
-        }
+    public get BackPoint(){
+        return this._backPoint.BackPoint;
     }
 
-    private loadBackPointConfig = ()=>{
-        const backPoint = localStorage.getItem(this._backPointKey);
-        if(backPoint != null){
-            this._backPoint = backPoint;
-        }
-    };
-
-    private addDevHeader(headers:any){
-        // 调试用途
-        if(this._backPoint != null){
-            headers["X-Back-Point"] = this._backPoint;
-        }
-        return headers;
+    public set BackPoint(value: string|null){
+        this._backPoint.BackPoint = value;
     }
-
-    private fetchBackPoint = async(api:string, headers?:any):Promise<{result:boolean, data?:any}>=>{
-        try{
-            if(headers == undefined || headers == null) headers = {};
-            headers = this.addDevHeader(headers);
-            const resp = await fetch(api, {
-                method: "GET",
-                headers
-            });
-
-            if(resp.ok) return await resp.json();
-            else{
-                const err = await resp.text();
-                return { result: false, data: `${resp.statusText} -> ${err}` };
-            }
-        }
-        catch(e){
-            console.error(`FetchBackPoint ${api} error => ${e}`);
-            return { result: false, data: e }
-        }
-    };
-
-    private putBackPoint = async(api:string, body?:any, headers?:any):Promise<{result:boolean, data?:any}>=>{
-        try{
-            if(headers == undefined || headers == null) headers = {};
-            headers = this.addDevHeader(headers);
-            const resp = await fetch(api, {
-                method: "PUT",
-                body: body?JSON.stringify(body):undefined,
-                headers
-            });
-
-            if(resp.ok) return await resp.json();
-            else{
-                const err = await resp.text();
-                return { result: false, data: `${resp.statusText} -> ${err}` };
-            }
-        }
-        catch(e){
-            console.error(`FetchBackPoint ${api} error => ${e}`);
-            return { result: false, data: e }
-        }
-    };
 }
