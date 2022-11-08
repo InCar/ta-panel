@@ -35,25 +35,25 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch, inject } from "vue";
-import { TensorAnalyzor } from "@remote";
+import { onMounted, ref, watch } from "vue";
+import { useTA } from "@remote";
 
 class DevSettings{
-    private taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
+    private taObj = useTA();
     public backPoint = ref("");
 
     public init = ()=>{
-        this.backPoint.value = this.taObj.getBackPoint();
+        this.backPoint.value = this.taObj.BackPoint;
 
         watch(this.backPoint, 
             (value, last)=>{
-                this.taObj.updateBackPoint(value);
+                this.taObj.BackPoint = value;
             });
     };
 
     public reset = ()=>{
-        this.taObj.updateBackPoint(null);
-        this.backPoint.value = this.taObj.getBackPoint();
+        this.taObj.BackPoint = null;
+        this.backPoint.value = this.taObj.BackPoint;
     }
 }
 

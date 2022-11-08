@@ -4,7 +4,7 @@ import { createApp, App as AppT } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { createPinia } from 'pinia';
 import { routes } from './routes';
-import { TensorAnalyzor } from '@remote';
+import { useTA } from '@remote';
 import App from './App.vue';
 
 class Main{
@@ -26,9 +26,8 @@ class Main{
         });
         this.app.use(router);
 
-        const taObj = new TensorAnalyzor();
+        const taObj = useTA();
         const nRet = await taObj.init();
-        this.app.provide('taObj', taObj);
 
         this.app.mount(tag);
         return nRet;

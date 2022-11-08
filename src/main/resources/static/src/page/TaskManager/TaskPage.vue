@@ -53,16 +53,16 @@
 </template>
 
 <script setup lang="ts">
-import { inject, onMounted, ref, Ref } from 'vue';
+import { onMounted, ref, Ref } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRoute } from 'vue-router';
 import moment from "moment";
-import { TaskBean, TaskStatus, TensorAnalyzor } from "@remote";
+import { TaskBean, TaskStatus, useTA } from "@remote";
 import TaskView from "../../cmx/TaskView.vue";
 import CurveLineChart from "../../cmx/CurveLineChart.vue";
 
 const route = useRoute();
-const taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
+const taObj = useTA();
 const isFetchDone:Ref<Boolean|null> = ref(null);
 const task: Ref<TaskBean|null> = ref(null);
 const errorMessage = ref("");

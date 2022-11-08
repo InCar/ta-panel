@@ -1,10 +1,10 @@
-import { ref, reactive, computed, inject } from "vue";
+import { reactive, computed } from "vue";
 import { defineStore } from "pinia";
 
-import { TaskBean, TensorAnalyzor, BackPointResult } from "@remote";
+import { TaskBean, BackPointResult, useTA } from "@remote";
 
 class TaskStore{
-    private _taObj = inject("taObj") as TensorAnalyzor;
+    private _taObj = useTA();
 
     private _dictTasks = reactive<{ [id:string]:TaskBean }>({});
 
@@ -13,6 +13,7 @@ class TaskStore{
     });
 
     public fetch = async():Promise<BackPointResult>=>{
+        
         const backPD = await this._taObj.fetchTaskList();
         if(backPD?.result){
             for(let task of backPD.data as any[]){

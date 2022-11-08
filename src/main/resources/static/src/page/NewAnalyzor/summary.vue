@@ -67,10 +67,10 @@
 </template>
 
 <script setup lang="ts">
-import { inject, ref , Ref, shallowRef } from 'vue';
+import { ref , Ref, shallowRef } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRouter } from 'vue-router';
-import { TAModeBase, TensorAnalyzor } from "@remote";
+import { TAModeBase, useTA } from "@remote";
 import type { Range } from "@remote";
 
 const props = defineProps<{taskArgs: TAModeBase}>();
@@ -80,7 +80,7 @@ const emit = defineEmits<{
     }>();
 
 class Summary{
-    private _taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
+    private _taObj = useTA();
     private _router = useRouter();
     public mode = props.taskArgs;
     public isFinished = ref(false);

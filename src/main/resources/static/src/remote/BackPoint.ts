@@ -10,7 +10,7 @@ export class BackPoint{
         this._backPoint = this.loadBackPointConfig();
     }
 
-    public get BackPoint(){
+    public get BackPoint():string{
         return this._backPoint??this._backPointDefault;
     }
 

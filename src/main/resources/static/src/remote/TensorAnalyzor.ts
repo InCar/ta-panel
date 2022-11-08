@@ -110,11 +110,17 @@ export class TensorAnalyzor {
         return arrayTarget;
     }
 
-    public get BackPoint(){
+    public get BackPoint():string{
         return this._backPoint.BackPoint;
     }
 
     public set BackPoint(value: string|null){
         this._backPoint.BackPoint = value;
     }
+}
+
+let _taObj: TensorAnalyzor|null = null;
+export const useTA = ()=>{
+    if(_taObj === null) _taObj = new TensorAnalyzor();
+    return _taObj;
 }
