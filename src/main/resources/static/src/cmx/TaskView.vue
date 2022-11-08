@@ -48,10 +48,6 @@
         .text{
             position: absolute;
             text-align: right;
-            
-            color: white;
-            // mix-blend-mode:exclusion;
-            // background-blend-mode: screen;
         }
     }
 
@@ -97,7 +93,7 @@
             <div class="c3-line">
                 <div class="progress">
                     <div ref="progressBar" class="progress-bar" :class="statusColor"></div>
-                    <span ref="progressText" class="text">{{Number(task.percent).toFixed(2)}}%</span>
+                    <span ref="progressText" class="text" :class="statusColor">{{Number(task.percent).toFixed(2)}}%</span>
                 </div>
                 <span class="mobile-none">开始时间:{{startTime}}</span>
             </div>
