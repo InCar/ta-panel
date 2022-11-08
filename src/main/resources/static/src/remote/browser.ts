@@ -68,9 +68,6 @@ export class Browser{
                 console.error(e);
             }
         }
-        else{
-            console.warn(`There isn't any register for ${event.data.tag}`)
-        }
     }
 
     private onError = (ev: ErrorEvent)=>{

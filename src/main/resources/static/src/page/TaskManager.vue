@@ -27,7 +27,7 @@
     <div class="waiting-bar" :class="{paused: !isWaiting}" v-if="isWaiting">请稍候</div>
     <div class="task-mgr" v-if="!isChildActive">
         <template class="container" v-for="(task, i) in taskStore.listTasks">
-            <TaskView :task="task" :index="i"  class="task-item" @click="onClickTask(task)"/>
+            <TaskView :task="task!" :index="i"  class="task-item" @click="onClickTask(task!)"/>
         </template>
         <div class="error" v-if="isError">
             <p>{{errorMessage}}</p>
@@ -62,8 +62,6 @@ const isError = ref(false);
 const errorMessage = ref("");
 
 onMounted(async()=>{
-    if(isChildActive.value) return;
-
     isWaiting.value = true;
     const backPD = await taskStore.fetch();
     isWaiting.value = false;
