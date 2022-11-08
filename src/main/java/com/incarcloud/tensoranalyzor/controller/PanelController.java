@@ -176,7 +176,7 @@ public class PanelController {
                     // headers
                     List<String> excludeHeaders = Arrays.asList("connection", "host", "content-length", "accept-encoding");
                     request.getHeaders().forEach((k, v)->{
-                        if(!excludeHeaders.contains(k)) {
+                        if(!excludeHeaders.contains(k.toLowerCase())) {
                             // s_logger.info("{} {}", k, v);
                             builder.setHeader(k, String.join(",", v));
                         }
