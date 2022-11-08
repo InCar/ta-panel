@@ -103,7 +103,7 @@
 </template>
 
 <script setup lang="ts">
-import moment from "moment";
+import { DateTime } from "luxon";
 import { onMounted, ref } from "vue";
 import { computed } from '@vue/reactivity';
 import { TaskBean, TaskStatus } from "@remote";
@@ -144,13 +144,11 @@ const statusColor = computed(()=>{
 });
 
 const startTime = computed(()=>{
-    return moment(props.task.startTime)
-        .format("MM月DD日HH:mm");
+    return props.task.startTime.toFormat("MM月dd日HH:mm");
 });
 
 const createTime = computed(()=>{
-    return moment(props.task.createTime)
-        .format("MM月DD日HH:mm");
+    return props.task.createTime.toFormat("MM月dd日HH:mm");
 });
 
 const progressBar = ref<HTMLDivElement|null>(null);

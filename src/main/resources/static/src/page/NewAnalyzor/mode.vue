@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import moment from "moment";
+import { DateTime } from "luxon";
 import { TAModeBase, TAModeCount, TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo } from "@remote";
 
 const props = defineProps(["taskArgs"]);
@@ -69,7 +69,7 @@ class AnalyzorMode{
     public onOK = (x:TAModeBase)=>{
         if(!x.Active) return;
 
-        const tm = moment().format("MMDDHHmm");
+        const tm = DateTime.local().toFormat("MMddHHmm");
         x.TaskName = `${x.Title}#${tm}`;
         emit('on-step', +1, x);
     };

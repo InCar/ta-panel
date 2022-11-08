@@ -68,6 +68,7 @@
         </div>
         <router-view></router-view>
         <DatePicker />
+        <div style="min-height: 10em"></div>
     </div>
 </template>
 

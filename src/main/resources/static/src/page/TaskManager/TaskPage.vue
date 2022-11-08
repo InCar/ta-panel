@@ -38,7 +38,7 @@
         <div class="task-extra">
             <span>{{task!.id}}</span>
             <span v-if="task?.message">{{task!.message}}</span>
-            <span v-if="task?.finishTime">{{moment(task!.finishTime).format("MM月DD日HH:mm")}}</span>
+            <span v-if="task?.finishTime">{{task!.finishTime.toFormat("yyyy年MM月dd日 HH:mm")}}</span>
             <div v-if="resJson" style="margin-left:2em">
                 <span v-for="(v,i) in resJson">{{i}} => {{v}}</span>
             </div>
@@ -56,7 +56,6 @@
 import { onMounted, ref, nextTick } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRoute } from 'vue-router';
-import moment from "moment";
 import { TaskStatus } from "@remote";
 import TaskView from "../../cmx/TaskView.vue";
 import CurveLineChart from "../../cmx/CurveLineChart.vue";

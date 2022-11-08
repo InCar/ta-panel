@@ -1,6 +1,7 @@
 import { reactive, computed } from "vue";
 import { defineStore } from "pinia";
 import { TaskBean, BackPointResult, useTA, Browser, TaskStatus } from "@remote";
+import { DateTime } from "luxon";
 
 class TaskStore{
     private _taObj = useTA();
@@ -49,6 +50,11 @@ class TaskStore{
     private updateDictionary = (data: any[])=>{
         for(let task of data){
             task.status = parseInt(task.status);
+            task.createTime = DateTime.fromMillis(task.createTime);
+            task.startTime = DateTime.fromMillis(task.startTime);
+            if(task.finishTime){
+                task.finishTime = DateTime.fromMillis(task.finishTime);
+            }
             // TODO: 可以使用更优化的更新内部属性的办法,以避免整体更新
             this._dictTasks[task.id] = task;
         }

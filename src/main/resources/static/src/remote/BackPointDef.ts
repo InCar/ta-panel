@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 
 export interface BackPointResult<T=any>{
     result: boolean;
@@ -23,9 +24,9 @@ export interface TaskBean{
     message?: string;
     // 0.0~100.0
     percent?: number;
-    createTime: Date;
-    startTime: Date;
-    finishTime?: Date;
+    createTime: DateTime;
+    startTime: DateTime;
+    finishTime?: DateTime;
     resJson?: string;
 }
 
