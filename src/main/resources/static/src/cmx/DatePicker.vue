@@ -74,6 +74,12 @@
                 background-color: theme.$color;
             }
         }
+        .box-week{
+            color: theme.$color-bk;
+            background-color: theme.$color;
+            text-align: center;
+            padding: 2px;
+        }
     }
 }
 </style>
@@ -103,6 +109,7 @@
             </div>
         </div>
         <div ref="pickDateCtrl" class="date-picker-date" :class="styleFlip" @animationend="onAnimationFinished">
+            <div class="box-week" v-for="(v) in weekName">{{v}}</div>
             <div class="box-date" v-for="(v, i) in listDatesInLastMonth" @click="onClickDate(v)" :class="stylePickedToday(v)">{{v.date}}</div>
             <div class="box-date box-this-month" v-for="(v, i) in listDatesInThisMonth" @click="onClickDate(v)" :class="stylePickedToday(v)">{{v.date}}</div>
             <div class="box-date" v-for="(v, i) in listDatesInNextMonth" @click="onClickDate(v)" :class="stylePickedToday(v)">{{v.date}}</div>
@@ -128,6 +135,8 @@ interface TDate{
 const presentMonth = ref<TDate>({year:2022, month:10, date:0});
 // 当前选中的日期
 const picked = ref<TDate>({year:2022, month:10, date:27});
+
+const weekName = ["日","一","二","三","四","五","六"];
 
 const listMonthFixed12 = Array(12).fill(0).map((v, i)=>i+1);
 const listYear = Array(50).fill(0).map((v,i)=>2000+i);
