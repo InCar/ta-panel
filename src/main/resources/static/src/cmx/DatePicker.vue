@@ -112,7 +112,7 @@
 
 <script setup lang="ts">
 import { computed } from "@vue/reactivity";
-import moment from "moment";
+import { DateTime } from "luxon";
 import { onBeforeMount, ref } from "vue";
 import Dropdown from "./Dropdown.vue";
 
@@ -161,13 +161,13 @@ const onClickDate = (date: TDate)=>{
 
 const lastDateInMonth = computed(()=>{
     const tm = getTM1st();
-    return tm.endOf("month").date();
+    return tm.daysInMonth;
 });
 
 const weekDayOfMonth1st = computed(()=>{
     // 当前月第1天是星期几(0~6),0是星期天
     const tm = getTM1st();
-    return tm.day();
+    return tm.weekday % 7;
 });
 
 const listDatesInThisMonth = computed<TDate[]>(()=>{
@@ -182,10 +182,10 @@ const listDatesInThisMonth = computed<TDate[]>(()=>{
 const listDatesInLastMonth = computed<TDate[]>(()=>{
     // 前一个月的最后几天(出现在第1周的前几天里)
     const tm = getTM1st();
-    const tmLastMonth = tm.add(-1, "months");
-    const year = tmLastMonth.year();
-    const month = tmLastMonth.month()+1;
-    const to = tmLastMonth.endOf("month").date();
+    const tmLastMonth = tm.minus({ month: 1});
+    const year = tmLastMonth.year;
+    const month = tmLastMonth.month;
+    const to = tmLastMonth.daysInMonth;
     const from = to - weekDayOfMonth1st.value + 1;
     const result = [];
     for(let i=from;i<=to;i++){
@@ -198,10 +198,10 @@ const listDatesInLastMonth = computed<TDate[]>(()=>{
 const listDatesInNextMonth = computed(()=>{
     // 后一个月的最前几天(出现在最末周的后几天里)
     const tm = getTM1st();
-    const to = 6-tm.endOf("month").day();
-    const tmNextMonth = tm.add(+1, "days");
-    const year = tmNextMonth.year();
-    const month = tmNextMonth.month()+1;
+    const to = 6-tm.endOf("month").weekday%7;
+    const tmNextMonth = tm.plus({ days: 1})
+    const year = tmNextMonth.year;
+    const month = tmNextMonth.month;
     const from = 1;
     const result = [];
     for(let i=from;i<=to;i++){
@@ -235,8 +235,8 @@ const stylePickedToday = (date: TDate)=>{
     }
 
     // today
-    const tm = moment();
-    if(tm.year() === date.year && tm.month()+1 == date.month && tm.date() == date.date){
+    const tm = DateTime.local();
+    if(tm.year === date.year && tm.month == date.month && tm.day == date.date){
         result.push("box-today");
     }
 
@@ -245,12 +245,12 @@ const stylePickedToday = (date: TDate)=>{
 
 const getTM1st = ()=>{
     const m = presentMonth.value;
-    const tm = moment({year:m.year, month:m.month-1, date: 1});
+    const tm = DateTime.fromObject({year:m.year, month:m.month, day: 1});
     return tm;
 };
 
 onBeforeMount(()=>{
-    const tm = moment();
-    presentMonth.value = { year: tm.year(), month:tm.month()+1, date:tm.date()};
+    const tm = DateTime.local()
+    presentMonth.value = { year: tm.year, month:tm.month, date:tm.day };
 });
 </script>
