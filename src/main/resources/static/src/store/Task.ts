@@ -12,7 +12,8 @@ class TaskStore{
     }
 
     public listTasks = computed(()=>{
-        return Object.entries(this._dictTasks).map(x=>x[1]);
+        return Object.entries(this._dictTasks).map(x=>x[1])
+            .sort((left, right)=>(right!.createTime.toSeconds() - left!.createTime.toSeconds()));
     });
 
     public getTask = (id:string)=>{
