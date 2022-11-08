@@ -57,7 +57,7 @@ import { onMounted, ref, nextTick } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRoute } from 'vue-router';
 import moment from "moment";
-import { TaskBean, TaskStatus } from "@remote";
+import { TaskStatus } from "@remote";
 import TaskView from "../../cmx/TaskView.vue";
 import CurveLineChart from "../../cmx/CurveLineChart.vue";
 import { useTaskStore } from '@store';
@@ -73,17 +73,12 @@ onMounted(async ()=>{
     const resp = await store.fetch(taskId);
     isWaiting.value = false;
     if(!resp.result){
-        if(typeof resp.data === "string")
-            errorMessage.value = resp.data;
-        else
-            errorMessage.value = JSON.stringify(resp.data??{ error: "ERROR" });
+            errorMessage.value = JSON.stringify(resp);
     }
 })
 
 const task = computed(()=>{
-    const taskFound = store.getTask(taskId);
-    nextTick(()=>{ errorMessage.value = taskFound?"":`没有该任务: ${taskId}`; });
-    
+    const taskFound = store.getTask(taskId);    
     return taskFound;
 });
 
@@ -125,10 +120,10 @@ const hasResult = computed(()=>{
 
 const onCancel = async (e:Event)=>{
     // e.stopPropagation();
-    /*const response = await taObj.cancelTask(task.value?.id as string);
-    if(!response.result){
-        errorMessage.value = JSON.stringify(response.data);
-    }*/
+    const resp = await store.cancelTask(taskId);
+    if(!resp.result){
+        errorMessage.value = JSON.stringify(resp)
+    }
 };
 
 </script>

@@ -50,7 +50,7 @@
             text-align: right;
             
             color: white;
-            mix-blend-mode:exclusion;
+            // mix-blend-mode:exclusion;
             // background-blend-mode: screen;
         }
     }

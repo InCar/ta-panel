@@ -1,6 +1,6 @@
 import { reactive, computed } from "vue";
 import { defineStore } from "pinia";
-import { TaskBean, BackPointResult, useTA, Browser } from "@remote";
+import { TaskBean, BackPointResult, useTA, Browser, TaskStatus } from "@remote";
 
 class TaskStore{
     private _taObj = useTA();
@@ -19,16 +19,12 @@ class TaskStore{
     }
 
     public fetch = async(id?:string):Promise<BackPointResult>=>{
-        await new Promise((resolve)=>{
-            setTimeout(resolve, 3000);
-        });
-
         let backPD;
         if(id === undefined) backPD = await this._taObj.fetchTaskList();
         else   backPD = await this._taObj.fetchTaskSingle(id);
 
         if(backPD.result){
-            this.updateTask(backPD.data);
+            this.updateDictionary(backPD.data);
             Browser.broadcast(TaskStore.name, backPD.data);
             return { result: true };
         }
@@ -37,11 +33,20 @@ class TaskStore{
         }
     }
 
-    private onNotify = (data: any[])=>{
-        this.updateTask(data);
+    public cancelTask = async(id:string)=>{
+        const resp = await this._taObj.stopTask(id);
+        if(resp.result){
+            const task = this._dictTasks[id];
+            if(task) task.status = TaskStatus.Canceled;
+        }
+        return resp;
     }
 
-    private updateTask = (data: any[])=>{
+    private onNotify = (data: any[])=>{
+        this.updateDictionary(data);
+    }
+
+    private updateDictionary = (data: any[])=>{
         for(let task of data){
             task.status = parseInt(task.status);
             // TODO: 可以使用更优化的更新内部属性的办法,以避免整体更新

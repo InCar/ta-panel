@@ -21,9 +21,12 @@ import java.net.URL;
 import java.net.http.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Flow;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @RequestMapping(path="api")
@@ -133,18 +136,27 @@ public class PanelController {
         URI uri = request.getURI();
         String path = uri.getPath();
         String query = uri.getQuery();
-        HttpMethod method = request.getMethod();
         final String api = query==null?path:path+"?"+query;
 
         HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.fromPublisher(s->{
             s.onSubscribe(new Flow.Subscription(){
+                // webflux总是触发多次body
+                private boolean hasCompleted = false;
                 public void request(long n){
                     Flux<DataBuffer> fluxBody = request.getBody();
                     fluxBody.subscribe(buf->{
                         if(buf != null){
+                            // String body = StandardCharsets.UTF_8.decode(buf.asByteBuffer()).toString();
+                            // s_logger.info("body {}", body);
                             s.onNext(buf.asByteBuffer());
                         }
-                        s.onComplete();
+                    });
+                    fluxBody.hasElements().subscribe((hasBody)->{
+                        if(!hasCompleted && !hasBody){
+                            // without body
+                            hasCompleted = true;
+                            s.onComplete();
+                        }
                     });
                 }
                 public void cancel(){}
@@ -156,17 +168,30 @@ public class PanelController {
                 try {
                     URL backAPI = new URL(backPoint, api);
                     String strMethod = request.getMethodValue();
-                    // s_logger.info("BackPoint : {} : {}", strMethod, backAPI);
+                    s_logger.info("BackPoint : {} : {}", strMethod, backAPI);
 
                     HttpRequest.Builder builder = HttpRequest.newBuilder();
-                    if(method == HttpMethod.GET) builder.GET();
-                    else builder.method(strMethod, bodyPublisher);
+                    builder.method(strMethod, bodyPublisher);
+
+                    // headers
+                    List<String> excludeHeaders = Arrays.asList("connection", "host", "content-length", "accept-encoding");
+                    request.getHeaders().forEach((k, v)->{
+                        if(!excludeHeaders.contains(k)) {
+                            // s_logger.info("{} {}", k, v);
+                            builder.setHeader(k, String.join(",", v));
+                        }
+                    });
+
                     HttpRequest backPointRequest = builder.uri(backAPI.toURI())
                             .timeout(Duration.ofMillis(3000))
                             .build();
 
                     CompletableFuture<HttpResponse<String>> waitResp =  httpClient.sendAsync(backPointRequest, HttpResponse.BodyHandlers.ofString());
                     waitResp.thenAccept(resp->{
+                        resp.headers().map().forEach((k,v)->{
+                            response.getHeaders().add(k, String.join(",", v));
+                        });
+
                         response.setRawStatusCode(resp.statusCode());
                         sink.success(resp.body());
                     }).exceptionally((e)->{
@@ -177,6 +202,7 @@ public class PanelController {
                         }
                         response.setRawStatusCode(500);
                         sink.success(e.toString());
+
                         return null;
                     });
                 }

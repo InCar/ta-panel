@@ -67,9 +67,9 @@ export class TensorAnalyzor {
         return await this._backPoint.get(api);
     };
 
-    public cancelTask = async(id:string)=>{
-        const api = `/api/task/cancel`;
-        return await this._backPoint.put(api, { id });
+    public stopTask = async(id:string)=>{
+        const api = `/api/task/stop?ids=${id}`;
+        return await this._backPoint.post(api);
     };
 
     private assembleTaskBody = (mode: TAModeBase):TaskBody|null=>{
