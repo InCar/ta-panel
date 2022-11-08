@@ -26,8 +26,8 @@
 <template>
     <div class="waiting-bar" :class="{paused: !isWaiting}" v-if="isWaiting">请稍候</div>
     <div class="task-mgr" v-if="!isChildActive">
-        <template class="container" v-for="(task, i) in listTasks">
-            <TaskView :task="task" :index="i"  class="task-item" @click="onClickTask(task)"/>
+        <template class="container" v-for="(task, i) in taskStore.listTasks">
+            <TaskView :task="task!" :index="i"  class="task-item" @click="onClickTask(task!)"/>
         </template>
         <div class="error" v-if="isError">
             <p>{{errorMessage}}</p>
@@ -39,15 +39,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, inject, shallowReactive, ShallowReactive } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { TaskBean, TensorAnalyzor } from 'logic';
+import { TaskBean } from "@remote";
 import TaskView from "../cmx/TaskView.vue";
 import { computed } from '@vue/reactivity';
+import { useTaskStore } from '@store';
 
 const router = useRouter();
-const taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
-const listTasks:ShallowReactive<TaskBean[]> = shallowReactive([]);
+const taskStore = useTaskStore();
 
 const isChildActive = computed(()=>{
     return router.currentRoute.value.matched.length > 1;
@@ -61,22 +61,14 @@ const isWaiting = ref(false);
 const isError = ref(false);
 const errorMessage = ref("");
 
-onMounted(()=>{
-    if(isChildActive.value) return;
-
+onMounted(async()=>{
     isWaiting.value = true;
-    taObj.fetchTaskList().then((response)=>{
-        isWaiting.value = false;
-        if(response.result){
-            for(let x of response.data){
-                x.status = parseInt(x.status);
-                listTasks.push(x);
-            }
-        }
-        else{
-            errorMessage.value = response.data;
-            isError.value = true;
-        }
-    });
+    const backPD = await taskStore.fetch();
+    isWaiting.value = false;
+
+    if(backPD.result == false){
+        errorMessage.value = backPD.data;
+        isError.value = true;
+    }
 });
 </script>

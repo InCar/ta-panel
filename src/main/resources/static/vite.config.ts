@@ -1,11 +1,14 @@
 import * as Path from "path";
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import { compilerOptions } from "./tsconfig.json";
+import { resolve } from "path";
 
-const logic : any = ()=>Path.resolve("./src/logic");
+// tsconfig.compilerOptions.paths => viteconfig.resolve.alias
+const alias = Object.entries(compilerOptions.paths)
+                    .map(x=>({ find: x[0], replacement: Path.resolve(x[1][0]) }));
 
-// https://vitejs.dev/config/
-export default defineConfig({
+export const userConfig = {
     build: {
         outDir: "../dist",
         emptyOutDir: true,
@@ -20,7 +23,8 @@ export default defineConfig({
         }
     },
     plugins: [ vue() ],
-    resolve: {
-        alias: { logic }
-    }
-})
+    resolve: { alias }
+};
+
+// https://vitejs.dev/config/
+export default defineConfig(userConfig);

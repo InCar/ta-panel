@@ -32,8 +32,8 @@
 
 <script setup lang="ts">
 import { computed } from '@vue/reactivity';
-import { ref, shallowReactive, onMounted, inject, Ref } from 'vue';
-import { TAMode, TAModeBase, TAModeCount, TAModeSingleDistribution, TensorAnalyzor, TJsonFields } from 'logic';
+import { ref, shallowReactive, onMounted, Ref } from 'vue';
+import { TAMode, TAModeBase, TJsonFields, useTA } from "@remote";
 
 const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{
@@ -62,7 +62,7 @@ class PageSelectFields{
         this.initPicked();
 
         // loading fields
-        const taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
+        const taObj = useTA();
         const jsonFields = await taObj.fetchJsonFields();
         Object.assign(this.jsonFields, jsonFields);
     };

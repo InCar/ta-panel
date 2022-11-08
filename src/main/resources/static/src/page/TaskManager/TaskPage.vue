@@ -24,7 +24,10 @@
 </style>
 
 <template>
-    <div v-if="isFetchDone">
+    <div class="error" v-if="(!isWaiting) && errorMessage?.length > 0">
+        <span>{{errorMessage}}</span>
+    </div>
+    <div v-if="task != null">
         <TaskView :task="task!" class="task-item" />
         <div class="task-action" v-if="isCancellable">
             <button v-if="isCancellable" @click="onCancel">取消</button>
@@ -47,25 +50,37 @@
             </div>
         </div>
     </div>
-    <div class="error" v-if="errorMessage?.length > 0">
-        <span>{{errorMessage}}</span>
-    </div>
 </template>
 
 <script setup lang="ts">
-import { inject, onMounted, ref, Ref } from 'vue';
+import { onMounted, ref, nextTick } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRoute } from 'vue-router';
 import moment from "moment";
-import { TaskBean, TaskStatus, TensorAnalyzor } from 'logic';
+import { TaskStatus } from "@remote";
 import TaskView from "../../cmx/TaskView.vue";
 import CurveLineChart from "../../cmx/CurveLineChart.vue";
+import { useTaskStore } from '@store';
 
 const route = useRoute();
-const taObj: TensorAnalyzor = inject('taObj') as TensorAnalyzor;
-const isFetchDone:Ref<Boolean|null> = ref(null);
-const task: Ref<TaskBean|null> = ref(null);
+const store = useTaskStore();
+const isWaiting = ref(true);
 const errorMessage = ref("");
+
+const taskId = route.params.taskId as string;
+
+onMounted(async ()=>{
+    const resp = await store.fetch(taskId);
+    isWaiting.value = false;
+    if(!resp.result){
+            errorMessage.value = JSON.stringify(resp);
+    }
+})
+
+const task = computed(()=>{
+    const taskFound = store.getTask(taskId);    
+    return taskFound;
+});
 
 const paramJson = computed(()=>{
     if(task.value?.paramJson){
@@ -92,23 +107,6 @@ const diagramData = computed(
         .sort((a, b)=>a.x-b.x)
     );
 
-const init = async()=>{
-    const taskId = route.params.taskId as string;
-    const result = await taObj.fetchTaskSingle(taskId);
-    if(!result.result){
-        errorMessage.value = `远程调用失败: ${result.data}`;
-    }
-    else if(result?.data?.length > 0){
-        task.value = result.data[0];
-        task.value!.status = parseInt(result.data[0].status);
-        isFetchDone.value = result.result;
-    }
-    else{
-        errorMessage.value = "没有结果";        
-    }
-};
-
-
 const isCancellable = computed(()=>{
     if(task.value?.status == TaskStatus.Pending || task.value?.status == TaskStatus.Running)
         return true;
@@ -122,11 +120,10 @@ const hasResult = computed(()=>{
 
 const onCancel = async (e:Event)=>{
     // e.stopPropagation();
-    const response = await taObj.cancelTask(task.value?.id as string);
-    if(!response.result){
-        errorMessage.value = JSON.stringify(response.data);
+    const resp = await store.cancelTask(taskId);
+    if(!resp.result){
+        errorMessage.value = JSON.stringify(resp)
     }
 };
 
-onMounted(init);
 </script>

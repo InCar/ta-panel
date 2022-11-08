@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watchEffect } from 'vue';
-import { TAModeBase } from 'logic';
+import { TAModeBase } from "@remote";
 
 const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{

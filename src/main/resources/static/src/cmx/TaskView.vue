@@ -50,7 +50,7 @@
             text-align: right;
             
             color: white;
-            mix-blend-mode:exclusion;
+            // mix-blend-mode:exclusion;
             // background-blend-mode: screen;
         }
     }
@@ -110,7 +110,7 @@
 import moment from "moment";
 import { onMounted, ref } from "vue";
 import { computed } from '@vue/reactivity';
-import { TaskBean, TaskStatus } from 'logic';
+import { TaskBean, TaskStatus } from "@remote";
 
 const props = defineProps<{
     index?: Number,

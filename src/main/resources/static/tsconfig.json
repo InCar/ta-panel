@@ -17,7 +17,8 @@
         "skipLibCheck": true,
         "baseUrl": "./",
         "paths": {
-            "logic": [ "./src/logic/index.ts" ]
+            "@remote": [ "./src/remote" ],
+            "@store": [ "./src/store" ]
         }
     },
     "include": [

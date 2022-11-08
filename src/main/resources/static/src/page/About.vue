@@ -20,6 +20,7 @@
     }
 }
 .version{
+    
     display: grid;
     grid-template-columns: 1fr 1fr;
     span:nth-of-type(2n+1){
@@ -28,6 +29,16 @@
         margin-left: 1em;
         font-style: italic;
     }
+}
+.dev-test{
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 1em;
+}
+
+.em{
+    color: theme.$color-em;
+    font-weight: bold;
 }
 </style>
 
@@ -41,23 +52,29 @@
                 <span>{{k}}</span>
                 <span>{{v}}</span>
             </template>
+            <span>Worker</span><span>{{IsWorkerSupported?"Supported":"NA"}}</span>
+            <span>SharedWorker</span><span>{{IsSharedWorkerSupported?"Supported":"NA"}}</span>
+            <span>WorkerMode</span><span>{{store.WorkerMode}}</span>
         </div>
-        <hr/>
-
+        <hr />
+        <div class="dev-test">
+            <span class="em">{{store.Count}}</span>
+            <button @click="store.increment">Click</button>
+        </div>
+        <hr />
         <div class="check-item">
             <input type="checkbox" v-model="data.IsDevChecked.value"/>
-            
             <span>显示开发设定</span>
         </div>
         <router-view></router-view>
-        
         <DatePicker />
     </div>
 </template>
 
 <script setup lang="ts">
+import { useAboutStore } from '@store';
 import { computed } from '@vue/reactivity';
-import { onMounted, ref, watch, watchEffect } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRouter } from "vue-router";
 
 import DatePicker from "../cmx/DatePicker.vue";
@@ -66,6 +83,10 @@ const widthViewPort = ref(window.innerWidth);
 const heightViewPort = ref(window.innerHeight);
 const devPixelRatio = window.devicePixelRatio.toFixed(2);
 const agents:any = ref({});
+const IsWorkerSupported = !!window.Worker;
+const IsSharedWorkerSupported = !!window.SharedWorker;
+
+const store = useAboutStore();
 
 class AboutPage {
     private _router = useRouter();
