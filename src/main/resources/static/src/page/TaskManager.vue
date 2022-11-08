@@ -41,7 +41,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { TaskBean } from "@logic";
+import { TaskBean } from "@remote";
 import TaskView from "../cmx/TaskView.vue";
 import { computed } from '@vue/reactivity';
 import { useTaskStore } from '@store';

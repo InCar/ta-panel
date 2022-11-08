@@ -1,22 +1,7 @@
 import { TAModeBase } from "./TAModes";
-import { Operations, TaskOperation } from "./Operations";
-
-export interface TJsonFields {
-    [key: string]: { desc?: string, description?: string }
-}
-
-interface TaskBody{
-    name: string;
-    dataSources: Array<any>,
-    fields: Array<any>,
-    operator: TaskOperation,
-    limit?: number
-}
-
-export interface BackPointResult{
-    result: boolean;
-    data?: any;
-}
+import { TJsonFields } from "./TADef";
+import { TaskBody } from "./BackPointDef";
+import { Operations } from "./Operations";
 
 export class TensorAnalyzor {
     // 用于开发目的

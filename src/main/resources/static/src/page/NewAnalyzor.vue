@@ -37,7 +37,7 @@
 import { ref, shallowRef, nextTick, onMounted, ShallowRef } from "vue";
 import BreadCrumb from "../cmx/BreadCrumb.vue";
 import { BreadCrumbItem } from "../cmx/BreadCrumb.vue";
-import { TAMode, TAModeBase } from "@logic";
+import { TAMode, TAModeBase } from "@remote";
 
 import XMode from "./NewAnalyzor/mode.vue";
 import XSelect from "./NewAnalyzor/selector.vue";

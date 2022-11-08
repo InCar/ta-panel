@@ -1,23 +1,5 @@
 import { Range, TAMode, TAModeBase, TAModeCount, TAModeSingleDistribution } from "./TAModes";
-
-export interface FieldOption{
-    field: string;
-    from?: number;
-    to?:   number;
-    step?: number;
-}
-
-export interface TaskOperation{
-    op: string;
-    opArgs: {
-        groupBy?: FieldOption[],
-        aggregation: {
-            fn?: string;
-            fns?: string[];
-            fnArgs: any
-        }
-    }
-}
+import { TaskOperation } from "./BackPointDef";
 
 const opFn: Array<(mode:TAModeBase)=>TaskOperation|null> = [];
 

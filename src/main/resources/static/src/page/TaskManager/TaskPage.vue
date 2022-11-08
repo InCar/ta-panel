@@ -57,7 +57,7 @@ import { inject, onMounted, ref, Ref } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRoute } from 'vue-router';
 import moment from "moment";
-import { TaskBean, TaskStatus, TensorAnalyzor } from "@logic";
+import { TaskBean, TaskStatus, TensorAnalyzor } from "@remote";
 import TaskView from "../../cmx/TaskView.vue";
 import CurveLineChart from "../../cmx/CurveLineChart.vue";
 

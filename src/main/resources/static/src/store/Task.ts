@@ -1,7 +1,7 @@
 import { ref, reactive, computed, inject } from "vue";
 import { defineStore } from "pinia";
 
-import { TaskBean, TensorAnalyzor, BackPointResult } from "@logic";
+import { TaskBean, TensorAnalyzor, BackPointResult } from "@remote";
 
 class TaskStore{
     private _taObj = inject("taObj") as TensorAnalyzor;

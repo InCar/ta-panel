@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import { computed } from '@vue/reactivity';
 import { ref, shallowReactive, onMounted, inject, Ref } from 'vue';
-import { TAMode, TAModeBase, TAModeCount, TAModeSingleDistribution, TensorAnalyzor, TJsonFields } from "@logic";
+import { TAMode, TAModeBase, TAModeCount, TAModeSingleDistribution, TensorAnalyzor, TJsonFields } from "@remote";
 
 const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{

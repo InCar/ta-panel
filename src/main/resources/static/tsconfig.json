@@ -18,8 +18,7 @@
         "baseUrl": "./",
         "paths": {
             "@remote": [ "./src/remote" ],
-            "@store": [ "./src/store" ],
-            "@logic": [ "./src/logic" ]
+            "@store": [ "./src/store" ]
         }
     },
     "include": [

@@ -3,7 +3,7 @@
 import { createApp, App as AppT } from 'vue';
 import { createRouter, RouteRecordRaw, createWebHistory } from 'vue-router';
 import { createPinia } from 'pinia';
-import { TensorAnalyzor } from '@logic';
+import { TensorAnalyzor } from '@remote';
 import App from './App.vue';
 import Home from './page/Home.vue';
 import TaskManager from './page/TaskManager.vue';
@@ -24,7 +24,6 @@ class Main{
         { path: '/TaskManager', component: TaskManager, meta: { topLevel: true, title: "任务管理", icon: "task"},
             children: [ { path: ':taskId', component: TaskPage } ]
         },
-        //{ path: '/TaskManager/:taskId', component: ToDo },
         { path: '/NewAnalyzor', component: NewAnalyzor, meta: { topLevel: true, title: "创建新任务", icon: "add_box" } },
         { path: '/About', component: About, meta: { topLevel: true, title: "About", icon: "info" },
             children: [

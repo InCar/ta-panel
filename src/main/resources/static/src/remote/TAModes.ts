@@ -1,4 +1,4 @@
-import { TJsonFields } from "./TensorAnalyzor";
+import { TJsonFields } from "./TADef";
 
 export enum TAMode{
     Count,

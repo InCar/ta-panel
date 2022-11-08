@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 import moment from "moment";
-import { TAModeBase, TAModeCount, TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo } from "@logic";
+import { TAModeBase, TAModeCount, TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo } from "@remote";
 
 const props = defineProps(["taskArgs"]);
 const emit = defineEmits<{
