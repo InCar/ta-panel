@@ -78,7 +78,7 @@ import { computed } from '@vue/reactivity';
 import { onMounted, ref, watch } from 'vue';
 import { useRouter } from "vue-router";
 
-import DatePicker from "../cmx/DatePicker.vue";
+import {DatePicker} from "@cmx";
 
 const widthViewPort = ref(window.innerWidth);
 const heightViewPort = ref(window.innerHeight);

@@ -56,6 +56,8 @@ class TaskStore{
             if(task.finishTime){
                 task.finishTime = DateTime.fromMillis(task.finishTime);
             }
+            task.paramArgs = JSON.parse(task.paramJson);
+            
             // TODO: 可以使用更优化的更新内部属性的办法,以避免整体更新
             this._dictTasks[task.id] = task;
         }

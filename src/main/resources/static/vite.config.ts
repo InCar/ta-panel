@@ -2,7 +2,6 @@ import * as Path from "path";
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { compilerOptions } from "./tsconfig.json";
-import { resolve } from "path";
 
 // tsconfig.compilerOptions.paths => viteconfig.resolve.alias
 const alias = Object.entries(compilerOptions.paths)

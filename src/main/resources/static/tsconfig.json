@@ -18,7 +18,8 @@
         "baseUrl": "./",
         "paths": {
             "@remote": [ "./src/remote" ],
-            "@store": [ "./src/store" ]
+            "@store": [ "./src/store" ],
+            "@cmx": [ "./src/cmx" ]
         }
     },
     "include": [

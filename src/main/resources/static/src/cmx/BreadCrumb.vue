@@ -36,16 +36,10 @@
     </ol>
 </template>
 
-<script lang="ts">
-export interface BreadCrumbItem{
-    text: Ref<string>;
-    data?: any;
-}
-</script>
-
 <script setup lang="ts">
 import { computed } from '@vue/reactivity';
-import { ref, Ref, ShallowReactive, shallowReactive } from 'vue';
+import { ShallowReactive, shallowReactive } from 'vue';
+import { BreadCrumbItem } from './BreadCrumb';
 
 const props = defineProps({ disabled: Boolean });
 const emit = defineEmits<{(e:"on-nav", item:BreadCrumbItem, i:number):void}>();

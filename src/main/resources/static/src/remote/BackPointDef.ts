@@ -19,6 +19,7 @@ export interface TaskBean{
     id: string;
     name: string;
     paramJson: string;
+    paramArgs: TaskBody;
     // 1等待中|2执行中|3执行成功|4执行失败|5已取消|6已中断
     status: TaskStatus;
     message?: string;

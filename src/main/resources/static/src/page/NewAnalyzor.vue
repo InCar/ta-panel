@@ -34,10 +34,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, shallowRef, nextTick, onMounted, ShallowRef } from "vue";
-import BreadCrumb from "../cmx/BreadCrumb.vue";
-import { BreadCrumbItem } from "../cmx/BreadCrumb.vue";
+import { ref, shallowRef, nextTick, onMounted, ShallowRef, Ref } from "vue";
 import { TAMode, TAModeBase } from "@remote";
+import { BreadCrumbItem, BreadCrumb } from "@cmx";
 
 import XMode from "./NewAnalyzor/mode.vue";
 import XSelect from "./NewAnalyzor/selector.vue";

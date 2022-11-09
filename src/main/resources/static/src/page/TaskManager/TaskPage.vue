@@ -57,8 +57,7 @@ import { onMounted, ref, nextTick } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRoute } from 'vue-router';
 import { TaskStatus } from "@remote";
-import TaskView from "../../cmx/TaskView.vue";
-import CurveLineChart from "../../cmx/CurveLineChart.vue";
+import { TaskView, CurveLineChart } from "@cmx";
 import { useTaskStore } from '@store';
 
 const route = useRoute();
