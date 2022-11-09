@@ -81,9 +81,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed, ref, onBeforeUnmount } from "vue";
+import { onMounted, computed, ref, watch, watchEffect, onUnmounted, WatchStopHandle } from "vue";
 import { useRouter } from "vue-router";
-import { useAnalyzorStore, useNavStore } from "@store";
+import { useAnalyzorStore } from "@store";
 import { BreadCrumb, BreadCrumbItem } from "@cmx";
 
 interface XEntry {
@@ -98,7 +98,6 @@ const dictGroupTitle: { [key:string]:XEntry } = {
 
 const router = useRouter();
 const store = useAnalyzorStore();
-const navStore = useNavStore();
 
 const breadCrumb = ref<InstanceType<typeof BreadCrumb>|null>(null);
 
@@ -118,6 +117,11 @@ const isChildActive = computed(()=>{
     return routes.matched.length > 1;
 });
 
+const routePath = computed(()=>{
+    const routes = router.currentRoute.value;
+    return routes.fullPath;
+});
+
 const onNav = (item:BreadCrumbItem, i:number)=>{
     router.push(item.data);
 };
@@ -126,10 +130,30 @@ const onClickGroup = (op:string)=>{
     router.push(`/Analyzor/${op}`);
 }
 
-onMounted(async ()=>{ 
-    breadCrumb.value?.appendItem({ text: ref("分析结果"), data: "/Analyzor" });
-    await store.fetch();   
+onMounted(async ()=>{
+    await store.fetch();
+    
+    watch(routePath, (v, last)=>{
+        if(v.startsWith("/Analyzor")){
+            const routes = router.currentRoute.value;
+            if(breadCrumb.value?.total! < 1){
+                breadCrumb.value?.appendItem({ text: ref("分析结果"), data: "/Analyzor" });
+            }
+
+            const group = routes.params["group"] as string;
+            if(breadCrumb.value?.total! < 2 && group){
+                const title = dictGroupTitle[group].title;
+                breadCrumb.value?.appendItem({ text: ref(title), data: `/Analyzor/${group}` });
+            }
+
+            const taskId = routes.params["taskId"] as string;
+            if(breadCrumb.value?.total! < 3 && taskId){
+                const task = store.dictAnalyzorGroups[group].find(v=>v.id == taskId);
+                breadCrumb.value?.appendItem({ text: ref(task!.name), data: `/Analyzor/${group}/${taskId}` });
+            }
+            
+        }
+    }, { immediate: true });
 });
 
-onBeforeUnmount
 </script>

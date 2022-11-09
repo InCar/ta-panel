@@ -14,8 +14,8 @@ import About from "./page/About.vue";
 const ToDo = ()=>import('./page/todo.vue');
 
 export const routes: ReadonlyArray<RouteRecordRaw> = [
-    { path: '/', component: Home, meta: { topLevel: true, title: "分析结果", icon: "tenancy" } },
-    { path: '/Analyzor', component: Analyzor,
+    { path: '/', component: Home },
+    { path: '/Analyzor', component: Analyzor, meta: { topLevel: true, title: "分析结果", icon: "tenancy" },
         children: [
             { path: ':group', component: AnalyzorGroup },
             { path: ':group/:taskId', component: TaskOne }
