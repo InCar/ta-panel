@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class RouteController {
     private final Logger s_logger = LoggerFactory.getLogger(RouteController.class);
 
-    @RequestMapping("/{path:TaskManager|NewAnalyzor|About}/**")
+    @RequestMapping("/{path:TaskManager|Analyzor|NewAnalyzor|About}/**")
     public Mono<String> SinglePageApp(@Value("${tensor-analyzor.index}") Resource html){
         try {
             Scanner s = new Scanner(html.getInputStream()).useDelimiter("\\A");
