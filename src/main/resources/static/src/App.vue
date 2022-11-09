@@ -34,6 +34,9 @@
         display: flex;
         flex-direction: row;
         justify-content: space-around;
+        @media(max-height: theme.$size-mobile-max-height){
+            position: static;
+        }
 
         .logo{
             margin-top: 8px;
