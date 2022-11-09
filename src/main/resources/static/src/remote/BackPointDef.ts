@@ -29,6 +29,7 @@ export interface TaskBean{
     startTime: DateTime;
     finishTime?: DateTime;
     resJson?: string;
+    resData?: any;
 }
 
 export interface TaskOperation{

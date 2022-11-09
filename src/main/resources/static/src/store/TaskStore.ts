@@ -26,7 +26,8 @@ class TaskStore{
         else   backPD = await this._taObj.fetchTaskSingle(id);
 
         if(backPD.result){
-            this.updateDictionary(backPD.data);
+            const listTasks = this.fixString(backPD.data);
+            this.updateDictionary(listTasks);
             Browser.broadcast(TaskStore.name, backPD.data);
             return { result: true };
         }
@@ -45,23 +46,35 @@ class TaskStore{
     }
 
     private onNotify = (data: any[])=>{
-        this.updateDictionary(data);
+        const listTasks = this.fixString(data);
+        this.updateDictionary(listTasks);
     }
 
-    private updateDictionary = (data: any[])=>{
+    private updateDictionary = (data: TaskBean[])=>{
         for(let task of data){
-            task.status = parseInt(task.status);
-            task.createTime = DateTime.fromMillis(task.createTime);
-            task.startTime = DateTime.fromMillis(task.startTime);
-            if(task.finishTime){
-                task.finishTime = DateTime.fromMillis(task.finishTime);
-            }
-            task.paramArgs = JSON.parse(task.paramJson);
-            
             // TODO: 可以使用更优化的更新内部属性的办法,以避免整体更新
             this._dictTasks[task.id] = task;
         }
     };
+
+    private fixString = (data: any[])=>{
+        const listTasks = Array<TaskBean>();
+        for(let task of data){
+            const taskCopy = {...task};
+            taskCopy.status = parseInt(taskCopy.status);
+            taskCopy.createTime = DateTime.fromMillis(taskCopy.createTime);
+            taskCopy.startTime = DateTime.fromMillis(taskCopy.startTime);
+            if(taskCopy.finishTime){
+                taskCopy.finishTime = DateTime.fromMillis(taskCopy.finishTime);
+            }
+            taskCopy.paramArgs = JSON.parse(taskCopy.paramJson);
+            if(taskCopy.resJson){
+                taskCopy.resData = JSON.parse(taskCopy.resJson);
+            }
+            listTasks.push(taskCopy);
+        }
+        return listTasks;
+    }
 }
 
 export const useTaskStore = defineStore(TaskStore.name, ()=>{ return new TaskStore() });
