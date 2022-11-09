@@ -25,6 +25,25 @@
             padding: 0.25em;
         }
     }
+
+    .data-table-v{
+        margin:1em;
+        align-self: center;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        span:nth-of-type(2n+1){
+            text-align: center;
+        }
+        span:nth-of-type(2n){
+            text-align: right;
+        }
+        
+        span{
+            text-align: center;
+            border: 1px dotted theme.$color;
+            padding: 0.25em;
+        }
+    }
 }
 </style>
 
@@ -33,12 +52,19 @@
         <h2>{{ task?.name }}</h2>
         <div v-if="hasResult">
             <CurveLineChart class="chart" :data="diagramData" />
-            <div class="data-table">
+            <div class="data-table mobile-none">
                 <div><span>Y</span><span>X</span></div>
                 <div class="data-xy" v-for="v in diagramData">
                     <span>{{v.y}}</span>
                     <span>{{v.x}}</span>
                 </div>
+            </div>
+            <div class="data-table-v mobile-only">
+                <span>X</span><span>Y</span>
+                <template class="data-xy" v-for="v in diagramData">
+                    <span>{{v.x}}</span>
+                    <span>{{v.y}}</span>
+                </template>
             </div>
         </div>
     </div>

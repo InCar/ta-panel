@@ -24,7 +24,13 @@ input{
 
 @media(max-width: theme.$size-mobile-max-width){
     .mobile-none{
-        display: none;
+        display: none !important;
+    }
+}
+
+@media(min-width: theme.$size-mobile-max-width){
+    .mobile-only{
+        display: none !important;
     }
 }
 
