@@ -4,6 +4,7 @@
     display: flex;
     flex-flow: row wrap;
     gap: 1em;
+    justify-content: center;
 }
 </style>
 

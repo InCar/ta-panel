@@ -1,6 +1,6 @@
 <style scoped lang="scss">
 @use "../theme.scss";
-.container{
+.bread-crumb-container{
     margin: 4px;
     padding: 0;
     display: flex;
@@ -28,7 +28,7 @@
 </style>
 
 <template>
-    <ol class="container">
+    <ol class="bread-crumb-container">
         <template v-for="(x,i) in listNavItems">
             <span v-if="(i>0)" class="material-symbols-outlined">arrow_right</span>
             <li  @click="onItemClicked(x, i)">{{x.text.value}}</li>
