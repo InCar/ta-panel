@@ -83,7 +83,7 @@
 <script setup lang="ts">
 import { onMounted, computed, ref, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
-import { useAnalyzorStore } from "@store";
+import { useAnalyzorStore, useNavStore } from "@store";
 import { BreadCrumb, BreadCrumbItem } from "@cmx";
 
 interface XEntry {
@@ -98,6 +98,7 @@ const dictGroupTitle: { [key:string]:XEntry } = {
 
 const router = useRouter();
 const store = useAnalyzorStore();
+const navStore = useNavStore();
 
 const breadCrumb = ref<InstanceType<typeof BreadCrumb>|null>(null);
 
@@ -114,19 +115,6 @@ const home = new HomePage();
 
 const isChildActive = computed(()=>{
     const routes = router.currentRoute.value;
-    if(breadCrumb.value != null){
-        for(let i in routes.matched){
-            const index = parseInt(i);
-            if(index < breadCrumb.value.total) continue;
-            
-            if(index === 1){
-                const op = routes.params["group"] as string;
-                breadCrumb.value.appendItem({ text: ref(dictGroupTitle[op].title),  data: routes.fullPath });
-            }
-
-        }
-    }
-
     return routes.matched.length > 1;
 });
 

@@ -3,6 +3,7 @@ import { RouteRecordRaw } from 'vue-router';
 import Home from './page/Home.vue';
 import Analyzor from "./page/Analyzor.vue"
     import AnalyzorGroup from './page/Analyzor/Group.vue';
+    import TaskOne from "./page/Analyzor/TaskOne.vue";
 import TaskManager from './page/TaskManager.vue';
     import TaskPage from "./page/TaskManager/TaskPage.vue";
 import NewAnalyzor from './page/NewAnalyzor.vue';
@@ -15,7 +16,10 @@ const ToDo = ()=>import('./page/todo.vue');
 export const routes: ReadonlyArray<RouteRecordRaw> = [
     { path: '/', component: Home, meta: { topLevel: true, title: "分析结果", icon: "tenancy" } },
     { path: '/Analyzor', component: Analyzor,
-        children: [ { path: ':group', component: AnalyzorGroup } ]
+        children: [
+            { path: ':group', component: AnalyzorGroup },
+            { path: ':group/:taskId', component: TaskOne }
+        ]
     },
     { path: '/TaskManager', component: TaskManager, meta: { topLevel: true, title: "任务管理", icon: "task"},
         children: [ { path: ':taskId', component: TaskPage } ]
