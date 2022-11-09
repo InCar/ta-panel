@@ -1,6 +1,13 @@
 <style scoped lang="scss">
 @use "../../theme.scss";
 .task-one{
+    width: 100%;
+    margin: 0 auto;
+
+    @media(min-width: 1500px){
+        width: 70%;
+    }
+
     h2{
         align-self: center;
     }
@@ -38,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { CurveLineChart } from "@cmx";
 import { useTaskStore } from "@store";
