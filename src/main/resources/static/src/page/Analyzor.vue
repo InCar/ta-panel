@@ -136,6 +136,13 @@ onMounted(async ()=>{
     watch(routePath, (v, last)=>{
         if(v.startsWith("/Analyzor")){
             const routes = router.currentRoute.value;
+
+            if(routes.matched.length === 1){
+                while(breadCrumb.value?.total! > 1){
+                    breadCrumb.value?.stepBack();
+                }
+            }
+
             if(breadCrumb.value?.total! < 1){
                 breadCrumb.value?.appendItem({ text: ref("分析结果"), data: "/Analyzor" });
             }

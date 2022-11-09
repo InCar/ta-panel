@@ -45,8 +45,6 @@ const render = (data:any[])=>{
     // 计算极值区间
     const extX = d3.extent(data, d=>d.x);
 
-    console.info(props.data);
-
     // x值映射函数
     const fnScaleX = d3.scaleLinear()
         .domain([extX[0], extX[1]])
