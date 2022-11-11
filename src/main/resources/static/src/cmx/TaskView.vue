@@ -95,7 +95,7 @@
                     <div ref="progressBar" class="progress-bar" :class="statusColor"></div>
                     <span ref="progressText" class="text" :class="statusColor">{{Number(task.percent).toFixed(2)}}%</span>
                 </div>
-                <span class="mobile-none">开始时间:{{startTime}}</span>
+                <span v-if="startTime.length>0" class="mobile-none">开始时间:{{startTime}}</span>
             </div>
         </div>
     </div>
@@ -105,7 +105,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { computed } from '@vue/reactivity';
-import { TaskBean, TaskStatus } from "@remote";
+import { TaskBean, TaskStatus } from "@ta";
 
 const props = defineProps<{
     index?: Number,
@@ -143,7 +143,7 @@ const statusColor = computed(()=>{
 });
 
 const startTime = computed(()=>{
-    return props.task.startTime.toFormat("MM月dd日HH:mm");
+    return props.task.startTime?.toFormat("MM月dd日HH:mm")??"";
 });
 
 const createTime = computed(()=>{

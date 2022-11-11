@@ -44,6 +44,7 @@ def markGitVer = tasks.register('markGitVer'){
         def hash = (git + "rev-parse --short HEAD").execute().text.trim()
         def hash160 = (git + "rev-parse HEAD").execute().text.trim()
         println("\tMark Git Version: " + branch + "." + rev + "@" + hash)
+        def tmBuilding = System.currentTimeMillis().toString()
 
         def packageName = "com.incarcloud.tensoranalyzor".replace('.', '/')
         def javaFile = new File(projectDir, "src/main/java/$packageName/GitVer.jav_").text
@@ -52,6 +53,7 @@ def markGitVer = tasks.register('markGitVer'){
                 .replace("\$rev\$", rev)
                 .replace("\$hash\$", hash)
                 .replace("\$hash160\$", hash160)
+                .replace("\$tmBuilding\$", tmBuilding)
 
         def writer = new PrintWriter(new File(projectDir, "src/main/java/$packageName/GitVer.java"))
         writer.print(javaFile)

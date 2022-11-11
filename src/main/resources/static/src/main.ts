@@ -4,7 +4,7 @@ import { createApp, App as AppT } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import { createPinia } from 'pinia';
 import { routes } from './routes';
-import { useTA } from '@remote';
+import { useTA } from '@ta';
 import App from './App.vue';
 
 class Main{

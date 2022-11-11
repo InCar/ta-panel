@@ -1,5 +1,5 @@
-import { Range, TAMode, TAModeBase, TAModeCount, TAModeSingleDistribution } from "./TAModes";
-import { TaskOperation } from "./BackPointDef";
+import { Range, TAMode, TAModeBase, TAModeCount, TAModeSingleDistribution } from "./mode/TAModes";
+import { TaskOperation } from "./remote/BackPointDef";
 
 const opFn: Array<(mode:TAModeBase)=>TaskOperation|null> = [];
 

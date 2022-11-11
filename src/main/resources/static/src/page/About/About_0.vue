@@ -18,6 +18,9 @@ const version = ref("");
 
 onMounted(async ()=>{
     const resp = await fetch("/api/version");
-    version.value = await resp.text();
+    if(resp.ok){
+        const gitVer = await resp.json();
+        version.value = gitVer.version;
+    }
 })
 </script>

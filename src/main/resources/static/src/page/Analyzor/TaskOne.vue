@@ -4,8 +4,8 @@
     width: 100%;
     margin: 0 auto;
 
-    @media(min-width: 1500px){
-        width: 70%;
+    @media(min-width: 1160px){
+        width: 1000px;
     }
 
     h2{
@@ -52,6 +52,8 @@
         <h2>{{ task?.name }}</h2>
         <div v-if="hasResult">
             <CurveLineChart class="chart" :data="diagramData" />
+
+            <TablePresent :data="tableData" />
             <div class="data-table mobile-none">
                 <div><span>Y</span><span>X</span></div>
                 <div class="data-xy" v-for="v in diagramData">
@@ -73,8 +75,9 @@
 <script setup lang="ts">
 import { computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { CurveLineChart } from "@cmx";
+import { CurveLineChart, TP_Data, TP_Dimension } from "@cmx";
 import { useTaskStore } from "@store";
+import { TablePresent } from "@cmx";
 
 const store = useTaskStore();
 const router = useRouter();
@@ -84,6 +87,10 @@ const task = computed(()=>{
     return store.getTask(taskId);
 });
 
+const taskOP = computed(()=>{
+    return task.value?.paramArgs.operator.op??"NA";
+});
+
 const hasResult = computed(()=>{
     return !!task.value?.resData;
 });
@@ -91,7 +98,13 @@ const hasResult = computed(()=>{
 const diagramData = computed(
     ()=>Object.keys(task.value?.resData??[])
         .map(k=>({x: Number(k), y: Number(task.value?.resData[k])}))
-        .sort((a, b)=>a.x-b.x)
-    );
+        .sort((a, b)=>a.x-b.x));
 
+
+const tableData = computed(():TP_Data=>{
+    // dims
+    const listDims = Array<TP_Dimension>();
+    listDims.push({ dim: "field", isNumber: false });
+    
+});
 </script>

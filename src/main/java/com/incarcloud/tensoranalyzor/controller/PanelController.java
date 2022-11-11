@@ -1,13 +1,12 @@
 package com.incarcloud.tensoranalyzor.controller;
 
+import com.incarcloud.tensoranalyzor.Application;
 import com.incarcloud.tensoranalyzor.GitVer;
-import com.incarcloud.tensoranalyzor.entities.SubmitTaskResult;
 import com.incarcloud.tensoranalyzor.jsonexpr.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -21,12 +20,10 @@ import java.net.URL;
 import java.net.http.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Flow;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @RequestMapping(path="api")
@@ -47,15 +44,14 @@ public class PanelController {
 
     @GetMapping("hello")
     public String greeting(ServerHttpResponse response){
-        GitVer version = new GitVer();
-        return version.getVersion();
+        return String.format("%d", Application.s_tmStart);
     }
 
     @GetMapping("version")
-    public Mono<String> version(ServerHttpResponse response){
+    public Mono<GitVer> version(ServerHttpResponse response){
         return Mono.fromCallable(()->{
             GitVer version = new GitVer();
-            return version.getVersion();
+            return version;
         });
     }
 
@@ -91,42 +87,6 @@ public class PanelController {
         }
 
         return sbJson.toString();
-    }
-
-    @PostMapping("submit-task")
-    public Mono<SubmitTaskResult> SubmitTask(@RequestBody String json, ServerHttpRequest request, ServerHttpResponse response){
-        // s_logger.info("Received: {}", json.length());
-        URL backpoint = findBackPoint(request);
-
-        return Mono.create(sink->{
-            sink.onRequest(x->{
-                try{
-                    URL api = new URL(backpoint, "/api/task/start");
-                    // s_logger.info("BackPoint: {}", api);
-                    HttpRequest backPointRequest = HttpRequest.newBuilder()
-                            .uri(api.toURI())
-                            .header("Content-Type", "application/json")
-                            .POST(HttpRequest.BodyPublishers.ofString(json))
-                            .timeout(Duration.ofMillis(3000))
-                            .build();
-                    CompletableFuture<HttpResponse<String>> waitResp =  httpClient.sendAsync(backPointRequest, HttpResponse.BodyHandlers.ofString());
-                    waitResp.thenAccept(resp->{
-                        response.setRawStatusCode(resp.statusCode());
-                        if(resp.statusCode() < 400)
-                            sink.success(new SubmitTaskResult(0, resp.body()));
-                        else
-                            sink.success(new SubmitTaskResult(-2, resp.body()));
-                    }).exceptionally((e)->{
-                        response.setRawStatusCode(500);
-                        sink.success(new SubmitTaskResult(-1, e.getMessage()));
-                        return null;
-                    });
-                }
-                catch (MalformedURLException | URISyntaxException e){
-                    sink.error(e);
-                }
-            });
-        });
     }
 
     @RequestMapping("/{path:task}/**")
@@ -168,7 +128,7 @@ public class PanelController {
                 try {
                     URL backAPI = new URL(backPoint, api);
                     String strMethod = request.getMethodValue();
-                    s_logger.info("BackPoint : {} : {}", strMethod, backAPI);
+                    s_logger.info("BackPoint : {} {}", strMethod, backAPI);
 
                     HttpRequest.Builder builder = HttpRequest.newBuilder();
                     builder.method(strMethod, bodyPublisher);
@@ -195,9 +155,9 @@ public class PanelController {
                         response.setRawStatusCode(resp.statusCode());
                         sink.success(resp.body());
                     }).exceptionally((e)->{
-                        if(e.getCause() != null && e.getCause().getClass().equals(ConnectException.class)){
+                        if(e.getCause() != null && e.getCause().getClass().equals(HttpConnectTimeoutException.class)){
                             response.setRawStatusCode(504);
-                            sink.success("BackPoint响应超时");
+                            sink.success("BackPoint响应超时: " + e.getCause().getMessage());
                             return null;
                         }
                         response.setRawStatusCode(500);

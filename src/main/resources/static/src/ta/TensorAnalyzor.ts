@@ -1,14 +1,13 @@
-import { TAModeBase } from "./TAModes";
-import { TJsonFields } from "./TADef";
-import { TaskBody } from "./BackPointDef";
+import { TAModeBase } from "./mode/TAModes";
+import { TDataSF, TDataFields, TaskBody, TDataSources, TaskBean } from "./remote/BackPointDef";
 import { Operations } from "./Operations";
-import { BackPoint } from "./BackPoint";
+import { BackPoint } from "./remote/BackPoint";
 
 export class TensorAnalyzor {
     // 可用数据源
-    private _dataSources: any = null;
+    private _dataSources: TDataSources|null = null;
     // 可用字段
-    private _jsonFields: TJsonFields | null = null;
+    private _jsonFields: TDataFields|null = null;
     // 用于开发目的
     private _backPoint = new BackPoint();
 
@@ -17,59 +16,43 @@ export class TensorAnalyzor {
         return 0;
     };
 
-    public fetchJsonFields = async () : Promise<TJsonFields> => {
-        if (this._jsonFields == null) {
+    public fetchJsonFields = async ()=> {
+        if (this._jsonFields == null || this._dataSources == null) {
             const api = "/api/fields";
             const resp = await fetch(api);
-            const data = await resp.json();
+            const data : TDataSF = await resp.json();
             console.info(`${api} => ${Object.keys(data.fields).length}`);
             this._dataSources = data.dataSources;
             this._jsonFields = data.fields;
         }
-        return this._jsonFields ?? {};
+        return this._jsonFields;
     };
 
-    public submitTask = async(mode: TAModeBase):Promise<{code:number, message:string, taskId?:string}>=>{
+    public submitTask = async(mode: TAModeBase):Promise<string>=>{
         const task = this.assembleTaskBody(mode);
-        if(task == null) return { code: -3, message: `尚不支持该操作: ${mode.TaskName}` };
+        
+        if(task == null)
+            throw new Error(`尚不支持该操作: ${mode.TaskName}`);
 
-        const api = "/api/submit-task";
+        const api = "/api/task/start";
         let  headers:any = { "Content-Type": "application/json" };
-        // 调试用途
-        if(this._backPoint != null){
-            headers["X-Back-Point"] = this._backPoint;
-        }
-
-        const resp = await fetch(api, {
-            method: "POST",
-            body: JSON.stringify(task),
-            headers
-        });
-
-        const data = await resp.json();
-        // 出错了
-        if(data.code < 0) return data;
-        // 解出内层BackPoint的结果
-        const resultBP:{ result:boolean, data:string} = JSON.parse(data.message);
-        if(!resultBP.result)
-            return { code: -2, message: resultBP.data };
-        else
-            return { code: 0, message: "创建任务成功", taskId: resultBP.data };
+        const taskId = await this._backPoint.post<string>(api, task, headers);
+        return taskId;
     }
 
     public fetchTaskList = async()=>{
         const api = "/api/task/list";
-        return await this._backPoint.get(api);
+        return await this._backPoint.get<TaskBean[]>(api);
     };
 
     public fetchTaskSingle = async(id:string)=>{
         const api = `/api/task/list?id=${id}`;
-        return await this._backPoint.get(api);
+        return await this._backPoint.get<TaskBean[]>(api);
     };
 
     public stopTask = async(id:string)=>{
         const api = `/api/task/stop?ids=${id}`;
-        return await this._backPoint.post(api);
+        return await this._backPoint.post<void>(api);
     };
 
     private assembleTaskBody = (mode: TAModeBase):TaskBody|null=>{
@@ -78,8 +61,8 @@ export class TensorAnalyzor {
 
         const task = {
             name: mode.TaskName,
-            dataSources: this.objectsToArray(this._dataSources, "name", "ds"),
-            fields: this.objectsToArray(mode.Fields),
+            dataSources: this.objectsToArray(this._dataSources!, "name", "ds") as any,
+            fields: this.objectsToArray(mode.Fields) as any,
             operator: op,
             limit: mode.LimitMax
         };
@@ -88,8 +71,8 @@ export class TensorAnalyzor {
     }
 
     // Java后端不擅于处理动态属性名称,因此转换为数组形式
-    private objectsToArray = (src: any, propKey?:string, propValue?:string)=>{
-        const arrayTarget:Array<Object> = [];
+    private objectsToArray = (src: {[key:string]:unknown}, propKey?:string, propValue?:string)=>{
+        const arrayTarget:Array<object> = [];
 
         for(let key of Object.keys(src)){
             if(src.hasOwnProperty(key)){

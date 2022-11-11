@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import { ref, shallowRef, nextTick, onMounted, ShallowRef, Ref } from "vue";
-import { TAMode, TAModeBase } from "@remote";
+import { TAMode, TAModeBase } from "@ta";
 import { BreadCrumbItem, BreadCrumb } from "@cmx";
 
 import XMode from "./NewAnalyzor/mode.vue";

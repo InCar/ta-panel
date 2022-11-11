@@ -111,8 +111,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { TAModeBase } from "@remote";
-import type { Range } from "@remote";
+import { TAModeBase } from "@ta";
+import type { Range } from "@ta";
 const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{
         (e:"on-step", step:number, mode:TAModeBase):void,

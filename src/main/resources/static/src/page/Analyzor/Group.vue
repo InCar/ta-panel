@@ -30,7 +30,7 @@ import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useAnalyzorStore } from "@store";
 import { AnalyzorBrief } from "@cmx";
-import { TaskBean } from "@remote";
+import { TaskBean } from "@ta";
 
 const router = useRouter();
 const store = useAnalyzorStore();

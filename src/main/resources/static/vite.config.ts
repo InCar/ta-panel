@@ -11,7 +11,11 @@ export const userConfig = {
     build: {
         outDir: "../dist",
         emptyOutDir: true,
-        manifest: true
+        manifest: true,
+        minify: false
+    },
+    define: {
+        __VUE_PROD_DEVTOOLS__: true
     },
     server: {
         proxy: {

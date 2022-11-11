@@ -36,7 +36,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import { useTA } from "@remote";
+import { useTA } from "@ta";
 
 class DevSettings{
     private taObj = useTA();

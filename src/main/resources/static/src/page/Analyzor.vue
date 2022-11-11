@@ -131,7 +131,16 @@ const onClickGroup = (op:string)=>{
 }
 
 onMounted(async ()=>{
-    await store.fetch();
+    try{
+        await store.fetch();
+    }
+    catch(e){
+        if(e instanceof Error){
+            console.info(e)
+            if(!!e.cause)
+                console.info(e.cause)
+        }
+    }
     
     watch(routePath, (v, last)=>{
         if(v.startsWith("/Analyzor")){

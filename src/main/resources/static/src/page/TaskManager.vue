@@ -39,11 +39,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { TaskBean, TaskStatus } from "@remote";
+import { TaskBean, TaskStatus } from "@ta";
 import { TaskView } from "@cmx";
-import { computed } from '@vue/reactivity';
 import { useTaskStore } from '@store';
 import { DateTime, Duration } from 'luxon';
 
@@ -76,13 +75,16 @@ const isError = ref(false);
 const errorMessage = ref("");
 
 onMounted(async()=>{
-    isWaiting.value = true;
-    const backPD = await taskStore.fetch();
-    isWaiting.value = false;
-
-    if(backPD.result == false){
-        errorMessage.value = backPD.data;
+    try{
+        isWaiting.value = true;
+        await taskStore.fetch();
+    }
+    catch(e){
         isError.value = true;
+        errorMessage.value = `${e}`;
+    }
+    finally{
+        isWaiting.value = false;
     }
 });
 </script>

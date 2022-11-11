@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 import { DateTime } from "luxon";
-import { TAModeBase, TAModeCount, TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo } from "@remote";
+import { TAModeBase, TAModeCount, TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo } from "@ta";
 
 const props = defineProps(["taskArgs"]);
 const emit = defineEmits<{

@@ -56,7 +56,7 @@
 import { onMounted, ref, nextTick } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRoute } from 'vue-router';
-import { TaskStatus } from "@remote";
+import { TaskStatus } from "@ta";
 import { TaskView, CurveLineChart } from "@cmx";
 import { useTaskStore } from '@store';
 
@@ -68,10 +68,14 @@ const errorMessage = ref("");
 const taskId = route.params.taskId as string;
 
 onMounted(async ()=>{
-    const resp = await store.fetch(taskId);
-    isWaiting.value = false;
-    if(!resp.result){
-            errorMessage.value = JSON.stringify(resp);
+    try{
+        await store.fetch(taskId);
+    }
+    catch(e){
+        errorMessage.value = `${e}`;
+    }
+    finally{
+        isWaiting.value = false;
     }
 })
 
@@ -118,10 +122,7 @@ const hasResult = computed(()=>{
 
 const onCancel = async (e:Event)=>{
     // e.stopPropagation();
-    const resp = await store.cancelTask(taskId);
-    if(!resp.result){
-        errorMessage.value = JSON.stringify(resp)
-    }
+    await store.cancelTask(taskId);
 };
 
 </script>

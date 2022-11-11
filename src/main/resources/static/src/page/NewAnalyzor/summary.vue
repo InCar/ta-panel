@@ -51,7 +51,7 @@
     </div>
 
     <div class="action-result" v-if="data.isFinished.value && !data.isWaiting.value" :class="data.resultStyle.value">
-        <p>{{data.result.value.message}}</p>
+        <p>{{data.error.value}}</p>
     </div>
     <div class="action-result waiting-bar" v-if="data.isWaiting.value" :class="{paused: !data.isWaiting.value}">请稍候</div>
     
@@ -61,17 +61,17 @@
         <button @click="data.move(+1)">确定</button>
     </div>
     <div class="footer" v-else-if="!data.isWaiting.value">
-        <button v-if="data.result.value.code<0" @click="data.retry()">重试</button>
-        <button v-else @click="data.jump(data.result.value.taskId)">确定</button>
+        <button v-if="data.hasError.value" @click="data.retry()">重试</button>
+        <button v-else @click="data.jump(data.taskId.value!)">确定</button>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref , Ref, shallowRef } from 'vue';
+import { ref } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRouter } from 'vue-router';
-import { TAModeBase, useTA } from "@remote";
-import type { Range } from "@remote";
+import { TAModeBase, useTA } from "@ta";
+import type { Range } from "@ta";
 
 const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{
@@ -85,7 +85,9 @@ class Summary{
     public mode = props.taskArgs;
     public isFinished = ref(false);
     public isWaiting = ref(false);
-    public result: Ref<{code:number, message: string, taskId?:string }> = shallowRef({code:0, message:""});
+    public taskId = ref<string|null>(null);
+    public hasError = ref(false);
+    public error = ref("");
 
     public constructor(){
     }
@@ -97,9 +99,11 @@ class Summary{
             emit("on-can-back", false);
 
             // 向远程提交任务
-            this._taObj.submitTask(this.mode).then((result)=>{
-                this.result.value = result;
+            this._taObj.submitTask(this.mode).then((taskId)=>{
+                this.taskId.value = taskId;
                 this.isWaiting.value = false;
+            }).catch((e)=>{
+                this.error.value = `${e}${e?.cause??""}`;
             });
         }
         else{
@@ -108,8 +112,8 @@ class Summary{
     };
 
     public resultStyle = computed(()=>({
-        success: this.result.value.code >=0,
-        failed: this.result.value.code < 0
+        success: !this.hasError.value,
+        failed: this.hasError.value
     }));
 
     public jump = (taskId?: string)=>{
@@ -119,7 +123,7 @@ class Summary{
 
     public retry = ()=>{
         this.isFinished.value = false;
-        this.result.value = { code: 0, message: "" };
+        this.hasError.value = false;
         emit("on-can-back", true);
     };
 }

@@ -17,9 +17,9 @@
         "skipLibCheck": true,
         "baseUrl": "./",
         "paths": {
-            "@remote": [ "./src/remote" ],
+            "@cmx": [ "./src/cmx" ],
             "@store": [ "./src/store" ],
-            "@cmx": [ "./src/cmx" ]
+            "@ta": [ "./src/ta" ]
         }
     },
     "include": [

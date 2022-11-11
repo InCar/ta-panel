@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { Browser } from "@remote";
+import { Browser } from "@ta";
 
 class AboutStore{
     public WorkerMode = ref(Browser.IsInSharedMode?"Shared":"NonShared")

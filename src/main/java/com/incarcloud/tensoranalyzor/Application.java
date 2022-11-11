@@ -22,6 +22,8 @@ import java.nio.file.Path;
 public class Application implements CommandLineRunner {
     private final static Logger s_logger = LoggerFactory.getLogger(Application.class);
 
+    public final static long s_tmStart = System.currentTimeMillis();
+
     @Autowired
     private WebServerApplicationContext webAppCtx;
     public static void main(String[] args) {

@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { TaskBean } from '@remote';
+import { TaskBean } from '@ta';
 
 const props = defineProps<{
     task: TaskBean

@@ -147,6 +147,7 @@
 </template>
 
 <script setup lang="ts">
+import { DateTime } from "luxon";
 import { useRouter, RouterLink } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import Theme from "./cmx/Theme.vue";
@@ -157,8 +158,21 @@ const version = ref("");
 const activeTheme = ref("theme-green");
 
 const init = async () => {
-    const resp = await fetch("/api/hello");
-    version.value = await resp.text();
+    const resp = await fetch("/api/version");
+    if(resp.ok){
+        const gitVer = await resp.json();
+        const tm = DateTime.fromMillis(gitVer._tmBuilding);
+        console.info(`Built: ${tm.toFormat("yyyy-MM-dd HH:mm:ss")}`);
+        version.value = gitVer.version;
+    }
+
+    const respTm = await fetch("/api/hello");
+    if(respTm.ok){
+        const tmText = await respTm.text();
+        const tmStart = DateTime.fromMillis(parseInt(tmText));
+        const duration = DateTime.local().diff(tmStart);
+        console.info(`运行: ${duration.toFormat("d天h小时m分")}`);
+    }
 };
 
 const onTheme = (theme:string)=>{
