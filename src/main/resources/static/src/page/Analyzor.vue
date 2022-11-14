@@ -30,6 +30,12 @@
         font-size: 1.2em;
         font-weight: 600;
     }
+    p{
+        margin: 0;
+    }
+    .em{
+        color: theme.$color-em;
+    }
 }
 
 .nav{
@@ -58,59 +64,54 @@
     align-self: stretch;
     min-height: 2em;
 }
+.error-message{
+    @include theme.mx-error;
+    padding: 1em;
+}
 </style>
 
 <template>
+    <div class="error-message" v-if="errorMessage.length>0">{{errorMessage}}</div>
     <BreadCrumb class="nav" ref="breadCrumb" @on-nav="onNav"/>
     <div class="container" v-if="!isChildActive">
-        <div class="x-item" v-for="(listTasks, op) in store.dictAnalyzorGroups" @click="onClickGroup(op as string)">
+        <div class="x-item" v-for="x in listGroupTitle" @click="onClickGroup(x.op)">
             <img class="box hue-205" src="/img/ta.png" />
-            <span class="title">{{`${dictGroupTitle[op].title}(${listTasks.length})`}}</span>
-            <span>{{dictGroupTitle[op].description}}</span>
+            <p class="title">
+                <span>{{x.title}}</span>(<span class="em">{{calcItemCount(x.op)}}</span>)
+            </p>
+            <span>{{x.description}}</span>
         </div>
-
-        <template v-if="Object.keys(store.dictAnalyzorGroups).length === 0">
-            <div class="x-item" v-for="x in home.listResult">
-                <img class="box hue-205" src="/img/ta.png" />
-                <span class="title">{{x.title}}</span>
-                <span>{{x.description}}</span>
-            </div>
-        </template>
     </div>
     <router-view></router-view>
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed, ref, watch, watchEffect, onUnmounted, WatchStopHandle } from "vue";
+import { onMounted, computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import { useAnalyzorStore } from "@store";
+import { useSDM } from "@sdm";
 import { BreadCrumb, BreadCrumbItem } from "@cmx";
 
 interface XEntry {
     title: string;
+    op?: string;
     description: string;
 }
 
-const dictGroupTitle: { [key:string]:XEntry } = {
-    "aggregation": { title: "计数&极值", description: "统计数据源中的基本情况,包括数据量、极大极小值"},
-    "group-aggregation": { title: "数值分布", description: "统计某个指标数值的分布区间,哪些区间数据多,哪些区间数据少"}
-};
-
 const router = useRouter();
-const store = useAnalyzorStore();
+const taskGroupDM = useSDM().TaskGroupDM;
 
 const breadCrumb = ref<InstanceType<typeof BreadCrumb>|null>(null);
+const errorMessage = ref("");
 
-class HomePage {
-    listResult: XEntry[] = [
-        { title: "充电站分析", description: "根据充电和位置数据分析一个城市中有几个充电站" },
-        { title: "道路情况评估", description: "根据道路的行车数据分析道路情况" },
-        { title: "交通信号灯", description: "根据行车数据分析路口的交通信号灯各方向时长间隔" },
-        { title: "电池健康", description: "长时间的电池充放电数据,测算电池健康度" },
-        { title: "车型速度/加速度分布", description: "不同车型的特征性能分布差异，掌握用户针对特定车型的使用习惯" }
-    ];
-}
-const home = new HomePage();
+const listGroupTitle: XEntry[] = [
+    { title: "计数&极值", op:"aggregation", description: "统计数据源中的基本情况,包括数据量、极大极小值"},
+    { title: "数值分布", op:"group-aggregation", description: "统计某个指标数值的分布区间,哪些区间数据多,哪些区间数据少"},
+    { title: "充电站分析", description: "根据充电和位置数据分析一个城市中有几个充电站" },
+    { title: "道路情况评估", description: "根据道路的行车数据分析道路情况" },
+    { title: "交通信号灯", description: "根据行车数据分析路口的交通信号灯各方向时长间隔" },
+    { title: "电池健康", description: "长时间的电池充放电数据,测算电池健康度" },
+    { title: "车型速度/加速度分布", description: "不同车型的特征性能分布差异，掌握用户针对特定车型的使用习惯" }
+];
 
 const isChildActive = computed(()=>{
     const routes = router.currentRoute.value;
@@ -126,20 +127,28 @@ const onNav = (item:BreadCrumbItem, i:number)=>{
     router.push(item.data);
 };
 
-const onClickGroup = (op:string)=>{
-    router.push(`/Analyzor/${op}`);
+const onClickGroup = (op:string|void)=>{
+    if(!!op)
+        router.push(`/Analyzor/${op}`);
+}
+
+const calcItemCount = (op: string|void)=>{
+    if(!op) return 0;
+
+    return taskGroupDM.AnalyzorGroups.value[op]?.length ?? 0;
 }
 
 onMounted(async ()=>{
     try{
-        await store.fetch();
+        await taskGroupDM.fetch();
     }
     catch(e){
         if(e instanceof Error){
-            console.info(e)
+            errorMessage.value = e.message
             if(!!e.cause)
-                console.info(e.cause)
+                errorMessage.value += ` => ${e.cause}`
         }
+        errorMessage.value = `${e}`;
     }
     
     watch(routePath, (v, last)=>{
@@ -158,13 +167,13 @@ onMounted(async ()=>{
 
             const group = routes.params["group"] as string;
             if(breadCrumb.value?.total! < 2 && group){
-                const title = dictGroupTitle[group].title;
-                breadCrumb.value?.appendItem({ text: ref(title), data: `/Analyzor/${group}` });
+                const title = listGroupTitle.find(x=>x.op == group)!.title;
+                breadCrumb.value?.appendItem({ text: ref(title), data: `/Analyzor/${group}`});
             }
 
             const taskId = routes.params["taskId"] as string;
             if(breadCrumb.value?.total! < 3 && taskId){
-                const task = store.dictAnalyzorGroups[group].find(v=>v.id == taskId);
+                const task = taskGroupDM.AnalyzorGroups.value[group].find(v=>v.id == taskId);
                 breadCrumb.value?.appendItem({ text: ref(task!.name), data: `/Analyzor/${group}/${taskId}` });
             }
             

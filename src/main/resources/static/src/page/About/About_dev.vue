@@ -28,35 +28,29 @@
     <div class="container">
         <div class="x-item">
             <span>BackPoint:</span>
-            <input type="text" v-model="data.backPoint.value"/>
-            <button @click="data.reset">reset</button>
+            <input type="text" v-model="backPointValue"/>
+            <button @click="reset">reset</button>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
-import { useTA } from "@ta";
+import{ onMounted, ref, watch } from "vue";
+import { useSDM } from "@sdm";
 
-class DevSettings{
-    private taObj = useTA();
-    public backPoint = ref("");
+const aboutDM = useSDM().AboutDM;
+const backPointValue = ref("");
 
-    public init = ()=>{
-        this.backPoint.value = this.taObj.BackPoint;
-
-        watch(this.backPoint, 
-            (value, last)=>{
-                this.taObj.BackPoint = value;
-            });
-    };
-
-    public reset = ()=>{
-        this.taObj.BackPoint = null;
-        this.backPoint.value = this.taObj.BackPoint;
-    }
+const reset = ()=>{
+    aboutDM.BackPoint = null;
+    backPointValue.value = aboutDM.BackPoint;
 }
 
-const data = new DevSettings();
-onMounted(data.init);
+onMounted(()=>{
+    backPointValue.value = aboutDM.BackPoint;
+
+    watch(backPointValue, (value)=>{
+        aboutDM.BackPoint = value;
+    });
+})
 </script>

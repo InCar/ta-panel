@@ -105,11 +105,11 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { computed } from '@vue/reactivity';
-import { TaskBean, TaskStatus } from "@ta";
+import { Task, TaskStatus } from "@ta";
 
 const props = defineProps<{
     index?: Number,
-    task: TaskBean
+    task: Task
 }>();
 
 const statusText = computed(()=>{

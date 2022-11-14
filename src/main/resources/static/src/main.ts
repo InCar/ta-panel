@@ -2,9 +2,9 @@
 
 import { createApp, App as AppT } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import { createPinia } from 'pinia';
+import { activeSDM } from "./sdm";
 import { routes } from './routes';
-import { useTA } from '@ta';
+import { TensorAnalyzor } from '@ta';
 import App from './App.vue';
 
 class Main{
@@ -16,18 +16,16 @@ class Main{
 
     public run = async (tag: string)=>{
         console.info(`TensorAnalyzor(vue-${this.app.version})`);
-        
-        const pinia = createPinia();
-        this.app.use(pinia);
+
+        const taObj = new TensorAnalyzor();
+        let nRet = await taObj.init();
+        activeSDM(taObj);
         
         const router = createRouter({
             history: createWebHistory(),
             routes
         });
         this.app.use(router);
-
-        const taObj = useTA();
-        const nRet = await taObj.init();
 
         this.app.mount(tag);
         return nRet;

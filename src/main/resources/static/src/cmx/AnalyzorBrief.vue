@@ -52,10 +52,10 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { TaskBean } from '@ta';
+import { Task } from '@ta';
 
 const props = defineProps<{
-    task: TaskBean
+    task: Task
 }>();
 
 const dataAmount = computed(()=>Object.keys(props.task.resData).length);

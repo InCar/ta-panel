@@ -58,13 +58,13 @@
                 <div><span>Y</span><span>X</span></div>
                 <div class="data-xy" v-for="v in diagramData">
                     <span>{{v.y}}</span>
-                    <span>{{v.x}}</span>
+                    <span>{{v.strX}}</span>
                 </div>
             </div>
             <div class="data-table-v mobile-only">
                 <span>X</span><span>Y</span>
                 <template class="data-xy" v-for="v in diagramData">
-                    <span>{{v.x}}</span>
+                    <span>{{v.strX}}</span>
                     <span>{{v.y}}</span>
                 </template>
             </div>
@@ -76,15 +76,15 @@
 import { computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { CurveLineChart, TP_Data, TP_Dimension } from "@cmx";
-import { useTaskStore } from "@store";
+import { useSDM } from "@sdm";
 import { TablePresent } from "@cmx";
 
-const store = useTaskStore();
+const taskDM = useSDM().TaskDM;
 const router = useRouter();
 
 const task = computed(()=>{
     const taskId = router.currentRoute.value.params["taskId"] as string;
-    return store.getTask(taskId);
+    return taskDM.getTask(taskId);
 });
 
 const taskOP = computed(()=>{
@@ -97,7 +97,7 @@ const hasResult = computed(()=>{
 
 const diagramData = computed(
     ()=>Object.keys(task.value?.resData??[])
-        .map(k=>({x: Number(k), y: Number(task.value?.resData[k])}))
+        .map(k=>({x: parseFloat(k), y: Number(task.value?.resData[k]), strX:k}))
         .sort((a, b)=>a.x-b.x));
 
 

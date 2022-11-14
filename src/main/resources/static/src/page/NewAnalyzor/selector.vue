@@ -15,13 +15,14 @@
         <span class="caption">选择待分析的数据</span>
         <span class="title">{{data.mode.TaskName}}</span>
     </div>
+    <div class="action-result failed" v-if="data.errorMessage.value.length>0">{{data.errorMessage.value}}</div>
     <div class="field-list">
-        <div class="box-field" v-for="(v, k) in data.jsonFields" @click="data.select(k as string)">
+        <div class="box-field" v-for="(v, k) in dataSourceFields" @click="data.select(k as string)">
             <input v-if="data.isRadio" type="radio" name="field" :value="k" v-model="data.picked.value" />
             <input v-else type="checkbox" name="field" :value="k" v-model="data.listPicked.value"/>
             <span class="field-desc">{{v.desc??k}}</span>
             <span class="field-key">{{k}}</span>
-            <span class="field-description">{{v.description}}</span>
+            <span class="field-description mobile-none">{{v.description}}</span>
         </div>
     </div>
     <div class="footer">
@@ -31,9 +32,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from '@vue/reactivity';
-import { ref, shallowReactive, onMounted, Ref } from 'vue';
-import { TAMode, TAModeBase, TJsonFields, useTA } from "@ta";
+import { computed, ref, onMounted, Ref } from 'vue';
+import { TAMode, TAModeBase, TDataFields } from "@ta";
+import { useSDM } from '@sdm';
 
 const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{
@@ -41,12 +42,15 @@ const emit = defineEmits<{
         (e:"on-can-back", canBack:boolean):void
     }>();
 
+const dataSourceDM = useSDM().DataSourceDM;
+const dataSourceFields:TDataFields = dataSourceDM.DataFields;
+
 class PageSelectFields{
     public mode = props.taskArgs;
     public isRadio = true;
-    public jsonFields: TJsonFields = shallowReactive({});
     public picked: Ref<string> = ref("");
     public listPicked:Ref<string[]> = ref([]);
+    public errorMessage = ref("");
 
     public init = async () => {
         // radio or checkbox
@@ -62,9 +66,13 @@ class PageSelectFields{
         this.initPicked();
 
         // loading fields
-        const taObj = useTA();
-        const jsonFields = await taObj.fetchJsonFields();
-        Object.assign(this.jsonFields, jsonFields);
+        try{
+            await dataSourceDM.fetch();
+        }
+        catch(ex: unknown){
+            const e = ex as Error;
+            this.errorMessage.value = `${e} ${e.cause?e.cause:""}`;
+        }
     };
 
     public move = (step:number)=>{
@@ -73,13 +81,13 @@ class PageSelectFields{
             if(this.isRadio){
                 const k = this.picked.value;
                 const target:any = {};
-                target[k] = this.jsonFields[k];
+                target[k] = dataSourceFields[k];
                 this.mode.Fields = target;
             }
             else{
                 const target:any = {};
                 for(let k of this.listPicked.value){
-                    target[k] = this.jsonFields[k];
+                    target[k] = dataSourceFields[k];
                 }
                 this.mode.Fields = target;
             }

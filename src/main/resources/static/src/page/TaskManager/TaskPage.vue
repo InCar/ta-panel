@@ -24,44 +24,48 @@
 </style>
 
 <template>
-    <div class="error" v-if="(!isWaiting) && errorMessage?.length > 0">
+    <div class="error" v-if="errorMessage?.length > 0">
         <span>{{errorMessage}}</span>
     </div>
-    <div v-if="task != null">
+    <div v-if="!!task">
         <TaskView :task="task!" class="task-item" />
         <div class="task-action" v-if="isCancellable">
             <button v-if="isCancellable" @click="onCancel">取消</button>
         </div>
-        <template v-if="hasResult">
-            <CurveLineChart :data="diagramData" />
-        </template>
         <div class="task-extra">
-            <span>{{task!.id}}</span>
-            <span v-if="task?.message">{{task!.message}}</span>
-            <span v-if="task?.finishTime">{{task!.finishTime.toFormat("yyyy年MM月dd日 HH:mm")}}</span>
-            <div v-if="resJson" style="margin-left:2em">
-                <span v-for="(v,i) in resJson">{{i}} => {{v}}</span>
+            <span>{{task.name}}</span><br/>
+            <span>任务标识: {{task.id}}</span>
+            <span v-if="!!task.startTime">执行开始: {{task.startTime.toFormat("yyyy年MM月dd日 HH:mm")}}</span>
+            <span v-if="!!task.finishTime">执行完成: {{task.finishTime.toFormat("yyyy年MM月dd日 HH:mm")}}</span>
+            <span v-if="!!taskDuration">执行时长: {{taskDuration}}</span><br />
+            <span>运算模式: {{task.paramArgs.operator.op}}</span>
+            <div v-if="!!task.paramArgs.operator.opArgs.aggregation.fns">
+                <span>聚合函数: {{task.paramArgs.operator.opArgs.aggregation.fns.join(", ")}}</span>
             </div>
-            <div v-if="paramJson">
-                <span>{{paramJson.operator.op}} : {{paramJson.operator.opArgs.aggregation.fn}}</span>
-                <template v-for="field in paramJson.operator.opArgs.groupBy">
+            <div v-if="!!task.paramArgs.operator.opArgs.aggregation.fn">
+                <span>聚合函数: {{task.paramArgs.operator.opArgs.aggregation.fn}}</span>
+                <template v-for="field in task.paramArgs.operator.opArgs.groupBy">
                     <span style="margin-left:2em;">{{field.field}} : {{field.from}}~{{field.to}} / {{field.step}}</span>
                 </template>
+            </div>
+            <div v-else>
+                <span>统计字段</span>
+                <span v-for="field in task.paramArgs.fields" style="margin-left:2em">{{field.name}} {{field.desc}}</span>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, nextTick } from 'vue';
+import { onMounted, ref } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRoute } from 'vue-router';
 import { TaskStatus } from "@ta";
-import { TaskView, CurveLineChart } from "@cmx";
-import { useTaskStore } from '@store';
+import { TaskView } from "@cmx";
+import { useSDM } from '@sdm';
 
 const route = useRoute();
-const store = useTaskStore();
+const taskDM = useSDM().TaskDM;
 const isWaiting = ref(true);
 const errorMessage = ref("");
 
@@ -69,7 +73,7 @@ const taskId = route.params.taskId as string;
 
 onMounted(async ()=>{
     try{
-        await store.fetch(taskId);
+        await taskDM.fetch(taskId);
     }
     catch(e){
         errorMessage.value = `${e}`;
@@ -80,34 +84,17 @@ onMounted(async ()=>{
 })
 
 const task = computed(()=>{
-    const taskFound = store.getTask(taskId);    
+    const taskFound = taskDM.getTask(taskId);    
     return taskFound;
 });
 
-const paramJson = computed(()=>{
-    if(task.value?.paramJson){
-        return JSON.parse(task.value?.paramJson);
+const taskDuration = computed(()=>{
+    if((!!task.value.startTime) && (!!task.value.finishTime)){
+        return task.value.finishTime.diff(task.value.startTime).toFormat("d天h小时m分");
     }
-    else{
-        return null;
-    }
-});
 
-const resJson = computed(()=>{
-    if(task.value?.resJson){
-        // console.info(JSON.parse(task.value?.resJson));
-        return JSON.parse(task.value?.resJson);
-    }
-    else{
-        return null;
-    }
+    return null;
 });
-
-const diagramData = computed(
-    ()=>Object.keys(resJson.value??[])
-        .map(k=>({x: Number(k), y: Number(resJson.value[k])}))
-        .sort((a, b)=>a.x-b.x)
-    );
 
 const isCancellable = computed(()=>{
     if(task.value?.status == TaskStatus.Pending || task.value?.status == TaskStatus.Running)
@@ -121,8 +108,18 @@ const hasResult = computed(()=>{
 });
 
 const onCancel = async (e:Event)=>{
-    // e.stopPropagation();
-    await store.cancelTask(taskId);
+    try{
+        // e.stopPropagation();
+        errorMessage.value = "";
+        isWaiting.value = true;
+        await taskDM.cancelTask(taskId);
+    }
+    catch(e){
+        errorMessage.value = `${e}`;
+    }
+    finally{
+        isWaiting.value = false;
+    }
 };
 
 </script>

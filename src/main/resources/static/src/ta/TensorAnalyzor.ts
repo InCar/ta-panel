@@ -20,10 +20,15 @@ export class TensorAnalyzor {
         if (this._jsonFields == null || this._dataSources == null) {
             const api = "/api/fields";
             const resp = await fetch(api);
-            const data : TDataSF = await resp.json();
-            console.info(`${api} => ${Object.keys(data.fields).length}`);
-            this._dataSources = data.dataSources;
-            this._jsonFields = data.fields;
+            if(resp.ok){
+                const data : TDataSF = await resp.json();
+                console.info(`${api} => ${Object.keys(data.fields).length}`);
+                this._dataSources = data.dataSources;
+                this._jsonFields = data.fields;
+            }
+            else{
+                throw new Error(`${resp.statusText}(${resp.status})`);
+            }
         }
         return this._jsonFields;
     };
@@ -100,10 +105,4 @@ export class TensorAnalyzor {
     public set BackPoint(value: string|null){
         this._backPoint.BackPoint = value;
     }
-}
-
-let _taObj: TensorAnalyzor|null = null;
-export const useTA = ()=>{
-    if(_taObj === null) _taObj = new TensorAnalyzor();
-    return _taObj;
 }

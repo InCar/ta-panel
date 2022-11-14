@@ -11,23 +11,6 @@
         flex: 0 0 auto;
     }
 }
-
-.action-result{
-    font-size: large;
-    font-weight: bold;
-    align-items: center;
-    margin: 1em;
-    p{
-        margin: 1em;
-    }
-    &.success{
-        @include theme.mx-success;
-    }
-    &.failed{
-        @include theme.mx-error;
-    }
-    
-}
 </style>
 
 <template>
@@ -51,7 +34,7 @@
     </div>
 
     <div class="action-result" v-if="data.isFinished.value && !data.isWaiting.value" :class="data.resultStyle.value">
-        <p>{{data.error.value}}</p>
+        <p>{{data.actionMessage.value}}</p>
     </div>
     <div class="action-result waiting-bar" v-if="data.isWaiting.value" :class="{paused: !data.isWaiting.value}">请稍候</div>
     
@@ -70,8 +53,9 @@
 import { ref } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRouter } from 'vue-router';
-import { TAModeBase, useTA } from "@ta";
+import { TAModeBase } from "@ta";
 import type { Range } from "@ta";
+import { useSDM } from "@sdm";
 
 const props = defineProps<{taskArgs: TAModeBase}>();
 const emit = defineEmits<{
@@ -80,14 +64,14 @@ const emit = defineEmits<{
     }>();
 
 class Summary{
-    private _taObj = useTA();
     private _router = useRouter();
     public mode = props.taskArgs;
     public isFinished = ref(false);
     public isWaiting = ref(false);
     public taskId = ref<string|null>(null);
     public hasError = ref(false);
-    public error = ref("");
+    public actionMessage = ref("");
+    private taskDM = useSDM().TaskDM;
 
     public constructor(){
     }
@@ -99,11 +83,14 @@ class Summary{
             emit("on-can-back", false);
 
             // 向远程提交任务
-            this._taObj.submitTask(this.mode).then((taskId)=>{
+            this.taskDM.submitTask(this.mode).then((taskId)=>{
                 this.taskId.value = taskId;
+                this.actionMessage.value = "创建任务成功!";
                 this.isWaiting.value = false;
             }).catch((e)=>{
-                this.error.value = `${e}${e?.cause??""}`;
+                this.actionMessage.value = `${e}${e?.cause?(" => " + e.cause):""}`;
+                this.hasError.value = true;
+                this.isWaiting.value = false;
             });
         }
         else{

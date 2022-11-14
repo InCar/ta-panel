@@ -17,21 +17,21 @@
     flex: 1 1 auto;
     cursor: pointer;
 }
-.error{
-    padding: 0 1em;
+.error-message{
+    text-align: center;
+    font-weight: bold;
+    padding: 1em;
     @include theme.mx-error;
 }
 </style>
 
 <template>
     <div class="waiting-bar" :class="{paused: !isWaiting}" v-if="isWaiting">请稍候</div>
+    <div class="error-message" v-if="hasError">{{errorMessage}}</div>
     <div class="task-mgr" v-if="!isChildActive">
         <template class="container" v-for="(task, i) in listTasks">
             <TaskView :task="task!" :index="i"  class="task-item" @click="onClickTask(task!)"/>
         </template>
-        <div class="error" v-if="isError">
-            <p>{{errorMessage}}</p>
-        </div>
     </div>
     <div class="task-mgr-1" v-else>
         <router-view></router-view>
@@ -41,13 +41,13 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { TaskBean, TaskStatus } from "@ta";
+import { Task, TaskStatus } from "@ta";
 import { TaskView } from "@cmx";
-import { useTaskStore } from '@store';
+import { useSDM } from '@sdm';
 import { DateTime, Duration } from 'luxon';
 
 const router = useRouter();
-const taskStore = useTaskStore();
+const taskDM = useSDM().TaskDM;
 
 const isChildActive = computed(()=>{
     return router.currentRoute.value.matched.length > 1;
@@ -56,7 +56,7 @@ const isChildActive = computed(()=>{
 const listTasks = computed(()=>{
     const tmNow = DateTime.local().toSeconds();
     
-    return taskStore.listTasks.filter(task=>{
+    return taskDM.listTasks.value.filter(task=>{
         if(task?.status != TaskStatus.Succeeded) return true;
         if(!task?.finishTime) return true;
 
@@ -66,21 +66,23 @@ const listTasks = computed(()=>{
     });
 })
 
-const onClickTask = (task: TaskBean)=>{
+const onClickTask = (task: Task)=>{
     router.push(`/TaskManager/${task.id}`);
 }
 
 const isWaiting = ref(false);
-const isError = ref(false);
 const errorMessage = ref("");
+
+const hasError = computed(()=>{
+    return errorMessage.value.length > 0;
+})
 
 onMounted(async()=>{
     try{
         isWaiting.value = true;
-        await taskStore.fetch();
+        await taskDM.fetch();
     }
     catch(e){
-        isError.value = true;
         errorMessage.value = `${e}`;
     }
     finally{

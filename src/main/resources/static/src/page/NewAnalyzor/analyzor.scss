@@ -87,3 +87,20 @@
         }
     }
 }
+
+.action-result{
+    font-size: large;
+    font-weight: bold;
+    align-items: center;
+    margin: 1em;
+    p{
+        margin: 1em;
+    }
+    &.success{
+        @include theme.mx-success;
+    }
+    &.failed{
+        @include theme.mx-error;
+    }
+    
+}

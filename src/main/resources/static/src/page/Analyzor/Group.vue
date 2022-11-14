@@ -28,19 +28,19 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { useAnalyzorStore } from "@store";
+import { useSDM } from "@sdm";
 import { AnalyzorBrief } from "@cmx";
-import { TaskBean } from "@ta";
+import { Task } from "@ta";
 
 const router = useRouter();
-const store = useAnalyzorStore();
+const taskGroupDM = useSDM().TaskGroupDM;
 
 const listTasks = computed(()=>{
     const op = router.currentRoute.value.params["group"] as string;
-    return store.dictAnalyzorGroups[op];
+    return taskGroupDM.AnalyzorGroups.value[op];
 });
 
-const onClickTask = (task: TaskBean)=>{
+const onClickTask = (task: Task)=>{
     const op = task.paramArgs.operator.op;
     router.push(`/Analyzor/${op}/${task.id}`);
 }

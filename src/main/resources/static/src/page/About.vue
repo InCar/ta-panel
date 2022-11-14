@@ -54,12 +54,12 @@
             </template>
             <span>Worker</span><span>{{IsWorkerSupported?"Supported":"NA"}}</span>
             <span>SharedWorker</span><span>{{IsSharedWorkerSupported?"Supported":"NA"}}</span>
-            <span>WorkerMode</span><span>{{store.WorkerMode}}</span>
+            <span>WorkerMode</span><span>{{aboutDM.WorkerMode.value}}</span>
         </div>
         <hr />
         <div class="dev-test">
-            <span class="em">{{store.Count}}</span>
-            <button @click="store.increment">Click</button>
+            <span class="em">{{aboutDM.Count}}</span>
+            <button @click="aboutDM.increment">Click</button>
         </div>
         <hr />
         <div class="check-item">
@@ -73,12 +73,11 @@
 </template>
 
 <script setup lang="ts">
-import { useAboutStore } from '@store';
-import { computed } from '@vue/reactivity';
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from "vue-router";
 
 import {DatePicker} from "@cmx";
+import { useSDM } from '@sdm';
 
 const widthViewPort = ref(window.innerWidth);
 const heightViewPort = ref(window.innerHeight);
@@ -87,13 +86,15 @@ const agents:any = ref({});
 const IsWorkerSupported = !!window.Worker;
 const IsSharedWorkerSupported = !!window.SharedWorker;
 
-const store = useAboutStore();
+const aboutDM = useSDM().AboutDM;
 
 class AboutPage {
     private _router = useRouter();
     public IsDevChecked = ref(false);
 
     public init = ()=>{
+        this.IsDevChecked.value = (this._router.currentRoute.value.path == "/About/dev")
+
         watch(this.LinkForView, (value, last)=>{
             this._router.push(value);
         });
