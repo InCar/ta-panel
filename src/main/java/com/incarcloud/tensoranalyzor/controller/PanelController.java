@@ -155,9 +155,19 @@ public class PanelController {
                         response.setRawStatusCode(resp.statusCode());
                         sink.success(resp.body());
                     }).exceptionally((e)->{
-                        if(e.getCause() != null && e.getCause().getClass().equals(HttpConnectTimeoutException.class)){
+                        String messageMore = "";
+                        if(request.getHeaders().get("X-Back-Point") != null){
+                            messageMore = " : " + backAPI.toString();
+                        }
+
+                        if(e.getCause() != null && e.getCause().getClass().equals(ConnectException.class)){
+                            response.setRawStatusCode(503);
+                            sink.success("BackPoint 连接失败: " + e.getCause().toString() + messageMore);
+                            return null;
+                        }
+                        else if(e.getCause() != null && e.getCause().getClass().equals(HttpConnectTimeoutException.class)){
                             response.setRawStatusCode(504);
-                            sink.success("BackPoint响应超时: " + e.getCause().getMessage());
+                            sink.success("BackPoint响应超时: " + e.getCause().getMessage() + messageMore);
                             return null;
                         }
                         response.setRawStatusCode(500);
