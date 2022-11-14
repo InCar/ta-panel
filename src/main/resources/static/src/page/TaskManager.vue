@@ -83,7 +83,15 @@ onMounted(async()=>{
         await taskDM.fetch();
     }
     catch(e){
-        errorMessage.value = `${e}`;
+        if(e instanceof Error){
+            errorMessage.value = e.message;
+            if(!!e.cause){
+                errorMessage.value += ` => ${e.cause}`
+            }
+        }
+        else{
+            errorMessage.value = `${e}`;
+        }
     }
     finally{
         isWaiting.value = false;
