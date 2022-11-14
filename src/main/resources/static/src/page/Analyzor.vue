@@ -144,11 +144,13 @@ onMounted(async ()=>{
     }
     catch(e){
         if(e instanceof Error){
-            errorMessage.value = e.message
+            errorMessage.value = e.message;
             if(!!e.cause)
                 errorMessage.value += ` => ${e.cause}`
         }
-        errorMessage.value = `${e}`;
+        else{
+            errorMessage.value = `${e}`;
+        }
     }
     
     watch(routePath, (v, last)=>{
