@@ -35,6 +35,7 @@
 </style>
 
 <template>
+    <BarChart :data="listData"/>
     <div v-if="hasResult">
         <div class="table-grid">
             <div v-for="field in listData">
@@ -54,6 +55,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { Task } from "@ta";
+import { BarChart } from "@cmx";
 
 interface ItemData{
     fn: string;

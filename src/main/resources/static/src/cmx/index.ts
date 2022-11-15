@@ -1,4 +1,5 @@
 import AnalyzorBrief from "./AnalyzorBrief.vue";
+import BarChart from "./BarChart.vue";
 import BreadCrumb from "./BreadCrumb.vue";
 import CurveLineChart from "./CurveLineChart.vue";
 import DatePicker from "./DatePicker.vue";
@@ -11,6 +12,7 @@ export * from "./BreadCrumb";
 
 export {
     AnalyzorBrief,
+    BarChart,
     BreadCrumb,
     CurveLineChart,
     DatePicker,
