@@ -29,23 +29,13 @@ import { computed } from '@vue/reactivity';
 import { TensorData } from '@ta';
 
 const props = defineProps<{
-    data: TensorData
+    data: Array<{x:number, y:number}>
 }>();
 
 const logicWidth = ref(500);
 const logicHeight = ref(200);
 
 const logicBox = computed(()=>{ return `0 0 ${logicWidth.value} ${logicHeight.value}`});
-
-const tensor2XY = (data: TensorData)=>{
-    const fnValue = (v:unknown[], i:number)=>{
-        const axis = data.dims[i];
-        const tensor = data.tensor;
-        return axis.asNumber ? axis.asNumber(v[i]) : (v[i] as number);
-    }
-
-    return data.tensor.map(v=>({ x: fnValue(v, 0), y: fnValue(v, 1)}));
-};
 
 const render = (data:Array<{x:number, y:number}>)=>{
     const holder = d3.select(".bar-chart");
@@ -100,6 +90,6 @@ const render = (data:Array<{x:number, y:number}>)=>{
 };
 
 onMounted(()=>{
-    render(tensor2XY(props.data));
+    render(props.data);
 });
 </script>
