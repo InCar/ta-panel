@@ -33,8 +33,9 @@ h2{
     <div v-if="!!task">
         <h2>{{task.name}}</h2>
         <TaskView :task="task!" class="task-item" />
-        <div class="task-action" v-if="isCancellable">
+        <div class="task-action" v-if="isCancellable || hasResult">
             <button v-if="isCancellable" @click="onCancel">取消</button>
+            <button v-if="hasResult" @click="onJump">查看结果</button>
         </div>
         <TaskExtra :task="task"/>
     </div>
@@ -43,17 +44,17 @@ h2{
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { computed } from '@vue/reactivity';
-import { useRoute } from 'vue-router';
-import { TaskStatus } from "@ta";
+import { useRouter } from 'vue-router';
+import { TaskStatus, EnumOP } from "@ta";
 import { TaskExtra, TaskView } from "@cmx";
 import { useSDM } from '@sdm';
 
-const route = useRoute();
+const router = useRouter();
 const taskDM = useSDM().TaskDM;
 const isWaiting = ref(true);
 const errorMessage = ref("");
 
-const taskId = route.params.taskId as string;
+const taskId = router.currentRoute.value.params.taskId as string;
 
 onMounted(async ()=>{
     try{
@@ -70,14 +71,6 @@ onMounted(async ()=>{
 const task = computed(()=>{
     const taskFound = taskDM.getTask(taskId);    
     return taskFound;
-});
-
-const taskDuration = computed(()=>{
-    if((!!task.value.startTime) && (!!task.value.finishTime)){
-        return task.value.finishTime.diff(task.value.startTime).toFormat("d天h小时m分");
-    }
-
-    return null;
 });
 
 const isCancellable = computed(()=>{
@@ -105,5 +98,9 @@ const onCancel = async (e:Event)=>{
         isWaiting.value = false;
     }
 };
+
+const onJump = ()=>{
+    router.push(`/Analyzor/${EnumOP[task.value.OP]}/${task.value.id}`);
+}
 
 </script>
