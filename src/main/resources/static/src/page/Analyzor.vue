@@ -19,6 +19,15 @@
     border-radius: 8px;
     &:hover{
         background-color: theme.$color-bk-2nd;
+        cursor: pointer;
+    }
+    &.disabled{
+        color: gray;
+        background-color: theme.$color-bk;
+        cursor: default;
+        img{
+            filter: grayscale(1.0);
+        }
     }
 
     .box{
@@ -74,7 +83,7 @@
     <div class="error-message" v-if="errorMessage.length>0">{{errorMessage}}</div>
     <BreadCrumb class="nav" ref="breadCrumb" @on-nav="onNav"/>
     <div class="container" v-if="!isChildActive">
-        <div class="x-item" v-for="x in listGroupTitle" @click="onClickGroup(x.op)">
+        <div class="x-item" v-for="x in listGroupTitle" @click="onClickGroup(x.op)" :class="{ disabled: !x.op}">
             <img class="box hue-205" src="/img/ta.png" />
             <p class="title">
                 <span>{{x.title}}</span>(<span class="em">{{calcItemCount(x.op)}}</span>)
