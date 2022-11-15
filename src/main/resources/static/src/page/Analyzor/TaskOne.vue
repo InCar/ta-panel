@@ -45,7 +45,7 @@ const active = computed(()=>{
         return TaskGroup;
     }
     else{
-        throw new Error(`${EnumOP[task.value?.OP]}`);
+        return null;
     }
 });
 </script>

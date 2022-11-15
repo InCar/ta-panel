@@ -1,4 +1,5 @@
 import { TAModeBase, TAModeCount, TaskOperation, Task } from "@ta";
+import { stringify } from "querystring";
 import { EnumOP, Operation, TensorData } from "./BaseOP";
 
 export class AggregationOP extends Operation
@@ -34,6 +35,11 @@ export class AggregationOP extends Operation
 
     public MakeTensorData = (task:Task):TensorData=>{
         const fields = task.paramArgs.fields;
+        const fnGetFieldName = (field:string)=>{
+            const found =  fields.find(f=>f.name == field);
+            return found ? (found.desc??field) : field;
+        };
+
         const axisX = { label: "指标", vt: "string" };
         const axisY = { label: "统计函数", vt: "string" };
         const axisZ = { label: "数值", vt: "number" };
@@ -45,7 +51,7 @@ export class AggregationOP extends Operation
                 const x = matches[1];
                 const y = matches[2];
                 const z = parseFloat(task.resData[key]);
-                tensor.push([x, y, z]);
+                tensor.push([fnGetFieldName(x), y, z]);
             }
         }
         

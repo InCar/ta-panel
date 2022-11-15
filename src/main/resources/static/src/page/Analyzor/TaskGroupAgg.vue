@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import { CurveLineChart, TensorTableView } from "@cmx";
 import { Task, TensorData } from "@ta";
 
@@ -21,11 +21,10 @@ const props = defineProps<{
 
 
 const hasResult = computed(()=>{
-    return !!props.task.resData;
+    return listDataXY.value.length > 0;
 });
 
 const tensorData = computed(()=>{
-    const emptyTensor = [[],[]];
     return props.task.makeTensor();
 })
 
