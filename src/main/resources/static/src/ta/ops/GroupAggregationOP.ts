@@ -1,5 +1,6 @@
 import { TAModeBase, Range, TAModeSingleDistribution, TaskOperation, Task } from "@ta";
-import { EnumOP, Operation, TableData } from "./BaseOP";
+import { parse } from "path";
+import { TensorData, EnumOP, Operation } from "./BaseOP";
 
 export class GroupAggregationOP extends Operation{
     protected readonly _op = EnumOP["group-aggregation"];
@@ -42,15 +43,31 @@ export class GroupAggregationOP extends Operation{
         
     }
 
-    public MakeTableData = (task:Task):TableData=>{
-        const data = task.resData as { [key:string]:string };
+    public MakeTensorData = (task:Task):TensorData=>{
         const field = task.paramArgs.fields[0];
+        const axisX = {
+            label: field.desc??field.name, vt: "string",
+            asNumber: (v:any):number=>{
+                const matches = /(\d+)-(\d+)/.exec(`${v}`);
+                if(matches){
+                    return (parseInt(matches[1]) + parseInt(matches[2]))/2;
+                }
+                else{
+                    return parseInt(v);
+                }
+            }
+        };
+        const axisY = { label: "数量", vt: "number" };
 
-        const label = {x: field.desc??field.name, y:"数量"};
-        const listData = Object.keys(data)
-                    .map(k=>({x: parseFloat(k), y: Number(data[k]), strX:k}))
-                    .sort((a, b)=>a.x-b.x);
-
-        return { label, listData };
+        const data = task.resData as { [key:string]:string };
+        const tensor = Object.keys(data)
+                    .map(k=>([k, Number(data[k])]))
+                    .sort((left, right)=>{
+                        const leftN = axisX.asNumber(left);
+                        const rightN = axisX.asNumber(right);
+                        return leftN - rightN;
+                    });
+        
+        return { dims: [axisX, axisY], tensor };
     }
 }

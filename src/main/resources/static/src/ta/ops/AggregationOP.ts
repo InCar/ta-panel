@@ -1,5 +1,5 @@
 import { TAModeBase, TAModeCount, TaskOperation, Task } from "@ta";
-import { EnumOP, Operation, TableData } from "./BaseOP";
+import { EnumOP, Operation, TensorData } from "./BaseOP";
 
 export class AggregationOP extends Operation
 {
@@ -32,7 +32,15 @@ export class AggregationOP extends Operation
         return op;
     };
 
-    public MakeTableData = (task:Task):TableData=>{
-        throw new Error("TODO");
+    public MakeTableData = (task:Task):TensorData=>{
+        const listData = [];
+        const label = { x: "X", y: "Y"};
+
+        const listFields = task.paramArgs.fields;
+        for(let key in task.resData){
+            const matches = /([^,]+),([^,]+)/.exec(key);
+            console.info(matches[1], matches[2])
+        }
+        throw new Error("TODO")
     }
 }

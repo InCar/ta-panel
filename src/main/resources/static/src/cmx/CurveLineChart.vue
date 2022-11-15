@@ -26,24 +26,10 @@
 import { onMounted, ref } from 'vue';
 import * as d3  from "d3";
 import { computed } from '@vue/reactivity';
-
-interface ItemEntry{
-    x: number;
-    y: number;
-}
-
-interface ItemLabel{
-    x: string;
-    y: string;
-}
-
-interface ItemData{
-    label: ItemLabel,
-    listData: ItemEntry[]
-}
+import { TensorData } from '@ta';
 
 const props = defineProps<{
-    data: ItemData
+    data: TensorData
 }>();
 
 const logicWidth = ref(500);
@@ -51,7 +37,17 @@ const logicHeight = ref(200);
 
 const logicBox = computed(()=>{ return `0 0 ${logicWidth.value} ${logicHeight.value}`});
 
-const render = (tableData:ItemData)=>{
+const tensor2XY = (data: TensorData)=>{
+    const fnValue = (v:unknown[], i:number)=>{
+        const axis = data.dims[i];
+        const tensor = data.tensor;
+        return axis.asNumber ? axis.asNumber(v[i]) : (v[i] as number);
+    }
+
+    return data.tensor.map(v=>({ x: fnValue(v, 0), y: fnValue(v, 1)}));
+};
+
+const render = (data:Array<{x:number, y:number}>)=>{
     const holder = d3.select(".bar-chart");
 
     const width = logicWidth.value;
@@ -59,8 +55,6 @@ const render = (tableData:ItemData)=>{
     const marginLeft = 40;
     const marginBottom = 20;
     const margin = 8;
-
-    const data = tableData.listData;
 
     // 计算极值区间
     const extX = d3.extent(data, d=>d.x) as [number, number];
@@ -106,6 +100,6 @@ const render = (tableData:ItemData)=>{
 };
 
 onMounted(()=>{
-    render(props.data);
+    render(tensor2XY(props.data));
 });
 </script>

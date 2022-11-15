@@ -40,59 +40,47 @@
 
 <template>
     <div class="data-table-v mobile-only">
-        <span>{{dataLabel.x}}</span><span>{{dataLabel.y}}</span>
-        <template class="data-xy" v-for="v in listDataForVer">
-            <span>{{v.strX??v.x}}</span>
-            <span>{{v.y}}</span>
+        <template v-for="axis in dims">
+            <span>{{axis.label}}</span>
+        </template>
+        <template v-for="v in listDataForVer">
+            <span>{{v[0]}}</span>
+            <span>{{v[1]}}</span>
         </template>
     </div>
     <div class="data-table-h mobile-none">
         <div v-for="v in listDataForHoz">
-            <span>{{v.y}}</span>
-            <span>{{v.strX??v.x}}</span>
+            <span>{{v[1]}}</span>
+            <span>{{v[0]}}</span>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from '@vue/reactivity';
+import { computed } from "vue";
+import { TensorData } from '@ta';
 
-interface ItemEntry{
-    x: number;
-    strX?: string;
-    y: number|string;
-}
-
-interface ItemLabel{
-    x: string;
-    y: string;
-}
-
-interface ItemData{
-    label: ItemLabel,
-    listData: ItemEntry[]
-}
 
 const props = defineProps<{
-    data: ItemData
+    data: TensorData
 }>();
 
-const dataLabel = computed(()=>{
-    return props.data.label;
+const dims = computed(()=>{
+    return props.data.dims;
 })
 
 const listDataForVer = computed(()=>{
-    return props.data.listData;
+    return props.data.tensor;
 })
 
 const listDataForHoz = computed(()=>{
-    const listData = props.data.listData;
-    const label = props.data.label;
+    const listData = props.data.tensor;
+    const dims = props.data.dims;
     const CountInRow = 10;
 
-    const listAll: Array<ItemEntry> = [];
+    const listAll: Array<any[]> = [];
     for(let i=0;i<Math.ceil(listData.length/CountInRow);i++){
-        listAll.push({ x: 0, strX: label.x, y: label.y});
+        listAll.push(dims.map(axis=>axis.label));
         for(let j=i*CountInRow;j<(i+1)*CountInRow;j++){
             if(j < listData.length)
                 listAll.push(listData[j]);

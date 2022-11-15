@@ -32,8 +32,8 @@ export class Task{
         return EnumOP[strOP as keyof typeof EnumOP] ?? EnumOP.NA;
     }
 
-    public makeTableData = ()=>{
+    public makeTensor = ()=>{
         const op = createOP(this.paramArgs.operator.op);
-        return op.MakeTableData(this);
+        return op.MakeTensorData(this);
     }
 }

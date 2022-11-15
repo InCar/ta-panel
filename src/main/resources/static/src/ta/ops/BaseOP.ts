@@ -8,20 +8,15 @@ export enum EnumOP{
     geo
 }
 
-export interface TableDataEntry{
-    x: number;
-    y: number;
-    strX: string;
+export interface Axis{
+    label: string;
+    vt: string;
+    asNumber?: (v:any)=>number;
 }
 
-export interface TableDataLabel{
-    x: string;
-    y: string;
-}
-
-export interface TableData{
-    label: TableDataLabel;
-    listData: TableDataEntry[];
+export interface TensorData{
+    dims: Axis[];
+    tensor: Array<any[]>;
 }
 
 export abstract class Operation{
@@ -31,6 +26,10 @@ export abstract class Operation{
         return EnumOP[this._op];
     }
 
-    public abstract MakeSubmitArgs: (mode: TAModeBase)=>TaskOperation;
-    public abstract MakeTableData: (task: Task)=>TableData;
+    public MakeSubmitArgs = (mode: TAModeBase):TaskOperation => {
+        throw new Error("Not Implementation!");
+    };
+    public MakeTensorData = (task: Task):TensorData=>{
+        throw new Error("Not Implementation!");
+    }
 }

@@ -18,8 +18,8 @@
     <div class="task-one">
         <h2>{{ task?.name }}</h2>
         <div v-if="hasResult">
-            <CurveLineChart class="chart" :data="diagramData" />
-            <DataTableView :data="diagramData" />
+            <CurveLineChart class="chart" :data="tensorData" />
+            <TensorTableView :data="tensorData" />
         </div>
     </div>
 </template>
@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { CurveLineChart, DataTableView } from "@cmx";
+import { CurveLineChart, TensorTableView } from "@cmx";
 import { useSDM } from "@sdm";
 
 const taskDM = useSDM().TaskDM;
@@ -42,8 +42,8 @@ const hasResult = computed(()=>{
     return !!task.value?.resData;
 });
 
-const diagramData = computed(()=>{
-    const emptyData = { label: {x:"", y:""}, listData: []};
-    return task.value?.makeTableData() ?? emptyData;
-});
+const tensorData = computed(()=>{
+    const emptyTensor = [[],[]];
+    return task.value?.makeTensor();
+})
 </script>
