@@ -6,7 +6,7 @@
     margin:1em;
     align-self: center;
     display: grid;
-    grid-template-columns: repeat(11, 1fr);
+    grid-template-columns: repeat(10+1, 1fr);
     row-gap: 0.25em;
 
     span{
@@ -57,13 +57,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { TensorData } from '@ta';
-
 
 const props = defineProps<{
     data: TensorData
 }>();
+
+let countInRow = ref(10);
 
 const dims = computed(()=>{
     return props.data.dims;
@@ -76,12 +77,12 @@ const listDataForVer = computed(()=>{
 const listDataForHoz = computed(()=>{
     const listData = props.data.tensor;
     const dims = props.data.dims;
-    const CountInRow = 10;
+    const countPerRow = countInRow.value;
 
     const listAll: Array<any[]> = [];
-    for(let i=0;i<Math.ceil(listData.length/CountInRow);i++){
+    for(let i=0;i<Math.ceil(listData.length/countPerRow);i++){
         listAll.push(dims.map(axis=>axis.label));
-        for(let j=i*CountInRow;j<(i+1)*CountInRow;j++){
+        for(let j=i*countPerRow;j<(i+1)*countPerRow;j++){
             if(j < listData.length)
                 listAll.push(listData[j]);
         }
@@ -89,5 +90,18 @@ const listDataForHoz = computed(()=>{
 
     return listAll;
 });
+
+onMounted(()=>{
+    const divFrame = document.querySelector(".frame-body") as HTMLDivElement;
+    if(divFrame){
+        const items = Math.ceil(divFrame.clientWidth / 47);
+        countInRow.value = Math.min(props.data.tensor.length,items);
+    }
+
+    const divH = document.querySelector(".data-table-h") as HTMLDivElement;
+    if(divH){
+        divH.style.gridTemplateColumns = `repeat(${countInRow.value+1}, 1fr)`;
+    }
+})
 
 </script>
