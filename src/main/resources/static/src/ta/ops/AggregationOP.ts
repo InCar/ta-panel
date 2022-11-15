@@ -32,15 +32,23 @@ export class AggregationOP extends Operation
         return op;
     };
 
-    public MakeTableData = (task:Task):TensorData=>{
-        const listData = [];
-        const label = { x: "X", y: "Y"};
+    public MakeTensorData = (task:Task):TensorData=>{
+        const fields = task.paramArgs.fields;
+        const axisX = { label: "指标", vt: "string" };
+        const axisY = { label: "统计函数", vt: "string" };
+        const axisZ = { label: "数值", vt: "number" };
 
-        const listFields = task.paramArgs.fields;
+        const tensor = [];
         for(let key in task.resData){
             const matches = /([^,]+),([^,]+)/.exec(key);
-            console.info(matches[1], matches[2])
+            if(matches){
+                const x = matches[1];
+                const y = matches[2];
+                const z = parseFloat(task.resData[key]);
+                tensor.push([x, y, z]);
+            }
         }
-        throw new Error("TODO")
+        
+        return { dims: [axisX, axisY, axisZ], tensor};
     }
 }

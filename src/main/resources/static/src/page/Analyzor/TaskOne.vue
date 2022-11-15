@@ -17,18 +17,17 @@
 <template>
     <div class="task-one">
         <h2>{{ task?.name }}</h2>
-        <div v-if="hasResult">
-            <CurveLineChart class="chart" :data="tensorData" />
-            <TensorTableView :data="tensorData" />
-        </div>
+        <component :is="active" :task="task"/>
     </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { CurveLineChart, TensorTableView } from "@cmx";
 import { useSDM } from "@sdm";
+import { EnumOP } from "@ta";
+import TaskGroup from "./TaskGroup.vue";
+import TaskGroupAgg from "./TaskGroupAgg.vue";
 
 const taskDM = useSDM().TaskDM;
 const router = useRouter();
@@ -38,12 +37,15 @@ const task = computed(()=>{
     return taskDM.getTask(taskId);
 });
 
-const hasResult = computed(()=>{
-    return !!task.value?.resData;
+const active = computed(()=>{
+    if(task.value?.OP == EnumOP["group-aggregation"]){
+        return TaskGroupAgg;
+    }
+    else if(task.value?.OP == EnumOP.aggregation){
+        return TaskGroup;
+    }
+    else{
+        throw new Error(`${EnumOP[task.value?.OP]}`);
+    }
 });
-
-const tensorData = computed(()=>{
-    const emptyTensor = [[],[]];
-    return task.value?.makeTensor();
-})
 </script>
