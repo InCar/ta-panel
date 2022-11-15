@@ -4,10 +4,8 @@
 </style>
 
 <template>
-    <div v-if="hasResult">
-        <CurveLineChart class="chart" :data="listDataXY" />
-        <TensorTableView :data="tensorData" />
-    </div>
+    <CurveLineChart class="chart" :data="listDataXY" />
+    <TensorTableView :data="tensorData" />
 </template>
 
 <script setup lang="ts">
@@ -18,11 +16,6 @@ import { Task, TensorData } from "@ta";
 const props = defineProps<{
     task: Task
 }>();
-
-
-const hasResult = computed(()=>{
-    return listDataXY.value.length > 0;
-});
 
 const tensorData = computed(()=>{
     return props.task.makeTensor();

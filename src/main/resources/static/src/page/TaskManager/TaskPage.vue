@@ -4,6 +4,9 @@
     @include theme.mx-error;
     padding: 1em;
 }
+h2{
+    text-align: center;
+}
 .task-item{
     flex: 1 1 auto;
     cursor: pointer;
@@ -28,31 +31,12 @@
         <span>{{errorMessage}}</span>
     </div>
     <div v-if="!!task">
+        <h2>{{task.name}}</h2>
         <TaskView :task="task!" class="task-item" />
         <div class="task-action" v-if="isCancellable">
             <button v-if="isCancellable" @click="onCancel">取消</button>
         </div>
-        <div class="task-extra">
-            <span>{{task.name}}</span><br/>
-            <span>任务标识: {{task.id}}</span>
-            <span v-if="!!task.startTime">执行开始: {{task.startTime.toFormat("yyyy年MM月dd日 HH:mm")}}</span>
-            <span v-if="!!task.finishTime">执行完成: {{task.finishTime.toFormat("yyyy年MM月dd日 HH:mm")}}</span>
-            <span v-if="!!taskDuration">执行时长: {{taskDuration}}</span><br />
-            <span>运算模式: {{task.paramArgs.operator.op}}</span>
-            <div v-if="!!task.paramArgs.operator.opArgs.aggregation.fns">
-                <span>聚合函数: {{task.paramArgs.operator.opArgs.aggregation.fns.join(", ")}}</span>
-            </div>
-            <div v-if="!!task.paramArgs.operator.opArgs.aggregation.fn">
-                <span>聚合函数: {{task.paramArgs.operator.opArgs.aggregation.fn}}</span>
-                <template v-for="field in task.paramArgs.operator.opArgs.groupBy">
-                    <span style="margin-left:2em;">{{field.field}} : {{field.from}}~{{field.to}} / {{field.step}}</span>
-                </template>
-            </div>
-            <div v-else>
-                <span>统计字段</span>
-                <span v-for="field in task.paramArgs.fields" style="margin-left:2em">{{field.name}} {{field.desc}}</span>
-            </div>
-        </div>
+        <TaskExtra :task="task"/>
     </div>
 </template>
 
@@ -61,7 +45,7 @@ import { onMounted, ref } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRoute } from 'vue-router';
 import { TaskStatus } from "@ta";
-import { TaskView } from "@cmx";
+import { TaskExtra, TaskView } from "@cmx";
 import { useSDM } from '@sdm';
 
 const route = useRoute();

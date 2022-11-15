@@ -26,7 +26,6 @@
 import { onMounted, ref } from 'vue';
 import * as d3  from "d3";
 import { computed } from '@vue/reactivity';
-import { TensorData } from '@ta';
 
 const props = defineProps<{
     data: Array<{x:number, y:number}>

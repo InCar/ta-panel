@@ -11,6 +11,11 @@
     h2{
         align-self: center;
     }
+
+    .task-extra{
+        margin: 1em;
+        align-self: center;
+    }
 }
 </style>
 
@@ -18,6 +23,7 @@
     <div class="task-one">
         <h2>{{ task?.name }}</h2>
         <component :is="active" :task="task"/>
+        <TaskExtra :task="task" />
     </div>
 </template>
 
@@ -28,6 +34,7 @@ import { useSDM } from "@sdm";
 import { EnumOP } from "@ta";
 import TaskGroup from "./TaskGroup.vue";
 import TaskGroupAgg from "./TaskGroupAgg.vue";
+import { TaskExtra } from "@cmx";
 
 const taskDM = useSDM().TaskDM;
 const router = useRouter();
