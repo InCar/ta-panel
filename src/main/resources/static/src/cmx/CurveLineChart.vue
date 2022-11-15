@@ -9,6 +9,9 @@
         path{
             stroke: theme.$color;
         }
+        text.error-message{
+            fill: theme.$color-bk-error;
+        }
     }
 }
 </style>
@@ -24,8 +27,23 @@ import { onMounted, ref } from 'vue';
 import * as d3  from "d3";
 import { computed } from '@vue/reactivity';
 
+interface ItemEntry{
+    x: number;
+    y: number;
+}
+
+interface ItemLabel{
+    x: string;
+    y: string;
+}
+
+interface ItemData{
+    label: ItemLabel,
+    listData: ItemEntry[]
+}
+
 const props = defineProps<{
-    data: Array<any>
+    data: ItemData
 }>();
 
 const logicWidth = ref(500);
@@ -33,7 +51,7 @@ const logicHeight = ref(200);
 
 const logicBox = computed(()=>{ return `0 0 ${logicWidth.value} ${logicHeight.value}`});
 
-const render = (data:any[])=>{
+const render = (tableData:ItemData)=>{
     const holder = d3.select(".bar-chart");
 
     const width = logicWidth.value;
@@ -42,8 +60,10 @@ const render = (data:any[])=>{
     const marginBottom = 20;
     const margin = 8;
 
+    const data = tableData.listData;
+
     // 计算极值区间
-    const extX = d3.extent(data, d=>d.x);
+    const extX = d3.extent(data, d=>d.x) as [number, number];
 
     // x值映射函数
     const fnScaleX = d3.scaleLinear()
@@ -52,7 +72,7 @@ const render = (data:any[])=>{
     
     // y值映射函数
     const fnScaleY = d3.scaleLinear()
-        .domain([0, d3.max(data, d=>d.y)])
+        .domain([0, d3.max(data, d=>d.y) as number])
         .range([height-marginBottom, margin]);
     
     // 坐标轴
@@ -60,14 +80,12 @@ const render = (data:any[])=>{
     const axisY = d3.axisLeft(fnScaleY);
 
     // 图形计算函数
-    const fnArea = d3.area().curve(d3.curveMonotoneX)
+    const fnArea:any = d3.area().curve(d3.curveMonotoneX)
         .x((d:any)=>fnScaleX(d.x))
         .y1((d:any)=>fnScaleY(d.y))
         .y0(d=>fnScaleY(0));
-
     
     const svg = holder.select("svg");
-    //svg.attr("width", `${width}px`).attr("height", `${height}px`);
     svg.append("g")
         .attr("transform", `translate(0, ${height-marginBottom})`)
         .call(axisX);
@@ -77,6 +95,14 @@ const render = (data:any[])=>{
     svg.append("path")
        .datum(data)
        .attr("d", fnArea);
+    
+    if(data.length === 0){
+        svg.append("text")
+            .attr("x", (width-marginLeft)/2)
+            .attr("y", (height-marginBottom)/2)
+            .attr("class", "error-message")
+            .text("无数据");
+    }
 };
 
 onMounted(()=>{

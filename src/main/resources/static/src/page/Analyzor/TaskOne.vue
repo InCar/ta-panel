@@ -11,39 +11,6 @@
     h2{
         align-self: center;
     }
-
-    .data-table{
-        align-self: center;
-        display: flex;
-        flex-flow: row wrap;
-        row-gap: 0.5em;
-        margin: 1em;
-        
-        span{
-            text-align: center;
-            border: 1px dotted theme.$color;
-            padding: 0.25em;
-        }
-    }
-
-    .data-table-v{
-        margin:1em;
-        align-self: center;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        span:nth-of-type(2n+1){
-            text-align: center;
-        }
-        span:nth-of-type(2n){
-            text-align: right;
-        }
-        
-        span{
-            text-align: center;
-            border: 1px dotted theme.$color;
-            padding: 0.25em;
-        }
-    }
 }
 </style>
 
@@ -52,32 +19,16 @@
         <h2>{{ task?.name }}</h2>
         <div v-if="hasResult">
             <CurveLineChart class="chart" :data="diagramData" />
-
-            <TablePresent :data="tableData" />
-            <div class="data-table mobile-none">
-                <div><span>Y</span><span>X</span></div>
-                <div class="data-xy" v-for="v in diagramData">
-                    <span>{{v.y}}</span>
-                    <span>{{v.strX}}</span>
-                </div>
-            </div>
-            <div class="data-table-v mobile-only">
-                <span>X</span><span>Y</span>
-                <template class="data-xy" v-for="v in diagramData">
-                    <span>{{v.strX}}</span>
-                    <span>{{v.y}}</span>
-                </template>
-            </div>
+            <DataTableView :data="diagramData" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { CurveLineChart, TP_Data, TP_Dimension } from "@cmx";
+import { CurveLineChart, DataTableView } from "@cmx";
 import { useSDM } from "@sdm";
-import { TablePresent } from "@cmx";
 
 const taskDM = useSDM().TaskDM;
 const router = useRouter();
@@ -87,24 +38,12 @@ const task = computed(()=>{
     return taskDM.getTask(taskId);
 });
 
-const taskOP = computed(()=>{
-    return task.value?.paramArgs.operator.op??"NA";
-});
-
 const hasResult = computed(()=>{
     return !!task.value?.resData;
 });
 
-const diagramData = computed(
-    ()=>Object.keys(task.value?.resData??[])
-        .map(k=>({x: parseFloat(k), y: Number(task.value?.resData[k]), strX:k}))
-        .sort((a, b)=>a.x-b.x));
-
-
-const tableData = computed(():TP_Data=>{
-    // dims
-    const listDims = Array<TP_Dimension>();
-    listDims.push({ dim: "field", isNumber: false });
-    
+const diagramData = computed(()=>{
+    const emptyData = { label: {x:"", y:""}, listData: []};
+    return task.value?.makeTableData() ?? emptyData;
 });
 </script>

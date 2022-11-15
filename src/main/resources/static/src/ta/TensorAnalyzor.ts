@@ -1,7 +1,7 @@
 import { TAModeBase } from "./mode/TAModes";
 import { TDataSF, TDataFields, TaskBody, TDataSources, TaskBean } from "./remote/BackPointDef";
-import { Operations } from "./Operations";
 import { BackPoint } from "./remote/BackPoint";
+import { createOP } from "./ops";
 
 export class TensorAnalyzor {
     // 可用数据源
@@ -35,9 +35,6 @@ export class TensorAnalyzor {
 
     public submitTask = async(mode: TAModeBase):Promise<string>=>{
         const task = this.assembleTaskBody(mode);
-        
-        if(task == null)
-            throw new Error(`尚不支持该操作: ${mode.TaskName}`);
 
         const api = "/api/task/start";
         let  headers:any = { "Content-Type": "application/json" };
@@ -60,18 +57,16 @@ export class TensorAnalyzor {
         return await this._backPoint.post<void>(api);
     };
 
-    private assembleTaskBody = (mode: TAModeBase):TaskBody|null=>{
-        const op = Operations.MakeOP(mode);
-        if(op == null) return null;
-
-        const task = {
+    private assembleTaskBody = (mode: TAModeBase):TaskBody=>{
+        const op = createOP(mode.Mode)
+        const opArgs = op.MakeSubmitArgs(mode);
+        const task:TaskBody = {
             name: mode.TaskName,
             dataSources: this.objectsToArray(this._dataSources!, "name", "ds") as any,
             fields: this.objectsToArray(mode.Fields) as any,
-            operator: op,
+            operator: opArgs,
             limit: mode.LimitMax
         };
-
         return task;
     }
 

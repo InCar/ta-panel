@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 import { TaskStatus, TaskBody, TaskBean } from "./remote";
+import { createOP, EnumOP } from "./ops";
 
 export class Task{
     public readonly id: string;
@@ -24,5 +25,15 @@ export class Task{
         if(!!src.finishTime) this.finishTime = DateTime.fromMillis(src.finishTime);
         if(!!src.percent) this.percent = parseFloat(src.percent);
         if(!!src.resJson) this.resData = JSON.parse(src.resJson);
+    }
+
+    public get OP():EnumOP{
+        const strOP = this.paramArgs.operator.op;
+        return EnumOP[strOP as keyof typeof EnumOP] ?? EnumOP.NA;
+    }
+
+    public makeTableData = ()=>{
+        const op = createOP(this.paramArgs.operator.op);
+        return op.MakeTableData(this);
     }
 }
