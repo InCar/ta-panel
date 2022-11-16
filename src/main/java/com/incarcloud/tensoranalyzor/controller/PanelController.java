@@ -3,6 +3,8 @@ package com.incarcloud.tensoranalyzor.controller;
 import com.incarcloud.tensoranalyzor.Application;
 import com.incarcloud.tensoranalyzor.GitVer;
 import com.incarcloud.tensoranalyzor.jsonexpr.*;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +20,16 @@ import java.io.*;
 import java.net.*;
 import java.net.URL;
 import java.net.http.*;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Flow;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 @RestController
 @RequestMapping(path="api")
@@ -90,38 +96,23 @@ public class PanelController {
     }
 
     @RequestMapping("/{path:task}/**")
-    public Mono<String> ForwardBackPoint(ServerHttpRequest request,
-                                         ServerHttpResponse response){
+    public Mono<String> ForwardBackPoint(
+            @RequestBody(required = false) String jsonBody,
+            ServerHttpRequest request,
+            ServerHttpResponse response){
         URL backPoint = findBackPoint(request);
         URI uri = request.getURI();
         String path = uri.getPath();
         String query = uri.getQuery();
         final String api = query==null?path:path+"?"+query;
 
-        HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.fromPublisher(s->{
-            s.onSubscribe(new Flow.Subscription(){
-                // webflux总是触发多次body
-                private boolean hasCompleted = false;
-                public void request(long n){
-                    Flux<DataBuffer> fluxBody = request.getBody();
-                    fluxBody.subscribe(buf->{
-                        if(buf != null){
-                            // String body = StandardCharsets.UTF_8.decode(buf.asByteBuffer()).toString();
-                            // s_logger.info("body {}", body);
-                            s.onNext(buf.asByteBuffer());
-                        }
-                    });
-                    fluxBody.hasElements().subscribe((hasBody)->{
-                        if(!hasCompleted && !hasBody){
-                            // without body
-                            hasCompleted = true;
-                            s.onComplete();
-                        }
-                    });
-                }
-                public void cancel(){}
-            });
-        });
+        HttpRequest.BodyPublisher bp;
+        if(jsonBody == null)
+            bp = HttpRequest.BodyPublishers.noBody();
+        else
+            bp = HttpRequest.BodyPublishers.ofString(jsonBody);
+
+        final HttpRequest.BodyPublisher bodyPublisher = bp;
 
         return Mono.create(sink->{
             sink.onRequest(x->{
