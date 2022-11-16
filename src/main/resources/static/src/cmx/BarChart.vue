@@ -92,9 +92,6 @@ const render = (listData: ListItemData[])=>{
         .attr("width", barWidth)
         .attr("height", d=>d*ratioY)
     
-        console.info(listData)
-
-    
     /*svg.append("text")
         .attr("x", (width-marginLeft)/2)
         .attr("y", (height-marginBottom)/2)
