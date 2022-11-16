@@ -4,13 +4,14 @@
 </style>
 
 <template>
-    <CurveLineChart class="chart" :data="listDataXY" />
+    <BarChart v-if="dataCount>0 && dataCount<4" :data="listData" />
+    <CurveLineChart v-else class="chart" :data="listDataXY" />
     <TensorTableView :data="tensorData" />
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { CurveLineChart, TensorTableView } from "@cmx";
+import { BarChart, CurveLineChart, TensorTableView } from "@cmx";
 import { Task, TensorData } from "@ta";
 
 const props = defineProps<{
@@ -21,8 +22,21 @@ const tensorData = computed(()=>{
     return props.task.makeTensor();
 })
 
+const dataCount = computed(()=>{
+    return tensorData.value.tensor.length;
+});
+
 const listDataXY = computed(()=>{
     return tensor2XY(tensorData.value);
+});
+
+const listData = computed(()=>{
+    const fieldData = {
+        field: tensorData.value.dims[0].label,
+        fns: tensorData.value.tensor.map(x=>({ fn: x[0], value: x[1]}))
+    };
+
+    return [ fieldData ];
 });
 
 const tensor2XY = (data: TensorData)=>{
