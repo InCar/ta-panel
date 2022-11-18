@@ -1,4 +1,4 @@
-<style scoped lang="scss">
+<style lang="scss">
 @use "../theme.scss";
 
 .bar-chart{
@@ -7,9 +7,12 @@
     svg{
         fill: theme.$color-bk-2nd;
         stroke: theme.$color;
-        path{
-            stroke: theme.$color;
+
+        text.label-sm{
+            stroke: none;
+            fill: theme.$color;
         }
+
         text.error-message{
             fill: theme.$color-bk-error;
         }
@@ -28,17 +31,12 @@ import { ref, computed, onMounted } from "vue";
 import * as d3  from "d3";
 
 interface ItemData{
-    fn: string;
+    label: string;
     value: number;
 }
 
-interface ListItemData{
-    field: string,
-    fns: ItemData[]
-}
-
 const props = defineProps<{
-    data: Array<ListItemData>
+    data: Array<ItemData>
 }>();
 
 const logicWidth = ref(500);
@@ -46,7 +44,21 @@ const logicHeight = ref(200);
 
 const logicBox = computed(()=>{ return `0 0 ${logicWidth.value} ${logicHeight.value}`});
 
-const render = (listData: ListItemData[])=>{
+const listData = computed(()=>{
+    const listValues = props.data.map(x=>x.value);
+    const min = Math.min(...listValues);
+    const max = Math.max(...listValues);
+    const range = max - min;
+
+    const fnX = (value:number)=>{ return range==0?100:value*(100/range); }
+
+    return props.data.map((item)=>{
+        const value = fnX(item.value);
+        return { label: item.label, value };
+    });
+});
+
+const render = (listData: ItemData[])=>{
     const holder = d3.select(".bar-chart");
 
     const width = logicWidth.value;
@@ -56,23 +68,13 @@ const render = (listData: ListItemData[])=>{
     const margin = 8;
 
     let barWidth = 20;
-    let barGap = 5;
+    let barGap = 25;
 
-    let dataForBar:number[] = [];
-    listData.forEach(x=>{
-        dataForBar = dataForBar.concat(x.fns.map(y=>y.value));
-    });
-    const factor = 5.5;
-    dataForBar = dataForBar.map(x=>{
-        if(x > 2.7) return factor*Math.log(x);
-        else if(x >= -2.7) return 1;
-        else return factor*Math.log(-x);
-    });
-
-    const count = dataForBar.length;
+    const count = listData.length;
     const totalBarWidth = barWidth*count + barGap*(count-1);
     const blankWidth = width - totalBarWidth - marginLeft*2;
-    const max = Math.max(...dataForBar);
+
+    const max = Math.max(...listData.map(x=>x.value));
     const ratioY = (height - marginBottom - margin)/max;
 
     let leftStartPos = marginLeft;
@@ -85,18 +87,29 @@ const render = (listData: ListItemData[])=>{
     const svg = holder.select("svg");
 
     svg.selectAll("rect")
-        .data(dataForBar)
+        .data(listData)
         .join("rect")
         .attr("x", (d, i)=>leftStartPos+(barWidth+barGap)*i)
-        .attr("y", d=>height-marginBottom-d*ratioY)
+        .attr("y", d=>height-marginBottom-d.value*ratioY)
         .attr("width", barWidth)
-        .attr("height", d=>d*ratioY)
+        .attr("height", d=>d.value*ratioY);
     
-    /*svg.append("text")
-        .attr("x", (width-marginLeft)/2)
-        .attr("y", (height-marginBottom)/2)
-        .attr("class", "error-message")
-        .text("无数据");*/
+    svg.selectAll("text")
+        .data(listData)
+        .join("text")
+        .text(d=>d.label)
+        .attr("x", (d, i)=>leftStartPos+(barWidth+barGap)*i)
+        .attr("y", d=>height-4)
+        .attr("class", "label-sm")
+        .attr("font-size", "0.5em")
+    
+    if(listData.length === 0){
+        svg.append("text")
+            .attr("x", (width-marginLeft)/2)
+            .attr("y", (height-marginBottom)/2)
+            .attr("class", "error-message")
+            .text("无数据");
+    }
     
 }
 

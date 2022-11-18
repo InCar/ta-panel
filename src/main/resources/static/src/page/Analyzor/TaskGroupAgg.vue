@@ -31,18 +31,18 @@ const listDataXY = computed(()=>{
 });
 
 const listData = computed(()=>{
-    const fieldData = {
-        field: tensorData.value.dims[0].label,
-        fns: tensorData.value.tensor.map(x=>({ fn: x[0], value: x[1]}))
-    };
+    const fnValue = (v:unknown[], i:number)=>{
+        const axis = tensorData.value.dims[i];
+        return axis.asNumber ? axis.asNumber(v[i]) : (v[i] as number);
+    }
 
-    return [ fieldData ];
+    return tensorData.value.tensor.map(v=>({ label: `${v[0]}`, value: fnValue(v, 1)}));
+    
 });
 
 const tensor2XY = (data: TensorData)=>{
     const fnValue = (v:unknown[], i:number)=>{
         const axis = data.dims[i];
-        const tensor = data.tensor;
         return axis.asNumber ? axis.asNumber(v[i]) : (v[i] as number);
     }
 

@@ -1,7 +1,7 @@
 <style lang="scss">
 @use "../theme.scss";
 
-.bar-chart{
+.line-chart{
     align-items: center;
     padding: 1em;
     svg{
@@ -17,7 +17,7 @@
 </style>
 
 <template>
-    <div class="bar-chart">
+    <div class="line-chart">
         <svg :viewBox="logicBox"></svg>
     </div>
 </template>
@@ -37,7 +37,7 @@ const logicHeight = ref(200);
 const logicBox = computed(()=>{ return `0 0 ${logicWidth.value} ${logicHeight.value}`});
 
 const render = (data:Array<{x:number, y:number}>)=>{
-    const holder = d3.select(".bar-chart");
+    const holder = d3.select(".line-chart");
 
     const width = logicWidth.value;
     const height = logicHeight.value;

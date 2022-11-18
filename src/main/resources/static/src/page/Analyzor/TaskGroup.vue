@@ -35,7 +35,7 @@
 </style>
 
 <template>
-    <BarChart :data="listData"/>
+    <BarChart :data="barChartData"/>
     <div v-if="hasResult">
         <div class="table-grid">
             <div v-for="field in listData">
@@ -73,6 +73,12 @@ const hasResult = computed(()=>{
 const tensorData = computed(()=>{
     return props.task.makeTensor();
 })
+
+const barChartData = computed(()=>{
+    return tensorData.value.tensor
+        .filter(v=>v[1] == "count")
+        .map(v=>({label: v[0], value:v[2]}))
+});
 
 const listData = computed(()=>{
     const dictFields: {[field:string]: ItemData[] } = {};
