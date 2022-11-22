@@ -44,45 +44,55 @@ const logicHeight = ref(200);
 
 const logicBox = computed(()=>{ return `0 0 ${logicWidth.value} ${logicHeight.value}`});
 
-const listData = computed(()=>{
-    const listValues = props.data.map(x=>x.value);
-    const min = Math.min(...listValues);
-    const max = Math.max(...listValues);
-    const range = max - min;
+const calcForBar = (totalWidth:number, count:number)=>{
+    let barWidth = 20;
+    let barGap = 25;
 
-    const fnX = (value:number)=>{ return range==0?100:value*(100/range); }
+    const fnCalcBlankWidth = (barWidth:number, barGap:number)=>{
+        const totalBarWidth = barWidth*count + barGap*(count-1);
+        return (totalWidth - totalBarWidth);
+    }
+    let blankWidth = fnCalcBlankWidth(barWidth, barGap);
+    if(blankWidth >= 0) return [barWidth, barGap];
 
-    return props.data.map((item)=>{
-        const value = fnX(item.value);
-        return { label: item.label, value };
-    });
-});
+    
+    // 空间不够
+    if(totalWidth >= barWidth*count){
+        // 缩小barGap可以满足
+        barGap = Math.floor((totalWidth - barWidth*count)/(count-1));
+        return [barWidth, barGap];
+    }
+    else{
+        // 不留barGap了
+        barGap = 0;
+        barWidth = totalWidth / count;
+        if(barWidth < 1) barWidth = 1;
+        return [barWidth, barGap];
+    }
+}
 
 const render = (listData: ItemData[])=>{
     const holder = d3.select(".bar-chart");
 
     const width = logicWidth.value;
     const height = logicHeight.value;
-    const marginLeft = 40;
-    const marginBottom = 20;
+    const marginLeft = 8;
+    const marginBottom = 25;
     const margin = 8;
 
-    let barWidth = 20;
-    let barGap = 25;
-
     const count = listData.length;
+    const totalBarSpace = width-marginLeft-margin;
+    const [barWidth, barGap] = calcForBar(totalBarSpace, count);
+    
+    let leftStartPos = marginLeft;
     const totalBarWidth = barWidth*count + barGap*(count-1);
-    const blankWidth = width - totalBarWidth - marginLeft*2;
+    const blankWidth = totalBarSpace - totalBarWidth;
+    if(blankWidth > 0){
+        leftStartPos += blankWidth/2;
+    }
 
     const max = Math.max(...listData.map(x=>x.value));
     const ratioY = (height - marginBottom - margin)/max;
-
-    let leftStartPos = marginLeft;
-    if(blankWidth > 0)
-        leftStartPos += blankWidth/2.0;
-    else{
-        // TODO: too width to fit
-    }
 
     const svg = holder.select("svg");
 
@@ -98,8 +108,8 @@ const render = (listData: ItemData[])=>{
         .data(listData)
         .join("text")
         .text(d=>d.label)
-        .attr("x", (d, i)=>leftStartPos+(barWidth+barGap)*i)
-        .attr("y", d=>height-4)
+        .attr("x", (d, i)=>leftStartPos+(barWidth+barGap)*i + (barGap > 8 ? 0 : 0))
+        .attr("y", (d, i)=>height-15 + (barGap > 8 ? 0 : 10*(i%2)))
         .attr("class", "label-sm")
         .attr("font-size", "0.5em")
     
