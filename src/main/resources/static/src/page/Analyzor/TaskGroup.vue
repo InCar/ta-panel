@@ -56,10 +56,11 @@
 import { computed } from "vue";
 import { Task } from "@ta";
 import { BarChart } from "@cmx";
+import { DateTime } from "luxon";
 
 interface ItemData{
     fn: string;
-    value: number;
+    value: number|string;
 }
 
 const props = defineProps<{
@@ -100,6 +101,18 @@ const listData = computed(()=>{
         }
     });
 
-    return listData;
+    return listData.map(data=>{
+        // 时间需要区别对待
+        if(data.field === "采集时间"){
+            for(let fs of data.fns){
+                if(fs.fn === "min" || fs.fn === "max"){
+                    const tmValue = DateTime.fromMillis(Number(fs.value));
+                    fs.value = tmValue.toFormat("yyyy-MM-dd HH:mm:ss");
+                }
+            }
+        }
+        
+        return data;
+    });
 })
 </script>
