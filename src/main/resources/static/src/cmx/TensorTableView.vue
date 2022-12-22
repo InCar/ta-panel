@@ -63,6 +63,7 @@ import { TensorData } from '@ta';
 
 const props = defineProps<{
     data: TensorData
+    cellWidth: number
 }>();
 
 let countInRow = ref(10);
@@ -96,7 +97,8 @@ onMounted(()=>{
     // frame-body在很外面的位置,这种写法不太好,暂时先这样吧
     const divFrame = document.querySelector(".frame-body") as HTMLDivElement;
     if(divFrame){
-        const items = Math.ceil(divFrame.clientWidth / 60); // 60是一格的大约宽度
+        const cellWidth = Number(props.cellWidth)
+        const items = Math.ceil(divFrame.clientWidth / cellWidth); // 60是一格的大约宽度
         countInRow.value = Math.min(props.data.tensor.length,items);
     }
 

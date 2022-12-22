@@ -29,6 +29,7 @@ import { computed } from '@vue/reactivity';
 
 const props = defineProps<{
     data: Array<{x:number, y:number}>
+    disableAxis: boolean
 }>();
 
 const logicWidth = ref(500);
@@ -69,12 +70,17 @@ const render = (data:Array<{x:number, y:number}>)=>{
         .y0(d=>fnScaleY(0));
     
     const svg = holder.select("svg");
-    svg.append("g")
+    
+    if(!props.disableAxis){
+        svg.append("g")
         .attr("transform", `translate(0, ${height-marginBottom})`)
         .call(axisX);
-    svg.append("g")
-        .attr("transform", `translate(${marginLeft}, 0)`)
-        .call(axisY);
+
+        svg.append("g")
+            .attr("transform", `translate(${marginLeft}, 0)`)
+            .call(axisY);
+    }
+
     svg.append("path")
        .datum(data)
        .attr("d", fnArea);

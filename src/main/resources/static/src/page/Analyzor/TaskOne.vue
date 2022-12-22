@@ -34,6 +34,7 @@ import { useSDM } from "@sdm";
 import { EnumOP } from "@ta";
 import TaskGroup from "./TaskGroup.vue";
 import TaskGroupAgg from "./TaskGroupAgg.vue";
+import TaskGroupAggTm from "./TaskGroupAggTm.vue";
 import { TaskExtra } from "@cmx";
 
 const taskDM = useSDM().TaskDM;
@@ -46,7 +47,10 @@ const task = computed(()=>{
 
 const active = computed(()=>{
     if(task.value?.OP == EnumOP["group-aggregation"]){
-        return TaskGroupAgg;
+        if(task.value.paramArgs.fields[0].desc === "采集时间")
+            return TaskGroupAggTm;
+        else
+            return TaskGroupAgg;
     }
     else if(task.value?.OP == EnumOP.aggregation){
         return TaskGroup;
