@@ -13,4 +13,8 @@ export class DataSourceDM extends BaseDM{
         const fields = await super.taObj.fetchJsonFields();
         Object.assign(this.DataFields, fields);
     }
+
+    public fetchMongoDB = async()=>{
+        const result = await super.taObj.fetchMongoDB();
+    }
 }

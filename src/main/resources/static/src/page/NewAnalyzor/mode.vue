@@ -51,7 +51,11 @@
 
 <script setup lang="ts">
 import { DateTime } from "luxon";
-import { TAModeBase, TAModeCount, TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo } from "@ta";
+import {
+        TAModeBase,
+        TAModeDetection, TAModeCount,
+        TAModeMultipleGeo, TAModeSingleDistribution, TAModeSingleGeo
+    } from "@ta";
 
 const props = defineProps(["taskArgs"]);
 const emit = defineEmits<{
@@ -60,6 +64,7 @@ const emit = defineEmits<{
 
 class AnalyzorMode{
     public listModes:Array<TAModeBase> = [
+        new TAModeDetection(),
         new TAModeCount(),
         new TAModeSingleDistribution(),
         new TAModeSingleGeo(),

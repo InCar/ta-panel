@@ -17,6 +17,16 @@ export class TensorAnalyzor {
     };
 
     public fetchJsonFields = async ()=> {
+        await this.fetchDSF();
+        return this._jsonFields;
+    };
+
+    public fetchDataSources = async ()=>{
+        await this.fetchDSF();
+        return this._dataSources;
+    };
+
+    private fetchDSF = async()=>{
         if (this._jsonFields == null || this._dataSources == null) {
             const api = "/api/fields";
             const resp = await fetch(api);
@@ -30,8 +40,13 @@ export class TensorAnalyzor {
                 throw new Error(`${resp.statusText}(${resp.status})`);
             }
         }
-        return this._jsonFields;
     };
+
+    public fetchMongoDB = async()=>{
+        const api = "/api/mongodb";
+        const resp = await fetch(api);
+        return await resp.text();
+    }
 
     public submitTask = async(mode: TAModeBase):Promise<string>=>{
         const task = this.assembleTaskBody(mode);

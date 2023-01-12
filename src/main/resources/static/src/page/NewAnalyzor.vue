@@ -38,6 +38,7 @@ import { ref, shallowRef, nextTick, onMounted, ShallowRef, Ref } from "vue";
 import { TAMode, TAModeBase } from "@ta";
 import { BreadCrumbItem, BreadCrumb } from "@cmx";
 
+import XDetection from "./NewAnalyzor/detection.vue";
 import XMode from "./NewAnalyzor/mode.vue";
 import XSelect from "./NewAnalyzor/selector.vue";
 import XRange from "./NewAnalyzor/range.vue";
@@ -55,6 +56,7 @@ let taskArgs: ShallowRef<TAModeBase|null> = shallowRef(null);
 interface TaskStepType{ [key:string]: Array<any> };
 
 const taskStep = ((step:TaskStepType)=>{
+    step[TAMode.Detection] = [ XDetection ];
     step[TAMode.Count] =  [ XSelect, XSummary ];
     step[TAMode.SingleDistribution] = [ XSelect, XRange, XLimit, XSummary ];
     step[TAMode.SingleGeo] = [ XSelect, XLimit, XSummary ];

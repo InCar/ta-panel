@@ -24,7 +24,14 @@ export class Task{
         if(!!src.startTime) this.startTime = DateTime.fromMillis(src.startTime);
         if(!!src.finishTime) this.finishTime = DateTime.fromMillis(src.finishTime);
         if(!!src.percent) this.percent = parseFloat(src.percent);
-        if(!!src.resJson) this.resData = JSON.parse(src.resJson);
+
+        try{
+            if(!!src.resJson) this.resData = JSON.parse(src.resJson);
+        }
+        catch(ex){
+            this.resData = {};
+            console.error(`task(${this.id}) : ${ex}`);
+        }
     }
 
     public get OP():EnumOP{

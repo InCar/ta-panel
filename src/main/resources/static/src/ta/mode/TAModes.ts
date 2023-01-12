@@ -1,6 +1,7 @@
 import { TDataFields } from "../remote";
 
 export enum TAMode{
+    Detection,
     Count,
     SingleDistribution,
     SingleGeo,
@@ -23,6 +24,12 @@ export abstract class TAModeBase{
     public Fields: TDataFields = {};
     public Range: { [key:string]: Range| {} } = {};
     public LimitMax?: number = 10000;
+}
+
+export class TAModeDetection extends TAModeBase{
+    public readonly Mode = TAMode.Detection;
+    public readonly Title = "数据侦测";
+    public readonly Description = "探测数据中的基本特征,哪些是时间字段,哪些是地理坐标,哪些是整型/浮点型/枚举型数据";
 }
 
 export class TAModeCount extends TAModeBase{
