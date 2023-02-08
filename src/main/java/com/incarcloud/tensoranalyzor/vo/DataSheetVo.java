@@ -7,20 +7,33 @@ package com.incarcloud.tensoranalyzor.vo;
  * @version 0.1.0-SNAPSHOT
  */
 public class DataSheetVo {
+
+    /**
+     * 数据表名称
+     */
+    private String collectionName;
     /**
      * 条数
      */
-    private Integer collectionCount;
+    private Long collectionCount;
     /**
      * 大小
      */
     private Double collectionSize;
 
-    public Integer getCollectionCount() {
+    public String getCollectionName() {
+        return collectionName;
+    }
+
+    public void setCollectionName(String collectionName) {
+        this.collectionName = collectionName;
+    }
+
+    public Long getCollectionCount() {
         return collectionCount;
     }
 
-    public void setCollectionCount(Integer collectionCount) {
+    public void setCollectionCount(Long collectionCount) {
         this.collectionCount = collectionCount;
     }
 

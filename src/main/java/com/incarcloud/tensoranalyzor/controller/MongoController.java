@@ -4,6 +4,7 @@ import com.incarcloud.tensoranalyzor.util.SubscriberHelpers;
 import com.incarcloud.tensoranalyzor.vo.DataSheetVo;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
+import com.mongodb.reactivestreams.client.ListCollectionsPublisher;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
 import com.mongodb.reactivestreams.client.MongoCollection;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/mongo")
@@ -56,26 +58,44 @@ public class MongoController implements Closeable {
                 .collectList();
     }
 
-    @GetMapping("dataSheetSize")
-    public Mono<DataSheetVo> getDataSheetSize(@RequestParam(value = "collectionName") String collectionName) {
-        DataSheetVo vo = new DataSheetVo();
-        SubscriberHelpers.PrintDocumentSubscriber subscriber1 = new SubscriberHelpers.PrintDocumentSubscriber();
-        Publisher<Document> collStats = this._client.getDatabase(this._dbName).runCommand(new Document("collStats", collectionName));
-        collStats.subscribe(subscriber1);
-        subscriber1.await();
-        List<Document> documents = subscriber1.get();
-        if (!CollectionUtils.isEmpty(documents)) {
-            Document document = documents.get(0);
-            vo.setCollectionCount(document.getInteger("count"));
-            vo.setCollectionSize(document.getDouble("size"));
+    @GetMapping("collectionSheetSize")
+    public Mono<List<DataSheetVo>> getDataSheetSize() {
+        List<DataSheetVo> list = new ArrayList<>();
+        //先获取所有表
+        Publisher<String> collectionNames = this._client.getDatabase(this._dbName).listCollectionNames();
+        SubscriberHelpers.PrintToStringSubscriber<String> stringSubscriber = new SubscriberHelpers.PrintToStringSubscriber<>();
+        collectionNames.subscribe(stringSubscriber);
+        stringSubscriber.await();
+        List<String> names = stringSubscriber.get();
+        //根据表名获取每张表的信息
+        for (String name : names) {
+            SubscriberHelpers.PrintDocumentSubscriber subscriber = new SubscriberHelpers.PrintDocumentSubscriber();
+            DataSheetVo vo = new DataSheetVo();
+            vo.setCollectionName(name);
+            //循环获取表的行数和大小
+            Publisher<Document> collStats = this._client.getDatabase(this._dbName).runCommand(new Document("collStats", name));
+            collStats.subscribe(subscriber);
+            subscriber.await();
+            List<Document> documents = subscriber.get();
+            if (!CollectionUtils.isEmpty(documents)) {
+                Document document = documents.get(0);
+                Optional.ofNullable(document.get("count")).ifPresent(e -> vo.setCollectionCount(Long.parseLong(e.toString())));
+                double size = document.get("size") == null ? 0 : Double.parseDouble(document.get("size").toString());
+                //将字节转换为MB
+                if (size > 0) {
+                    vo.setCollectionSize(size / (1024 * 1024));
+                }
+                list.add(vo);
+            }
         }
-        return Mono.just(vo);
+        return Mono.just(list);
     }
 
-    @GetMapping("dataSheetFields")
+    @GetMapping("collectionSheetFields")
     public Mono<List<String>> getDataSheetFields(@RequestParam(value = "collectionName") String collectionName) {
         MongoCollection<Document> collection = this._client.getDatabase(this._dbName).getCollection(collectionName);
         SubscriberHelpers.PrintDocumentSubscriber subscriber = new SubscriberHelpers.PrintDocumentSubscriber();
+        //获取表字段，暂时先取第一行数据字段，去除ID
         collection.find().projection(Projections.excludeId()).first().subscribe(subscriber);
         subscriber.await();
         List<Document> documents = subscriber.get();
