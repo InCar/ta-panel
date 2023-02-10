@@ -15,9 +15,9 @@
       <div class="box-field" v-for="(v, k) in data.fields" @click="select(k)">
           <input type="radio" name="field" :value="k" v-model="picked" />
           <!-- <input v-else type="checkbox" name="field" :value="k" v-model="value"/> -->
-          <span class="field-desc">{{ k + 1 }}</span>
-          <span class="field-key">{{ v }}</span>
-          <span class="field-description mobile-none">描述</span>
+          <!-- <span class="field-desc">{{ k + 1 }}</span> -->
+          <span class="field-description">{{ v }}</span>
+          <!-- <span class="field-description mobile-none">描述</span> -->
       </div>
   </div>
   <div class="footer">
