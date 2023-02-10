@@ -46,7 +46,7 @@ import { onMounted, ref } from 'vue';
 import { computed } from '@vue/reactivity';
 import { useRouter } from 'vue-router';
 import { TaskStatus, EnumOP } from "@ta";
-import { TaskExtra, TaskView } from "@cmx";
+import { TaskExtra, TaskView } from "@components";
 import { useSDM } from '@sdm';
 
 const router = useRouter();

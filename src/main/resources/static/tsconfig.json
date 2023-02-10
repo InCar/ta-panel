@@ -17,7 +17,7 @@
         "skipLibCheck": true,
         "baseUrl": "./",
         "paths": {
-            "@cmx": [ "./src/cmx" ],
+            "@components": [ "./src/components" ],
             "@sdm": [ "./src/sdm" ],
             "@ta": [ "./src/ta" ]
         }

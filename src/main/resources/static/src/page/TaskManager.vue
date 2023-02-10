@@ -42,7 +42,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { Task, TaskStatus } from "@ta";
-import { TaskView } from "@cmx";
+import { TaskView } from "@components";
 import { useSDM } from '@sdm';
 import { DateTime, Duration } from 'luxon';
 

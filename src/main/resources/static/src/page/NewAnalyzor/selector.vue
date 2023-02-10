@@ -43,6 +43,7 @@ const emit = defineEmits<{
     }>();
 
 const dataSourceDM = useSDM().DataSourceDM;
+console.log(dataSourceDM, 'dataSourceDM')
 const dataSourceFields:TDataFields = dataSourceDM.DataFields;
 
 class PageSelectFields{

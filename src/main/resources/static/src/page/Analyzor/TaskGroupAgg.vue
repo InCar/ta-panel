@@ -11,7 +11,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { BarChart, CurveLineChart, TensorTableView } from "@cmx";
+import { BarChart, CurveLineChart, TensorTableView } from "@components";
 import { Task, TensorData } from "@ta";
 
 const props = defineProps<{

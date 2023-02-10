@@ -35,7 +35,7 @@ import { EnumOP } from "@ta";
 import TaskGroup from "./TaskGroup.vue";
 import TaskGroupAgg from "./TaskGroupAgg.vue";
 import TaskGroupAggTm from "./TaskGroupAggTm.vue";
-import { TaskExtra } from "@cmx";
+import { TaskExtra } from "@components";
 
 const taskDM = useSDM().TaskDM;
 const router = useRouter();

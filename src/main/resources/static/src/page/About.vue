@@ -76,7 +76,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from "vue-router";
 
-import {DatePicker} from "@cmx";
+import {DatePicker} from "@components";
 import { useSDM } from '@sdm';
 
 const widthViewPort = ref(window.innerWidth);

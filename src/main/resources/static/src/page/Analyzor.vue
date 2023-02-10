@@ -98,7 +98,7 @@
 import { onMounted, computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useSDM } from "@sdm";
-import { BreadCrumb, BreadCrumbItem } from "@cmx";
+import { BreadCrumb, BreadCrumbItem } from "@components";
 
 interface XEntry {
     title: string;

@@ -55,7 +55,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { Task } from "@ta";
-import { BarChart } from "@cmx";
+import { BarChart } from "@components";
 import { DateTime } from "luxon";
 
 interface ItemData{

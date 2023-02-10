@@ -150,7 +150,7 @@
 import { DateTime } from "luxon";
 import { useRouter, RouterLink } from 'vue-router';
 import { ref, onMounted } from 'vue';
-import Theme from "./cmx/Theme.vue";
+import Theme from "./components/Theme.vue";
 import TODO from "./page/todo.vue";
 
 const listRoutes = useRouter().getRoutes().filter((x)=>x.meta['topLevel']);

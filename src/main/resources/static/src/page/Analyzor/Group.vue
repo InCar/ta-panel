@@ -29,7 +29,7 @@
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useSDM } from "@sdm";
-import { AnalyzorBrief } from "@cmx";
+import { AnalyzorBrief } from "@components";
 import { Task } from "@ta";
 
 const router = useRouter();
