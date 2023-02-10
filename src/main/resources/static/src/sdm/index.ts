@@ -1,3 +1,6 @@
+/*
+  @sdm文件夹下的处理组件前端缓冲的数据，被前端页面共享
+*/
 import { TensorAnalyzor } from "@ta";
 import { BaseDM } from "./BaseDM";
 import { AboutDM } from "./AboutDM";
