@@ -3,10 +3,11 @@
 
 .analyzor-group{
     padding: 1em;
-    display: flex;
-    flex-flow: row wrap;
-    gap: 1em;
+    display: grid;
+    // flex-flow: row wrap;
+    grid-gap: 1em;
     justify-content: center;
+    grid-template-columns: repeat(auto-fill, 18em);
 
     .task-item{
         cursor: pointer;
