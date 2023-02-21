@@ -3,12 +3,14 @@
 @use "sass:color";
 
 .container{
+    width: 100%;
     align-self: center;
     justify-content: center;
-    display: flex;
-    flex-flow: row wrap;
+    display: grid;
+    // flex-flow: row wrap;
     padding: 8px;
-    gap: 8px;
+    grid-gap: 8px;
+    grid-template-columns: repeat(auto-fill, 16em);
 }
 .x-item{
     border: 1px solid theme.$color;

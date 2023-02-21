@@ -3,9 +3,11 @@
 
 .task-mgr{
     padding: 1em;
-    display: flex;
+    display: grid;
     flex-flow: row wrap;
-    gap: 1em;
+    grid-gap: 8px;
+    justify-content: center;
+    grid-template-columns: repeat(auto-fill, 27em);
 }
 .task-mgr-1{
     padding: 1em;

@@ -1,3 +1,6 @@
+<!--
+    设定数值区间页面
+-->
 <style scoped lang="scss">
 @use "sass:color";
 @use "../../theme.scss";

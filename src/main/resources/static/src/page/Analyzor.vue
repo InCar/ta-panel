@@ -1,17 +1,18 @@
 ﻿<style scoped lang="scss">
 @use "../theme.scss";
 .container{
-    display: flex;
+    display: grid;
     flex-flow: row wrap;
-    align-self: center;
+    // align-self: center;
     justify-content: center;
-    gap: 8px;
     padding: 8px;
+    grid-template-columns: repeat(auto-fill, 16em);
+    grid-gap: 8px;
 }
 .x-item{
     color: theme.$color;
     border: 1px solid theme.$color-2nd;
-    width: 16em;
+    // width: 16em;
     padding: 4px;
     display: flex;
     flex-direction: column;
