@@ -1,6 +1,6 @@
 # 介绍
 
-一个使用 `vite` + `vue3` + `pinia` + `Element +` + `typescript` 完整技术路线开发的项目，需要Node.js 版本14.18+，16+
+一个使用 `vite` + `vue3` + `pinia` + `Element +` + `typescript` 完整技术路线开发的项目，需要Node.js 版本16.10+
 
 # 推荐开发工具
 
@@ -11,7 +11,6 @@
 
 1. 安装依赖
     ```sh
-    # 推荐使用 yarn
     yarn
     ```
 
