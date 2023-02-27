@@ -1,0 +1,60 @@
+/**
+  重置element-ui的样式
+*/
+@use "theme.scss";
+@use "theme-black.scss";
+@use "theme-green.scss";
+
+.el-breadcrumb{
+  color: theme.$color;
+}
+.el-breadcrumb__inner a, .el-breadcrumb__inner.is-link{
+  font-size: 1rem;
+  color:  theme.$color !important;
+  font-weight: 400 !important;
+  text-decoration: underline dashed 1px !important;
+  text-underline-offset: 4px;
+}
+.el-breadcrumb__item:last-child .el-breadcrumb__inner, .el-breadcrumb__item:last-child .el-breadcrumb__inner a, .el-breadcrumb__item:last-child .el-breadcrumb__inner a:hover, .el-breadcrumb__item:last-child .el-breadcrumb__inner:hover{
+  text-decoration: none !important;
+  text-underline-offset: 4px;
+}
+// .el-breadcrumb__inner a:hover, .el-breadcrumb__inner.is-link:hover{
+//   color:  theme.$color-2nd !important;
+// }
+.el-breadcrumb__separator{
+  color: theme.$color !important;
+}
+
+
+.straight-progress{
+  .el-progress{
+    .el-progress-bar{
+      .el-progress-bar__outer{
+        border-radius: 0;
+        background-color: transparent;
+        border: 1px dashed theme.$color;
+        .el-progress-bar__inner{
+          border-radius: 0;
+          background-color: theme.$color-bk-warning;
+        }
+      }
+    }
+    &.is-success{
+      .el-progress-bar__inner{
+        background-color: theme.$color-bk-success !important;
+      }
+    }
+    &.is-exception {
+      .el-progress-bar__inner{
+        background-color: theme.$color-bk-error !important;
+      }
+    }
+    &.is-warning{
+      .el-progress-bar__inner{
+        background-color: theme.$color-bk-disabled !important;
+      }
+    }
+  }
+}
+
