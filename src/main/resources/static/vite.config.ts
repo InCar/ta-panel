@@ -28,6 +28,9 @@ export default defineConfig({
       "^/api/.+": "http://10.0.11.50:8050",
     },
   },
+  build: {
+    chunkSizeWarningLimit: 4096 // kb
+  }
   // 引入全局css文件
   // css: {
   //   preprocessorOptions: {
