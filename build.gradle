@@ -74,7 +74,8 @@ def npmBuild = tasks.register('npmBuild', Exec){
 }
 
 processResources{
-    dependsOn npmBuild
+    // disable npmBuild temporarily before front side ready
+    // dependsOn npmBuild
     exclude('static')
 }
 
