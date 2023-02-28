@@ -1,5 +1,10 @@
+# 介绍
+
+  数据分析平台
+
 # Dependencies
 + [nodejs 16.10+](https://nodejs.org)
++ [yarn  1.22.19+](https://classic.yarnpkg.com/)
 
 # 标准开发工具
 

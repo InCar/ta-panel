@@ -29,6 +29,10 @@ export default defineConfig({
     },
   },
   build: {
+    outDir: "../dist",
+    emptyOutDir: true,
+    manifest: true,
+    minify: false,
     chunkSizeWarningLimit: 4096 // kb
   }
   // 引入全局css文件
