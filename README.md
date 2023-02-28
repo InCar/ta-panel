@@ -28,13 +28,14 @@ copy application.yml application-dev.yml
 ```shell
 # a)安装前端依赖项
 cd src/main/resources/static
-yarn
+yarn config set npmRegistryServer https://registry.npmmirror.com # 可选 配置使用中国区镜像,仅需设置一次
+yarn --immutable
 # b)编译java工程
 cd ../../../..
 gradle
 # c)启动
 gradle bootRun
-# d)开发环境热更新前端资源
+# d) 可选.启动前端调试模式
 cd src/main/resources/static
-npm run dev
+yarn dev
 ```
