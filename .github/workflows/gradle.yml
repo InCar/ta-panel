@@ -32,7 +32,12 @@ jobs:
                   node-version: 16
 
             - name: Setup yarn
-              run: corepack enable && corepack prepare yarn@stable --activate && yarn --version && yarn config set enableImmutableInstalls false
+              run: |
+                  corepack enable
+                  corepack prepare yarn@stable --activate
+                  yarn --version
+                  yarn config set enableImmutableInstalls false
+                  yarn --immutable
               working-directory: ./src/main/resources/static
 
             - run: yarn && yarn build
