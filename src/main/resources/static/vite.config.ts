@@ -23,9 +23,8 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      // 代理后端api
-      // vite.config-*.ts已经配置在.gitignore里,不会被git管理
-      "^/api/.+": "http://10.0.11.50:8050",
+      // 该文件会放到git里，大家都会看到
+      "^/api/.+": "http://127.0.0.1:8050",
     },
   },
   build: {

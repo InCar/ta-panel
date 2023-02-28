@@ -13,6 +13,7 @@ dist-ssr
 *.local
 .yarn
 .yarnrc.yml
+.vite.config-*.ts
 
 # Editor directories and files
 .vscode/*
