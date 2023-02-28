@@ -31,7 +31,6 @@ jobs:
               with:
                   node-version: 16
                   cache: 'yarn'
-                  cache-dependency-path: ./src/main/resources/static/yarn.lock
 
             - name: Setup yarn
               run: |
@@ -39,7 +38,6 @@ jobs:
                   corepack prepare yarn@stable --activate
                   yarn --version
                   yarn config set nodeLinker node-modules
-                  yarn config set cacheFolder .yarn/cache
                   yarn --immutable
               working-directory: ./src/main/resources/static
 
