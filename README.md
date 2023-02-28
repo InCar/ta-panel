@@ -28,6 +28,7 @@ copy application.yml application-dev.yml
 ```shell
 # a)安装前端依赖项
 cd src/main/resources/static
+yarn config set nodeLinker node-modules # 仅需设置一次
 yarn config set npmRegistryServer https://registry.npmmirror.com # 可选 配置使用中国区镜像,仅需设置一次
 yarn --immutable
 # b)编译java工程
