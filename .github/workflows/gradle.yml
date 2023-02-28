@@ -30,11 +30,22 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: 16
-                  cache: npm
-                  cache-dependency-path: ./src/main/resources/static/package-lock.json
+                  # There is a bug for yarn cache
+                  # https://github.com/actions/setup-node/issues/488
+                  # cache: 'yarn'
+                  # cache-dependency-path: ./src/main/resources/static/yarn.lock
 
-            - run: npm install && npm run build
+            - name: Setup yarn
+              run: |
+                  corepack enable
+                  corepack prepare yarn@stable --activate
+                  yarn --version
+                  yarn config set nodeLinker node-modules
+                  yarn --immutable
+              working-directory: ./src/main/resources/static
+
+            - run: yarn && yarn build
               working-directory: ./src/main/resources/static
         
             - name: Build with Gradle
-              run: gradle build -x npmBuild
+              run: gradle build -x yarnBuild

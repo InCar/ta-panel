@@ -1,40 +1,19 @@
-﻿import './styles.scss';
+import { createApp } from "vue";
+import router from './router/index'
+// import axios from 'axios'
+import "@/assets/scss/style.scss";
+import "@/assets/scss/element.scss";
+import ElementPlus from "element-plus";
+import "element-plus/dist/index.css";
+import App from "./App.vue";
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
-import { createApp, App as AppT } from 'vue';
-import { createRouter, createWebHistory } from 'vue-router';
-import { activeSDM } from "./sdm";
-import { routes } from './routes';
-import { TensorAnalyzor } from '@ta';
-import App from './App.vue';
-
-class Main{
-    private readonly app : AppT
-
-    public constructor(){        
-        this.app = createApp(App);
-    }
-
-    public run = async (tag: string)=>{
-        console.info(`TensorAnalyzor(vue-${this.app.version})`);
-
-        const taObj = new TensorAnalyzor();
-        let nRet = await taObj.init();
-        activeSDM(taObj);
-        
-        const router = createRouter({
-            history: createWebHistory(),
-            routes
-        });
-        this.app.use(router);
-
-        this.app.mount(tag);
-        return nRet;
-    }
+const app = createApp(App)
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component)
 }
+app.use(ElementPlus);
 
-const appInst = new Main();
-appInst.run('#app').then((v)=>{
-    if(v != 0){
-        console.error("startup failed!");
-    }
-});
+app.use(router)
+app.mount("#app")
+// app.config.globalProperties.$axios = axios // 全局挂载

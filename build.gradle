@@ -63,18 +63,18 @@ def markGitVer = tasks.register('markGitVer'){
     }
 }
 
-def npmBuild = tasks.register('npmBuild', Exec){
+def yarnBuild = tasks.register('yarnBuild', Exec){
     workingDir("$rootDir/src/main/resources/static")
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-        commandLine("cmd.exe", "/C", "npm run build")
+        commandLine("cmd.exe", "/C", "yarn build")
     }
     else{
-        commandLine("npm", "run", "build")
+        commandLine("yarn", "build")
     }
 }
 
 processResources{
-    dependsOn npmBuild
+    dependsOn yarnBuild
     exclude('static')
 }
 
