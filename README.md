@@ -4,7 +4,8 @@ The website for TensorAnalyzor
 ## Dependencies
 + [java 17+](https://adoptium.net)
 + [gradle 7+](https://gradle.org)
-+ [nodejs 16+](https://nodejs.org)
++ [nodejs 16](https://nodejs.org)
++ [yarn 3+](https://yarnpkg.com)
 
 ## Configuration
 1.准备`gradle`的属性配置文件`gradle.properties`
@@ -27,9 +28,7 @@ copy application.yml application-dev.yml
 ```shell
 # a)安装前端依赖项
 cd src/main/resources/static
-npm install
-# 中国内地用户可以使用registry参数指定镜像站点
-npm install --registry=https://registry.npmmirror.com
+yarn
 # b)编译java工程
 cd ../../../..
 gradle

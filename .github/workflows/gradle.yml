@@ -30,11 +30,13 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: 16
-                  cache: npm
-                  cache-dependency-path: ./src/main/resources/static/package-lock.json
 
-            - run: npm install && npm run build
+            - name: Setup yarn
+              run: corepack enable && corepack prepare yarn@stable --activate && yarn --version && yarn config set enableImmutableInstalls false
+              working-directory: ./src/main/resources/static
+
+            - run: yarn && yarn build
               working-directory: ./src/main/resources/static
         
             - name: Build with Gradle
-              run: gradle build -x npmBuild
+              run: gradle build -x yarnBuild

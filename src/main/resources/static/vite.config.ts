@@ -32,8 +32,9 @@ export default defineConfig({
     outDir: "../dist",
     emptyOutDir: true,
     manifest: true,
-    minify: false
-}
+    minify: false,
+    chunkSizeWarningLimit: 4096 // kb
+  }
   // 引入全局css文件
   // css: {
   //   preprocessorOptions: {
