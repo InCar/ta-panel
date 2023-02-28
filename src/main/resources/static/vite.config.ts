@@ -28,6 +28,12 @@ export default defineConfig({
       "^/api/.+": "http://10.0.11.50:8050",
     },
   },
+  build: {
+    outDir: "../dist",
+    emptyOutDir: true,
+    manifest: true,
+    minify: false
+}
   // 引入全局css文件
   // css: {
   //   preprocessorOptions: {
