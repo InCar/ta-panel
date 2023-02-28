@@ -224,7 +224,6 @@ li.down-item{
 </template>
 
 <script setup lang="ts">
-import { id } from "element-plus/es/locale";
 import { ref, reactive, nextTick, onUnmounted, onMounted } from "vue";
 import { useRouter, RouterLink } from "vue-router";
 
