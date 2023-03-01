@@ -30,6 +30,10 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: 16
+                  # There is a bug for yarn cache
+                  # https://github.com/actions/setup-node/issues/488
+                  # cache: 'yarn'
+                  # cache-dependency-path: ./src/main/resources/static/yarn.lock
 
             - name: Setup yarn
               run: |
