@@ -14,7 +14,8 @@
   // transform: translate(979px, 663px);
   min-width: 50px;
   width: auto;
-  visibility: hidden;
+  // visibility: hidden;
+  display: none;
   color: theme.$color-bk;
   transition: 0.1s 0.2s;
   
