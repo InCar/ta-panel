@@ -102,7 +102,7 @@
 </style>
 
 <template>
-    <div v-if="route.name === 'TaskManagement'" class="container">
+    <div v-if="route.name === 'TaskManager'" class="container">
         <div class="container-item" v-for="(v, k) in task.list" :key="k" :class="{ 'is-success': v.status === '3', 'is-end': (v.status === '6' || v.status === '5'), 'is-fail': v.status === '4', 'is-running': v.status === '2' }" @click="goDetail(v)">
             <div class="item-title" :class="{ 'is-success': v.status === '3', 'is-end': (v.status === '6' || v.status === '5'), 'is-fail': v.status === '4', 'is-running': v.status === '2'  }">{{ v.name }}</div>
             <div class="item-content">
@@ -194,7 +194,6 @@ const getTaskList = async () => {
     // task.list = res.data || []
     if(res.data && res.data.length) {
         const dt = DateTime.local(2017, 5, 15, 8, 30);
-        console.log(dt, 'dt')
         task.list = res.data.filter(task => {
             if(task?.status != TaskStatus.NA) return true
         })

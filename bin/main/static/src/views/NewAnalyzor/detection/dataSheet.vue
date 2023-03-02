@@ -52,7 +52,6 @@ export default defineComponent({
     });
     const router = useRouter();
     const route = useRoute();
-    console.log(route.name);
     const picked = ref(-1);
     const loading = ref(true)
     const getData = async () => {

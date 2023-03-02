@@ -1,5 +1,5 @@
 <template>
-  <div v-if="route.name === 'NewTask'" class="task-list">
+  <div v-if="route.name === 'NewAnalyzor'" class="task-list">
     <div class="list-item" v-for="(i, k) in listModes" :key="k">
       <div class="title">{{ i.Title }}</div>
       <div class="desc">{{ i.Description }}</div>
@@ -25,7 +25,6 @@ import {
 const router = useRouter();
 const route = useRoute()
 
-console.log(route.name, 'route.name')
 
 const listModes:Array<TAModeBase> = [
     new TAModeDetection(),
@@ -36,7 +35,6 @@ const listModes:Array<TAModeBase> = [
 ]
 
 collectionSheetSize().then(res => {
-  console.log(res)
 }).catch(err => console.log(err))
 
 const ok = (i) => {

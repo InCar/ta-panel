@@ -70,7 +70,7 @@
 </style>
 
 <template>
-    <div v-if="route.name === 'TaskGroup'" class="container">
+    <div v-if="route.name === 'Analyzor'" class="container">
       <div class="box" :class="{ 'disabled': v.disabled}" v-for="(v, k) in listGroupTitle" :key="k" @click="() => onClickGroup(v.op)">
         <img class="hue-205" src="@/assets/img/ta.png">
         <div class="box-bottom">
