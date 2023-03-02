@@ -82,7 +82,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/NewAnalyzor/index.vue"),
     meta: {
       hidden: false,
-      title: "新建任务",
+      title: "创建新任务",
       icon: "add_box"
     },
     children: [

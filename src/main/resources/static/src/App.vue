@@ -57,7 +57,7 @@
           height: 40px;
           line-height: 40px;
           vertical-align: middle;
-          // padding: 0 15px;
+          padding: 0 15px;
           color: theme.$color;
           border-bottom: 1px solid theme.$color;
           display: flex;
@@ -65,7 +65,7 @@
           align-items: center;
           position: relative;
           visibility: visible;
-          justify-content: center;
+          // justify-content: center;
           &:hover {
             background-color: theme.$color-bk !important;
           }
@@ -74,7 +74,6 @@
             font-size: 14px;
           }
           .none{
-            // visibility: hidden;
             display: none;
           }
           
@@ -90,7 +89,7 @@
             // font-size: 1.4rem;
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
           }
-          @media screen and (max-width: 720px) {
+          @media screen and (max-width: 862px) {
             .material-symbols-outlined {
               font-size: 36px;
             }
@@ -106,6 +105,11 @@
         // &:not(:last-child) {
         //   border-bottom: 1px solid theme.$color;
         // }
+        @media screen and (max-width: 862px) {
+          .list-item {
+            justify-content: center;
+          }
+        }
       }
     }
 
@@ -268,7 +272,7 @@ const selectTheme = (v, k) => {
 const isCollapse = ref(false)
 const device = ref('')
 const { body } = document
-const WIDTH = 720
+const WIDTH = 862
 const isMobile = () => {
   const rect = body.getBoundingClientRect()
   if(rect.width < WIDTH) {
