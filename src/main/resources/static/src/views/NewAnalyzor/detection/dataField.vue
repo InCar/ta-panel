@@ -36,8 +36,6 @@ export default defineComponent({
     const loading = ref(true)
     const router = useRouter()
     const route = useRoute();
-    console.log(route.params.field, 'route.params.field')
-    console.log(route.name)
     const picked = ref(-1);
     const getData = async () => {
       const res = await collectionSheetFields({
@@ -53,9 +51,7 @@ export default defineComponent({
     const next = async () => {
     };
     const select = (k: any) => {
-      console.log(k);
       picked.value = k;
-      console.log(picked, "picked");
       if(picked.value > 0) {
         data.active = true
       }

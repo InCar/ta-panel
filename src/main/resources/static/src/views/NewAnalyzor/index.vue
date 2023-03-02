@@ -6,9 +6,9 @@
       <Button class="btn" type="primary" :active="!i.Active" @click="ok(i)">ok</Button>
     </div>
   </div>
-  <v-else>
+  <template v-else>
     <router-view />
-  </v-else>
+  </template>
 </template>
 
 <script lang="ts" setup>
@@ -38,7 +38,6 @@ collectionSheetSize().then(res => {
 }).catch(err => console.log(err))
 
 const ok = (i) => {
-  console.log(i)
   if(TAMode[i.Mode] === 'Detection') {
     router.push({ name: 'DataSheet' })
   }

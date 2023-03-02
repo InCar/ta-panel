@@ -99,7 +99,6 @@ const listGroupTitle:any = reactive([
 const route = useRoute()
 const router = useRouter()
 const onClickGroup = (op) => {
-  console.log(op)
   if(op === 'aggregation') {
     router.push({
       name: 'Aggregation',

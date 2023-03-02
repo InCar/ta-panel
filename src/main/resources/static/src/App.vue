@@ -260,10 +260,7 @@ const listRoutes = useRouter()
 const selectTheme = (v, k) => {
   curTheme.value = v
   activeTheme.value = k;
-  console.log(activeTheme.value, 'activeTheme')
-  console.log(dropdownMenu.value, 'dropdownMenu.value')
   dropdownMenu.value?.closeMenu()
-  console.log(dropdownMenu.value.childNodes,' dropdownMenu.value.childNodes')
   localStorage.setItem('themeName', k)
 }
 
@@ -297,7 +294,6 @@ onUnmounted(() => {
 
 const menu = ref(null)
 nextTick(() => {
-  console.log(menu.value, 'menu')
   menu.value.forEach(element => {
     element.addEventListener('mouseover', (e) => {
       if (element.lastChild && element.lastChild.style) {

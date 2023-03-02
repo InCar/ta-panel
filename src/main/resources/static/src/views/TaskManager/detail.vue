@@ -264,15 +264,12 @@ const task = reactive({
     finishTime: 1
   }
 })
-console.log(task, 'task')
 const getDetai = async () => {
   task.loading = true
   const { id: id } = route.params
   const res = await getTask({id: id})
   task.loading = false
-  console.log(res)
   task.data = res.data[0]
-  console.log(res.data[0], 'task')
 }
 
 getDetai()
@@ -295,7 +292,6 @@ const paramsData =  computed(() => {
     }
   }
 })
-console.log(paramsData, 'paramsData')
 
 const btnText = computed(() => {
   if(task.data.status === '2') {

@@ -24,9 +24,9 @@
       >
     </div>
   </template>
-  <v-else>
+  <template v-else>
     <router-view />
-  </v-else>
+  </template>
 </template>
 
 <script lang="ts">
@@ -56,9 +56,7 @@ export default defineComponent({
     const loading = ref(true)
     const getData = async () => {
       const res = await collectionSheetSize();
-      // dataSourceFields = res || []
       loading.value = false
-      console.log(res);
       data.Sheets = res;
     };
     getData();
@@ -66,14 +64,9 @@ export default defineComponent({
       router.go(-1);
     };
     const next = async () => {
-      console.log(picked.value, "picked.value");
-      console.log(data.Sheets, "data.fields");
-      console.log(data.Sheets[picked.value], "data.fields[picked.value]");
-      console.log(data.Sheets[picked.value]);
       const res = await collectionSheetFields({
         collectionName: data.Sheets[picked.value].collectionName,
       });
-      console.log(res);
       router.push({
         name: "DataField",
         params: {
@@ -82,9 +75,7 @@ export default defineComponent({
       });
     };
     const select = (k: any) => {
-      console.log(k);
       picked.value = k;
-      console.log(picked, "picked");
       if (picked.value > 0) {
         data.active = true;
       }

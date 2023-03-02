@@ -190,7 +190,6 @@ const status = ref('fail')
 
 const getTaskList = async () => {
     const res = await getTasks()
-    console.log(res)
     // task.list = res.data || []
     if(res.data && res.data.length) {
         const dt = DateTime.local(2017, 5, 15, 8, 30);

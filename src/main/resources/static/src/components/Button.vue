@@ -6,16 +6,15 @@
 
 <script lang="ts" setup>
 import { ref } from "vue" 
-defineProps({
-  type: {
-    type: String,
-    default: 'primary'
-  },
-  active: {
-    type: Boolean,
-    default: false
-  }
-});
+interface Props {
+  type?: String,
+  active?: Boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  type: () => 'primary',
+  active: () => false
+})
 
 </script>
 
