@@ -96,7 +96,7 @@ const routes: Array<RouteRecordRaw> = [
         },
         children: [
           {
-            path: '/:id',
+            path: ':id',
             name: 'DataField',
             component: () => import("@/views/NewAnalyzor/detection/dataField.vue"),
             meta: {
