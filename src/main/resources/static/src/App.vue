@@ -71,7 +71,7 @@
           }
           .item-text {
             margin-left: .5vw;
-            font-size: 14px;
+            font-size: 16px;
           }
           .none{
             display: none;
@@ -135,7 +135,7 @@
           cursor: pointer;
           color: theme.$color;
           display: flex;
-          font-size: 18px;
+          font-size: 22px;
           &:hover{
             color: theme.$color-2nd;
           }

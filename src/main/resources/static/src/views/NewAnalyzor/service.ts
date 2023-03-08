@@ -9,7 +9,7 @@ export function collectionSheetSize() {
 
 export function collectionSheetFields(params) {
   return request({
-    url: 'api/mongo/collectionSheetFields',
+    url: '/api/mongo/collectionSheetFields',
     method: 'get',
     params: params
   })

@@ -36,7 +36,7 @@
         }
       }
       p{
-        font-size: 0.8rem;
+        font-size: 1rem;
         margin: 4px 0 0 0;
       }
     }
@@ -74,7 +74,7 @@
       <div class="box" :class="{ 'disabled': v.disabled}" v-for="(v, k) in listGroupTitle" :key="k" @click="() => onClickGroup(v.op)">
         <img class="hue-205" src="@/assets/img/ta.png">
         <div class="box-bottom">
-          <h2>{{ v.title }}(<span class="em">18</span>)</h2>
+          <h2>{{ v.title }}(<span class="em">{{ getMumber(v.op) }}</span>)</h2>
           <p>{{ v.description }}</p>
         </div>
       </div>
@@ -83,8 +83,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from "vue" 
+import { ref, reactive, onMounted } from "vue" 
 import { useRoute, useRouter } from "vue-router";
+import dataHooks from "./dataHooks";
 
 const listGroupTitle:any = reactive([
     { title: "计数&极值", op:"aggregation", description: "统计数据源中的基本情况,包括数据量、极大极小值", disabled: false},
@@ -99,14 +100,14 @@ const listGroupTitle:any = reactive([
 const route = useRoute()
 const router = useRouter()
 const onClickGroup = (op) => {
-  if(op === 'aggregation') {
+  if(op === 'aggregation') { // 计数与极值
     router.push({
       name: 'Aggregation',
       params: {
         op: op
       }
     })
-  } else if(op === 'group-aggregation') {
+  } else if(op === 'group-aggregation') { // 数值分布
     router.push({
       name: 'Group-aggregation',
       params: {
@@ -115,5 +116,24 @@ const onClickGroup = (op) => {
     })
   }
 }
+
+const { taskList } = dataHooks()
+
+// 获取分析类别的数量
+const getMumber = (op) => {
+  console.log(op, 'op')
+  if(!op) {
+    return 0
+  } else {
+    console.log(taskList, '-------taskList')
+    const res = taskList.filter(item => item.op === op)
+    return res?.length ?? 0
+  }
+}
+
+
+
+
+
 
 </script>

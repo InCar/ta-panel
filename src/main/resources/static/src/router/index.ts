@@ -38,9 +38,20 @@ const routes: Array<RouteRecordRaw> = [
             name: 'Aggregation',
             component: () => import('@/views/Analyzor/aggregation.vue'),
             meta: {
-              hidden: 'true',
+              hidden: true,
               title: '计数&极值'
-            }
+            },
+            children: [
+              {
+                path: ':id',
+                name: 'AnalyzorDetail',
+                component: () => import('@/views/Analyzor/analyzorDetail.vue'),
+                meta: {
+                  hidden: true,
+                  title: '详情'
+                }
+              }
+            ]
           },
           {
             path: ':op',

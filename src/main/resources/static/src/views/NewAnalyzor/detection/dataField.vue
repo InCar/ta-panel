@@ -14,9 +14,9 @@
       <Button type="primary" @click="next">确定</Button>
     </div>
   </div>
-  <v-else>
+  <template v-else>
     <router-view />
-  </v-else>
+  </template>
 </template>
 
 <script lang="ts">

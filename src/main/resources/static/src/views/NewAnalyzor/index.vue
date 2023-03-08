@@ -3,7 +3,7 @@
     <div class="list-item" v-for="(i, k) in listModes" :key="k">
       <div class="title">{{ i.Title }}</div>
       <div class="desc">{{ i.Description }}</div>
-      <Button class="btn" type="primary" :active="!i.Active" @click="ok(i)">ok</Button>
+      <Button class="btn" type="primary" :active="!i.Active" @click="ok(i)">OK</Button>
     </div>
   </div>
   <template v-else>
@@ -14,7 +14,6 @@
 <script lang="ts" setup>
 import { ref } from "vue"
 import { useRouter, useRoute } from 'vue-router';
-import { collectionSheetSize } from './service'
 import {
         TAMode,
         TAModeBase,
@@ -33,9 +32,6 @@ const listModes:Array<TAModeBase> = [
     new TAModeSingleGeo(),
     new TAModeMultipleGeo()
 ]
-
-collectionSheetSize().then(res => {
-}).catch(err => console.log(err))
 
 const ok = (i) => {
   if(TAMode[i.Mode] === 'Detection') {
@@ -78,7 +74,6 @@ const ok = (i) => {
     .desc{
         flex-grow:1;
         color: theme.$color;
-        font-size: 1rem;
         padding: 8px 16px;
     }
     .btn{

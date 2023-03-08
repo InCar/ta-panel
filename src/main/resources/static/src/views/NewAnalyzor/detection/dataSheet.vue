@@ -64,9 +64,6 @@ export default defineComponent({
       router.go(-1);
     };
     const next = async () => {
-      const res = await collectionSheetFields({
-        collectionName: data.Sheets[picked.value].collectionName,
-      });
       router.push({
         name: "DataField",
         params: {

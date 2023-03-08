@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
   font-weight: bolder;
   border-radius: 4px;
   border: 1px solid theme.$color;
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 button:hover{
   background-color: theme.$color-2nd;

@@ -33,7 +33,7 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                font-size: 0.8rem;
+                font-size: 1rem;
                 width: 6em;
                 padding: 0 8px;
                 background-color: theme.$color;
