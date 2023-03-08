@@ -185,7 +185,6 @@ public final class SubscriberHelpers {
 
         @Override
         public void onComplete() {
-            System.out.println(format(message, getReceived()));
             super.onComplete();
         }
     }
@@ -199,7 +198,7 @@ public final class SubscriberHelpers {
          * Construct a new instance
          */
         public PrintDocumentSubscriber() {
-            super(t -> System.out.println(t.toJson()));
+            super(Document::toJson);
         }
     }
 
@@ -213,7 +212,7 @@ public final class SubscriberHelpers {
          * Construct a new instance
          */
         public PrintToStringSubscriber() {
-            super(System.out::println);
+            super(String::valueOf);
         }
     }
 
