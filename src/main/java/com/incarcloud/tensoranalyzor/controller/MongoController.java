@@ -2,9 +2,9 @@ package com.incarcloud.tensoranalyzor.controller;
 
 import com.incarcloud.tensoranalyzor.util.SubscriberHelpers;
 import com.incarcloud.tensoranalyzor.vo.DataSheetVo;
-import com.mongodb.client.model.Filters;
+import com.incarcloud.tensoranalyzor.vo.TaskSchemaRequest;
+import com.incarcloud.tensoranalyzor.vo.TaskSchemaResponse;
 import com.mongodb.client.model.Projections;
-import com.mongodb.reactivestreams.client.ListCollectionsPublisher;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
 import com.mongodb.reactivestreams.client.MongoCollection;
@@ -14,10 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -25,13 +22,13 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/mongo")
 public class MongoController implements Closeable {
     private final Logger s_logger = LoggerFactory.getLogger(MongoController.class);
+
 
     private final String _dbName = "ai";
     private final MongoClient _client;
@@ -105,5 +102,11 @@ public class MongoController implements Closeable {
             fields.addAll(document.keySet());
         }
         return Mono.just(fields);
+    }
+
+    @PostMapping("task-schema")
+    public Mono<TaskSchemaResponse> taskSchema(@RequestBody TaskSchemaRequest request) {
+        //todo 调用实际逻辑
+        return Mono.just(new TaskSchemaResponse());
     }
 }
