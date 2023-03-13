@@ -83,10 +83,9 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from "vue" 
+import { reactive, ref, computed } from "vue" 
 import { useRoute } from "vue-router";
 import { getTask } from '@/service/index'
-import { computed } from "@vue/reactivity";
 
 const route = useRoute()
 
@@ -109,7 +108,6 @@ let taskResult = reactive({
 const getTaskById = async () => {
   taskResult.loading = true
   const res = await getTask({id: route.params.id}) 
-  console.log(res.data, 'res')
   taskResult.data = res.data[0]
   taskResult.loading = false
 }
@@ -117,14 +115,29 @@ const getTaskById = async () => {
 getTaskById()
 
 const listData = computed( () => {
-  const resData = JSON.parse(taskResult.data.resJson)
-  console.log(resData, '----resData')
-  const listArgs = JSON.parse(taskResult.data.paramJson).fields.map(item => {
-    return {
-      label: item.desc,
-      name: item.name
-    }
-  })
+  function isJsonString(str) {
+    try {
+      if (typeof JSON.parse(str) == "object") {
+        return true;
+      }
+    } catch (e) {}
+    return false;
+  }
+  const resData = isJsonString(taskResult.data.resJson) ? JSON.parse(taskResult.data.resJson) : {}
+  
+  let listArgs = []
+  const isJson = isJsonString(taskResult.data.paramJson)
+  if(isJson) {
+    listArgs = JSON.parse(taskResult.data.paramJson)?.fields.map(item => {
+      return {
+        label: item.desc,
+        name: item.name
+      }
+    })
+  } else {
+    listArgs = []
+  }
+ 
   const transData = []
   for(let x in resData) {
     const item = {
@@ -133,22 +146,17 @@ const listData = computed( () => {
       min: '0',
       max: '0'
     }
-    console.log(x, 'x')
     if (x.indexOf('count') > 0) {
-      console.log(resData[x])
       item.name = x.split(',')[0]
       item.value = resData[x]
       const minkey = `${item.name},min`
       const maxkey = `${item.name},max`
-      console.log(minkey, 'minkey')
       item.min = resData[minkey]
       item.max = resData[maxkey]
     }
-    console.log(item, '------item,-------item')
     transData.push(item)
   }
 
-  console.log(transData, '-----transData')
 
   const data =  []
   transData.filter(e => e.name).forEach(item => {
@@ -169,8 +177,5 @@ const listData = computed( () => {
 const listArgs = computed(() => {
   return JSON.parse(taskResult.data.paramJson).fields
 })
-
-console.log(listData, 'listData')
-console.log(listArgs, 'listArgs')
 
 </script>

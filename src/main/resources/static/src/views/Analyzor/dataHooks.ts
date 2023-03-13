@@ -5,8 +5,20 @@ export default function () {
   const taskList = reactive([]);
 
   const getData = (async () => {
+    function isJsonString(str) {
+      try {
+        if (typeof JSON.parse(str) == "object") {
+          return true;
+        }
+      } catch (e) {}
+      return false;
+    }
     const res = await getTasks();
-    const filterData = res.data.filter((item) => item.finishTime && item.status === '3').sort((a, b)=>{return  b.finishTime - a.finishTime});
+    const filterData = res.data
+      .filter((item) => item.finishTime && item.status === "3")
+      .sort((a, b) => {
+        return b.finishTime - a.finishTime;
+      });
     filterData.forEach((item) => {
       const { id, name, finishTime, paramJson, status, resJson } = item;
       const task = {
@@ -16,12 +28,11 @@ export default function () {
         op: JSON.parse(paramJson).operator?.op,
         status: status,
         paramArgs: JSON.parse(paramJson),
-        resData: resJson ? JSON.parse(resJson) : {}
+        resData: isJsonString(resJson) ? JSON.parse(resJson) : {},
       };
       taskList.push(task);
     });
   })();
-  console.log(taskList, '1122taskList')
   return {
     taskList,
   };

@@ -15,10 +15,9 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: "/TaskGroup",
-    name: "TaskGroup",
-    redirect: '/Analyzor',
-    component: () => import("@/views/Analyzor/index.vue"),
+    path: "/Analyzor",
+    name: "Analyzor",
+    component: () => import('@/views/Analyzor/taskGroup.vue'),
     meta: {
       hidden: false,
       title: "分析结果",
@@ -26,43 +25,33 @@ const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: '/Analyzor',
-        name: 'Analyzor',
-        component: () => import('@/views/Analyzor/taskGroup.vue'),
+        path: 'aggregation',
+        name: 'Aggregation',
+        component: () => import('@/views/Analyzor/aggregation.vue'),
         meta: {
-          hidden: true
+          hidden: true,
+          title: '计数&极值'
         },
         children: [
           {
-            path: ':op',
-            name: 'Aggregation',
-            component: () => import('@/views/Analyzor/aggregation.vue'),
+            path: ':id',
+            name: 'AnalyzorDetail',
+            component: () => import('@/views/Analyzor/analyzorDetail.vue'),
             meta: {
               hidden: true,
-              title: '计数&极值'
-            },
-            children: [
-              {
-                path: ':id',
-                name: 'AnalyzorDetail',
-                component: () => import('@/views/Analyzor/analyzorDetail.vue'),
-                meta: {
-                  hidden: true,
-                  title: '详情'
-                }
-              }
-            ]
-          },
-          {
-            path: ':op',
-            name: 'Group-aggregation',
-            component: () => import('@/views/Analyzor/group-aggregation.vue'),
-            meta: {
-              hidden: 'true',
-              title: '数值分布'
+              title: '详情'
             }
           }
         ]
+      },
+      {
+        path: ':op',
+        name: 'Group-aggregation',
+        component: () => import('@/views/Analyzor/group-aggregation.vue'),
+        meta: {
+          hidden: 'true',
+          title: '数值分布'
+        }
       }
     ]
   },

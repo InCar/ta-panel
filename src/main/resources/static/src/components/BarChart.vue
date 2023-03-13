@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import * as d3  from "d3";
 
 interface ItemData{
@@ -123,7 +123,8 @@ const render = (listData: ItemData[])=>{
     
 }
 
-onMounted(()=>{
-    render(props.data);
-});
+watch(() => props.data, (newValue, oldValue) => {
+    render(newValue);
+}, { deep: true })
+
 </script>

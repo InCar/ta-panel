@@ -79,7 +79,9 @@
         </div>
       </div>
     </div>
-    <router-view />
+    <template v-else>
+      <router-view />
+    </template>
 </template>
 
 <script lang="ts" setup>
@@ -102,11 +104,9 @@ const router = useRouter()
 const onClickGroup = (op) => {
   if(op === 'aggregation') { // 计数与极值
     router.push({
-      name: 'Aggregation',
-      params: {
-        op: op
-      }
+      name: 'Aggregation'
     })
+    // localStorage.setItem('op', op)
   } else if(op === 'group-aggregation') { // 数值分布
     router.push({
       name: 'Group-aggregation',
@@ -121,19 +121,12 @@ const { taskList } = dataHooks()
 
 // 获取分析类别的数量
 const getMumber = (op) => {
-  console.log(op, 'op')
   if(!op) {
     return 0
   } else {
-    console.log(taskList, '-------taskList')
     const res = taskList.filter(item => item.op === op)
     return res?.length ?? 0
   }
 }
-
-
-
-
-
 
 </script>

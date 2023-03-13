@@ -79,7 +79,7 @@ const route = useRoute()
 const  { taskList } = dataHooks()
 
 const list = computed(() => {
-  return taskList.filter(item => item.op === route.params.op)
+  return taskList.filter(item => item.op === 'aggregation')
 })
 
 const dataAmount = (task) => {
@@ -97,5 +97,6 @@ const onClickAnalyzor = (x) => {
     }
   })
 }
+
 
 </script>
