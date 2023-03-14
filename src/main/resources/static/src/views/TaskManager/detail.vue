@@ -168,8 +168,11 @@
             </div>
         </div>
     </div>
-    <div class="btn" v-if="btnText">
-      <Button type="primary">{{ btnText }}</Button>
+    <div class="btn" v-if="btnText === '取消'">
+      <Button type="primary" @click="onClickCancel">{{ btnText }}</Button>
+    </div>
+    <div class="btn" v-else-if="btnText === '查看结果'">
+      <Button type="primary" @click="onClickCheck">{{ btnText }}</Button>
     </div>
     <div class="task">
       <TaskDetail :data="task.data" />
@@ -184,18 +187,17 @@ import { formatDate } from "@/utils/filter/index"
 import { getTask } from './service'
 import { tastStatus } from './Models'
 
-// interface Task {
-//   id: string,
-//   name: string,
-//   createTime: number | string,
-//   startTime: number | string,
-//   percent: string,
-//   paramJson: string,
-//   status: string,
-//   resJson: string,
-//   finishTime: number | string
-// }
+const isJsonString = (str) => {
+  try {
+    if (typeof JSON.parse(str) == "object") {
+      return true;
+    }
+  } catch (e) {}
+  return false;
+}
+
 const route = useRoute()
+const router = useRouter()
 const task = reactive({
   title: '详情',
   loading: false,
@@ -229,6 +231,21 @@ const btnText = computed(() => {
   } else {
     return ''
   }
+})
+
+const onClickCancel = () => {
+  console.log('取消任务')
+}
+
+const onClickCheck = () => {
+  router.push({
+    path: `/Analyzor/${op.value}/${task.data.id}`
+  })
+}
+
+const op = computed(() => {
+  const params = isJsonString(task.data.paramJson) ? JSON.parse(task.data.paramJson) : {}
+  return params.operator.op
 })
 
 </script>

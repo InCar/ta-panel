@@ -45,13 +45,24 @@ const routes: Array<RouteRecordRaw> = [
         ]
       },
       {
-        path: ':op',
+        path: 'group-aggregation',
         name: 'Group-aggregation',
         component: () => import('@/views/Analyzor/group-aggregation.vue'),
         meta: {
           hidden: 'true',
           title: '数值分布'
-        }
+        },
+        children: [
+          {
+            path: ':id',
+            name: 'AnalyzorDetailG',
+            component: () => import('@/views/Analyzor/analyzorDetailG.vue'),
+            meta: {
+              hidden: true,
+              title: '详情'
+            }
+          }
+        ]
       }
     ]
   },

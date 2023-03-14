@@ -127,4 +127,8 @@ watch(() => props.data, (newValue, oldValue) => {
     render(newValue);
 }, { deep: true })
 
+onMounted(() => {
+    render(props.data);
+})
+
 </script>

@@ -109,10 +109,7 @@ const onClickGroup = (op) => {
     // localStorage.setItem('op', op)
   } else if(op === 'group-aggregation') { // 数值分布
     router.push({
-      name: 'Group-aggregation',
-      params: {
-        op: op
-      }
+      name: 'Group-aggregation'
     })
   }
 }
