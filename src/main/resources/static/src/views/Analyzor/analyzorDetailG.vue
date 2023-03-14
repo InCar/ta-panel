@@ -56,13 +56,12 @@
 
 <template>
   <div class="task-detail" v-loading="taskResult.loading">
-    <div class="detail-title">{{ taskResult.data.name }} + {{ dataCount > 0 && dataCount < 4 }}</div>
+    <div class="detail-title">{{ taskResult.data.name }}</div>
     <BarChart v-if="dataCount > 0 && dataCount < 4" :data="listData" />
     <LineChart v-else :data="listDataXY" :disableAxis="false" />
     <div class="args">
       <div class="table-grid">
         <div class="table-grid-item" v-for="(x, i) in listData" :key="i">
-          <!-- <div class="title">{{ x.label }}</div> -->
           <div class="arg">
             <div class="arg-title">数量</div>
             <div class="arg-value">{{ x.value }}</div>

@@ -9,6 +9,13 @@
   color: theme.$color;
   font-size: 16px !important;
 }
+.el-breadcrumb__inner{
+  color:  theme.$color !important;
+  font-weight: 400 !important;
+  text-decoration: underline dashed 1px !important;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
 .el-breadcrumb__inner a, .el-breadcrumb__inner.is-link{
   // font-size: 1rem;
   color:  theme.$color !important;
