@@ -14,3 +14,10 @@ export function getTask(params) {
     params: params
   })
 }
+
+export function getVersion() {
+  return request({
+    url: '/api/version',
+    method: 'get'
+  })
+}

@@ -234,13 +234,14 @@ li.down-item{
         </div>
       </div>
     </div>
-    <div class="frame-footer">英卡科技 dev50.161@4030930</div>
+    <div class="frame-footer">英卡科技 {{ currentVersion }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, nextTick, onUnmounted, onMounted } from "vue";
+import { ref, reactive, nextTick, onUnmounted, onMounted, Ref } from "vue";
 import { useRouter, RouterLink } from "vue-router";
+import { getVersion } from "./service";
 
 const dictThemes = reactive({
   'theme': '默认主题',
@@ -311,4 +312,13 @@ nextTick(() => {
     })
   })
 })
+
+// 获得版本号
+const currentVersion:Ref = ref('')
+const handleGetVersion = async () => {
+  const { version } = await getVersion()
+  currentVersion.value = version
+}
+handleGetVersion()
+
 </script>
