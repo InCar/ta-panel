@@ -21,11 +21,11 @@ const props = withDefaults(defineProps<Props>(), {
 <style lang="scss" scoped>
 @use '@/assets/scss/theme.scss';
 .el-button{
-  height: 22px;
+  height: 28px;
 }
 .el-button--primary{
   background-color: theme.$color;
-  padding: 4px 16px;
+  // padding: 8px 6px;
   font-weight: bolder;
   border-radius: 4px;
   border: 1px solid theme.$color;

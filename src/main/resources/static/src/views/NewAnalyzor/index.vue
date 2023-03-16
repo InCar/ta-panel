@@ -77,7 +77,7 @@ const ok = (i) => {
         padding: 8px 16px;
     }
     .btn{
-      min-width: 7em;
+      min-width: 5em;
       margin: 0.5em;
       align-self: flex-end;
       justify-self: end;

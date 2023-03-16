@@ -2,6 +2,8 @@
 @use '@/assets/scss/theme.scss';
 .task-detail{
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
   @media(min-width: 1160px){ // 定义输出设备中的页面最小可见区域宽度
       width: 1000px;
   }

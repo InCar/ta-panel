@@ -1,11 +1,11 @@
 export enum TaskStatus{
-  NA,
-  Pending, // 待定
-  Running, // 运行
-  Succeeded, // 完成
-  Failed, // 失败
-  Canceled, // 取消
-  Terminated // 中止
+  NA = '0',
+  Pending = '1', // 待定
+  Running = '2', // 运行
+  Succeeded = '3', // 完成
+  Failed = '4', // 失败
+  Canceled = '5', // 取消
+  Terminated = '6' // 中止
 }
 
 export const tastStatus = {

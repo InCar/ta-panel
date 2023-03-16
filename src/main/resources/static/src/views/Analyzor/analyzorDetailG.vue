@@ -2,6 +2,8 @@
 @use '@/assets/scss/theme.scss';
 .task-detail{
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
   @media(min-width: 1160px){ // 定义输出设备中的页面最小可见区域宽度
       width: 1000px;
   }
@@ -18,6 +20,7 @@
       flex-wrap: wrap;
       .table-grid-item{
         flex: 1 1 auto;
+        max-width: 20em;
         .title{
           text-align: center;
           border: 1px solid theme.$color;
@@ -57,8 +60,10 @@
 <template>
   <div class="task-detail" v-loading="taskResult.loading">
     <div class="detail-title">{{ taskResult.data.name }}</div>
-    <BarChart v-if="dataCount > 0 && dataCount < 4" :data="listData" />
-    <LineChart v-else :data="listDataXY" :disableAxis="false" />
+    <BarChart v-if="dataCount > 0 && dataCount < 4" :data="listData" key="lower" />
+    <LineChart v-else-if="fieldName === statisticsType.tm" :data="listDataXYTm" :disableAxis="true" key="tm" />
+    <LineChart v-else-if="fieldName === statisticsType.speed" :data="listDataXYTm" :disableAxis="false" key="speed" />
+    <LineChart v-else :data="listDataXY" :disableAxis="false" key="more" />
     <div class="args">
       <div class="table-grid">
         <div class="table-grid-item" v-for="(x, i) in listData" :key="i">
@@ -84,6 +89,7 @@ import { reactive, ref, computed } from "vue"
 import { useRoute } from "vue-router";
 import { DateTime } from "luxon"
 import { getTask } from '@/service/index'
+import { xor } from "lodash";
 
 const route = useRoute()
 
@@ -96,16 +102,7 @@ const isJsonString = (str) => {
   return false;
 }
 
-const formatDateT = (value:number, format:string) => {
-    if(value && format) {
-      const newDate = DateTime.fromMillis(Number.parseFloat(value + '')).toFormat(format)
-      return newDate
-    } else {
-      return value
-    }
-  }
-
-let taskResult = reactive({
+const taskResult = reactive({
   title: '详情',
   loading: false,
   data: {
@@ -130,6 +127,22 @@ const getTaskById = async () => {
 
 getTaskById()
 
+const formatDateT = (value:number, format:string) => {
+    if(value && format) {
+      const newDate = DateTime.fromMillis(Number.parseFloat(value + '')).toFormat(format)
+      return newDate
+    } else {
+      return value
+    }
+  }
+
+// 字段类型
+const fieldName = computed(() => {
+  const resData = isJsonString(taskResult.data.paramJson) ? JSON.parse(taskResult.data.paramJson) : null
+  const name = resData?.fields[0].name
+  return name
+})
+
 const listData = computed( () => {
   const resData = isJsonString(taskResult.data.resJson) ? JSON.parse(taskResult.data.resJson) : {}
   
@@ -145,24 +158,6 @@ const listData = computed( () => {
   } else {
     listArgs = []
   }
-  console.log(resData, '-----resData')
-  // listArgs = {
-  //   label: "经度",
-  //   name: "gpsLon"
-  // }
-
-  // resData = {
-  //   0-10: "955"
-  // }
-
-  // [
-  //   {
-  //     label: '经度',
-  //     value: '955'
-  //   }
-  // ]
-
-  console.log(listArgs, '--------listArgs')
   const transData = []
   if(listArgs[0]?.name === 'tm') {
     for(let x in resData) {
@@ -181,19 +176,13 @@ const listData = computed( () => {
       transData.push(item)
     }
   }
+  const sortData = transData.sort((a, b) => a.label - b.label) // 按照x轴数据排序
+  return sortData
 
   return transData
 })
 
 const listArgs = computed(() => {
-  function isJsonString(str) {
-    try {
-      if (typeof JSON.parse(str) == "object") {
-        return true;
-      }
-    } catch (e) {}
-    return false;
-  }
   let listArgs = []
   const isJson = isJsonString(taskResult.data.paramJson)
   if(isJson) {
@@ -222,11 +211,9 @@ const dataCount = computed(() => {
   return transData.length
 })
 
-console.log(dataCount, '-----dataCount')
 
 const listDataXY = computed(() => {
   const resData = isJsonString(taskResult.data.resJson) ? JSON.parse(taskResult.data.resJson) : {}
-  console.log(resData, 'listDataXY-resData')
   const transData = []
   for(let i in resData) {
     transData.push({
@@ -234,9 +221,38 @@ const listDataXY = computed(() => {
       y: Number.parseFloat(resData[i])
     })
   }
-  return transData
+  const sortData = transData.sort((a, b) => a.x - b.x) // 按照x轴数据排序
+  return sortData
 })
-console.log(listDataXY, '-------listDataXY')
-console.log(listData, '----listData')
+
+const listDataXYTm = computed(() => {
+  const resData = isJsonString(taskResult.data.resJson) ? JSON.parse(taskResult.data.resJson) : {}
+  const transData = []
+  for(let i in resData) {
+    transData.push({
+      x: i.split('-')[0]  ? Number.parseFloat(i.split('-')[0]) : Number.parseFloat(i),
+      y: Number.parseFloat(resData[i])
+    })
+  }
+  const sortData = transData.sort((a, b) => a.x - b.x) // 按照x轴数据排序
+  return sortData
+})
+
+// 统计类型
+enum statisticsType {
+  'tm'='tm', // 
+  'speed'='speed', // 速度
+  'chargingStatus'='chargingStatus', // 充电状态
+  'resistance'='resistance', // 绝缘电阻
+  'gearShift'='gearShift', // 挡位
+  'vehicleStatus'='vehicleStatus', // 车辆状态
+  'pedalStatus'='pedalStatus', // 踏板状态
+  'dcStatus'='dcStatus', // dc状态
+  'totalCurrent'='totalCurrent', // 总电流
+  'totalMileage'='totalMileage', // 累计里程
+  'soc'='soc', // SOC
+  'driveMode'='driveMode', // 运行模式
+  'vehicleType'='vehicleType', // 车辆类型
+}
 
 </script>

@@ -7,7 +7,7 @@
   justify-content: center;
   .box{
     display: flex;
-    flex-direction: column;;
+    flex-direction: column;
     width: 12em;
     border: 1px solid theme.$color-2nd;
     justify-content: center;

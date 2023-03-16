@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, nextTick } from 'vue';
 import * as d3  from "d3";
 import { computed } from '@vue/reactivity';
 
@@ -93,8 +93,10 @@ const render = (data:Array<{x:number, y:number}>)=>{
             .text("无数据");
     }
 };
-
+onMounted(() => {
+    if(props.data.length) render(props.data);
+})
 watch(() => props.data, (newValue, oldValue) => {
     render(newValue);
-}, { deep: true })
+}, { deep: true, immediate: true })
 </script>

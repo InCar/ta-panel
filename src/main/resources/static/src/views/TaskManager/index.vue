@@ -135,15 +135,6 @@ import { TaskStatus, tastStatus } from './Models'
 import { DateTime } from "luxon"
 import { formatDate } from "@/utils/filter/index"
 import { useRouter, useRoute } from "vue-router";
-import { Console } from "console"
-
-// const tastStatus = {
-//     'success': '完成',
-//     'end': '中止',
-//     'cancel': '取消',
-//     'fail': '失败',
-//     'running': '运行',
-// }
 
 const task = reactive({
     name: '任务管理',
@@ -162,18 +153,12 @@ const status = ref('fail')
 
 const getTaskList = async () => {
     const res = await getTasks()
-    // task.list = res.data || []
     if(res.data && res.data.length) {
         const dt = DateTime.local(2017, 5, 15, 8, 30);
         task.list = res.data.filter(task => {
             if(task?.status != TaskStatus.NA) return true
         })
     }
-    // task.list.map(item => {
-    //     return {
-    //         startTime: new Date(item.startTime)
-    //     }
-    // })
 }
 
 getTaskList()
@@ -189,17 +174,14 @@ const goDetail = (v) => {
 
 const listTasks = computed(() => {
     const tmNow = DateTime.local().toMillis();
-    console.log(DateTime.local().toMillis(), 'DateTime.local()')
     
     return task.list.filter(task=>{
         if(task?.status != '3') return true // 成功的
         if(!task?.finishTime) return true;
         const dura = tmNow - task?.finishTime;
-        console.log(dura, 'dura')
         const days = dura/86400000;
         return (days < 7.0);
     });
 })
 
-console.log(listTasks, 'listTasks')
 </script>
