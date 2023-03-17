@@ -116,6 +116,26 @@ const routes: Array<RouteRecordRaw> = [
             }
           }
         ]
+      },
+      {
+        path: 'count',
+        name: 'Count',
+        component: () => import('@/views/NewAnalyzor/count/index.vue'),
+        meta: {
+          hidden: true,
+          title: '选择指标'
+        },
+        children: [
+          {
+            path: 'summary',
+            name: 'Summary',
+            component: () => import("@/views/NewAnalyzor/count/summary.vue"),
+            meta: {
+              hidden: true,
+              title: "摘要"
+            }
+          }
+        ]
       }
     ]
   },

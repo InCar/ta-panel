@@ -6,7 +6,8 @@ import { reactive } from 'vue'
 export const useParamsStore = defineStore('params', {
   state: () => {
     const rParams = reactive({})
+    const picked = reactive({})
   
-    return { rParams }
+    return { rParams, picked }
   }
 })

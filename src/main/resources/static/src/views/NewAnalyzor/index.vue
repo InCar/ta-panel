@@ -36,6 +36,8 @@ const listModes:Array<TAModeBase> = [
 const ok = (i) => {
   if(TAMode[i.Mode] === 'Detection') {
     router.push({ name: 'DataSheet' })
+  } else if (TAMode[i.Mode] === 'Count') {
+    router.push({ name: 'Count' })
   }
 }
 

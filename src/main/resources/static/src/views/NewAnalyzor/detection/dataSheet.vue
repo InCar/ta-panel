@@ -5,7 +5,7 @@
       <span class="title">{{ data.title }}</span>
     </div>
     <div v-loading="loading" class="field-list">
-      <div class="box-field" v-for="(v, k) in data.Sheets" @click="select(k)">
+      <div class="box-field" v-for="(v, k) in data.Sheets" :key="k" @click="select(k)">
         <input type="radio" name="sheet" :value="k" v-model="picked" />
         <!-- <input v-else type="checkbox" name="field" :value="k" v-model="value"/> -->
         <span class="field-description">{{ v.collectionName }}</span>
@@ -67,7 +67,7 @@ export default defineComponent({
       router.push({
         name: "DataField",
         params: {
-          id: data.Sheets[picked.value].collectionName,
+          id: data.Sheets[picked.value].collectionName
         },
       });
     };
