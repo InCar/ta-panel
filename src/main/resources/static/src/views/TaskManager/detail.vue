@@ -184,8 +184,9 @@
 import { useRouter, useRoute } from "vue-router";
 import { ref, reactive, computed } from "vue" 
 import { formatDate } from "@/utils/filter/index"
-import { getTask } from './service'
+import { getTask, stopTask } from './service'
 import { tastStatus } from './Models'
+import { ElMessage } from 'element-plus'
 
 const isJsonString = (str) => {
   try {
@@ -214,11 +215,16 @@ const task = reactive({
   }
 })
 const getDetai = async () => {
-  task.loading = true
-  const { id: id } = route.params
-  const res = await getTask({id: id})
-  task.loading = false
-  task.data = res.data[0]
+  try{
+    task.loading = true
+    const { id: id } = route.params
+    const res = await getTask({id: id})
+    task.loading = false
+    task.data = res.data[0]
+  }catch(err) {
+    console.log(err)
+    task.loading = false
+  }
 }
 
 getDetai()
@@ -233,8 +239,22 @@ const btnText = computed(() => {
   }
 })
 
-const onClickCancel = () => {
-  console.log('取消任务')
+const onClickCancel = async () => {
+  const { id: id } = route.params
+  try {
+    const res = await stopTask({
+      ids: id
+    })
+    if(res.result) {
+      ElMessage({
+        message: '取消任务成功',
+        type: 'success',
+      })
+      getDetai()
+    }
+  } catch(err) {
+    console.log(err)
+  }
 }
 
 const onClickCheck = () => {

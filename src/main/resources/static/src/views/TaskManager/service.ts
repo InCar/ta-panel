@@ -14,3 +14,13 @@ export function getTask(params) {
     params: params
   })
 }
+
+export function stopTask(params) {
+  return request({
+    url: `/api/task/stop`,
+    method: 'post',
+    params: params
+  })
+}
+
+
