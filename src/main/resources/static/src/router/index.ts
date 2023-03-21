@@ -136,6 +136,48 @@ const routes: Array<RouteRecordRaw> = [
             }
           }
         ]
+      },
+      {
+        path: 'range',
+        name: 'Range',
+        component: () => import('@/views/NewAnalyzor/range/index.vue'),
+        meta: {
+          hidden: true,
+          title: '选择指标'
+        },
+        children: [
+          {
+            path: 'setting',
+            name: 'RangeSetting',
+            component: () => import('@/views/NewAnalyzor/range/setting.vue'),
+            meta: {
+              hidden: true,
+              title: '设定数值区间'
+            },
+            children: [
+              {
+                path: 'gobalArgument',
+                name: 'GobalArgument',
+                component: () => import('@/views/NewAnalyzor/range/gobalArgument.vue'),
+                meta: {
+                  hidden: true,
+                  title: '全局参数'
+                },
+                children: [
+                  {
+                    path: 'summary',
+                    name: 'RangeSummary',
+                    component: () => import("@/views/NewAnalyzor/range/summary.vue"),
+                    meta: {
+                      hidden: true,
+                      title: "摘要"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     ]
   },
