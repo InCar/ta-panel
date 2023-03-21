@@ -142,7 +142,7 @@
         }
       }
       .el-breadcrumb {
-        height: 30px;
+        // height: 30px;
         line-height: 30px;
         padding: 5px 20px 5px 10px;
       }
