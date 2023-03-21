@@ -55,9 +55,14 @@ export default defineComponent({
     const picked = ref(-1);
     const loading = ref(true)
     const getData = async () => {
-      const res = await collectionSheetSize();
-      loading.value = false
-      data.Sheets = res;
+      try {
+        const res = await collectionSheetSize();
+        loading.value = false
+        data.Sheets = res;
+      } catch(err) {
+        console.log(err)
+        loading.value = false
+      }
     };
     getData();
     const prev = () => {

@@ -109,25 +109,32 @@ const confirm = async () => {
     },
     fields: JSON.parse(JSON.stringify(data.picked))
   }
-  const result = await startTask(params)
+  try {
+    const result = await startTask(params)
 
-  if(result.result) {
+    if(result.result) {
+      btn.loading = false
+      btn.msg = '查看'
+      ElMessage({
+        message: '创建任务成功',
+        type: 'success',
+      })
+      btn.confirmStatus = true
+      data.id = result.data
+    } else {
+      btn.loading = false
+      ElMessage({
+        message: result.message || '创建任务失败',
+        type: 'error',
+      })
+      btn.confirmStatus = false
+    }
+  } catch(err) {
+    console.log(err)
     btn.loading = false
-    btn.msg = '查看'
-    ElMessage({
-      message: '创建任务成功',
-      type: 'success',
-    })
-    btn.confirmStatus = true
-    data.id = result.data
-  } else {
-    btn.loading = false
-    ElMessage({
-      message: result.message || '创建任务失败',
-      type: 'error',
-    })
     btn.confirmStatus = false
   }
+  
 }
 
 const btn = reactive({

@@ -52,7 +52,7 @@
       <el-form ref="settingForm" :model="form">
         <el-form-item label="模式选择" :label-width="formLabelWidth" prop="rangeMode">
           <el-radio-group v-model="form.rangeMode">
-            <el-radio label="0">离散值</el-radio>-
+            <el-radio label="0">离散值</el-radio>
             <el-radio label="1">连续值</el-radio>
           </el-radio-group>
         </el-form-item>

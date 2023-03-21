@@ -78,40 +78,45 @@ if(store.picked && store.picked.length) {
 }
 
 const confirm = async () => {
-  btn.loading = true
-  // await startTask()
-  const res = await getFields()
-  const { fields } = res
-  const params = {
-    dataSources: Object.keys(res.dataSources).map(x => {
-      return {
-        name:x,
-        ds: res.dataSources[x]
-      }
-    }),
-    name: `计数与极值#${tm}`,
-    operator: {op:"aggregation",opArgs: {aggregation:{fns:["count","min","max"],fnArgs:{}}}},
-    fields: JSON.parse(JSON.stringify(data.picked))
-  }
-  const result = await startTask(params)
+  try {
+    btn.loading = true
+    const res = await getFields()
+    const { fields } = res
+    const params = {
+      dataSources: Object.keys(res.dataSources).map(x => {
+        return {
+          name:x,
+          ds: res.dataSources[x]
+        }
+      }),
+      name: `计数与极值#${tm}`,
+      operator: {op:"aggregation",opArgs: {aggregation:{fns:["count","min","max"],fnArgs:{}}}},
+      fields: JSON.parse(JSON.stringify(data.picked))
+    }
+    const result = await startTask(params)
 
-  if(result.result) {
+    if(result.result) {
+      btn.loading = false
+      btn.msg = '查看'
+      ElMessage({
+        message: '创建任务成功',
+        type: 'success',
+      })
+      btn.confirmStatus = true
+      data.id = result.data
+    } else {
+      btn.loading = false
+      ElMessage({
+        message: result.message || '创建任务失败',
+        type: 'error',
+      })
+      btn.confirmStatus = false
+    }
+  } catch (err) {
+    console.log(err)
     btn.loading = false
-    btn.msg = '查看'
-    ElMessage({
-      message: '创建任务成功',
-      type: 'success',
-    })
-    btn.confirmStatus = true
-    data.id = result.data
-  } else {
-    btn.loading = false
-    ElMessage({
-      message: result.message || '创建任务失败',
-      type: 'error',
-    })
-    btn.confirmStatus = false
   }
+  
 }
 
 const btn = reactive({
