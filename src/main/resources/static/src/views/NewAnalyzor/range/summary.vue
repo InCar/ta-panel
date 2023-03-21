@@ -1,17 +1,13 @@
 <!--
-* @description  计数与极值-摘要
+* @description  数值分布-摘要
 * @fileName  summary
 * @author 张忠迪
-* @date 2023-03-17 10:16:37
+* @date 2023-03-20 17:00:20
+* @version V1.0.0
 !-->
 
 <style lang="scss" scoped>
 @use '@/assets/scss/theme.scss';
-.box-field {
-  &:hover {
-    background-color: theme.$color-bk-2nd;
-  }
-}
 .field-desc{
   flex: 0 0 none;
 }
@@ -24,32 +20,35 @@
 </style>
 
 <template>
-  <div class="field-header">
-    <span class="caption">{{ data.caption }}</span>
-    <span class="title">{{ data.title }}</span>
-  </div>
-  <div class="field-list">
-    <div class="box-field" v-for="(v, k) in data.picked" :key="k">
-      <span class="field-desc">{{ v.desc }}</span>
-      <span class="field-desc mobile-none">{{
-        v.name
-      }}</span>
-      <span class="field-description mobile-none"
-        >{{ v.description }}</span
-      >
+    <div class="field-header">
+      <span class="caption">{{ data.caption }}</span>
+      <span class="title">{{ data.title }}</span>
     </div>
-  </div>
-  <div class="footer">
-    <template v-if="!btn.confirmStatus">
-      <Button type="primary" @click="prev">上一步</Button>
-      <Button type="primary" :loading="btn.loading" @click="confirm"
+    <div class="field-list">
+      <div class="box-field" v-for="(v, k) in data.picked" :key="k">
+        <span class="field-desc">{{
+          v.name
+        }}</span>
+        <span class="field-desc">{{ v.desc }}</span>
+        <span class="field-range">
+          
+          <span v-if="store.setting.mode === '1'">范围:{{ store.setting.from }} ~ {{ store.setting.to }} [步长: {{ store.setting.step }}]</span>
+          <span v-else>离散</span>
+        </span>
+        <span class="mobile-none">数据量限制：{{ store.limit }}</span>
+      </div>
+    </div>
+    <div class="footer">
+      <template v-if="!btn.confirmStatus">
+        <Button type="primary" @click="prev">上一步</Button>
+        <Button type="primary" :loading="btn.loading" @click="confirm"
+          >{{ btn.msg }}</Button
+        >
+      </template>
+      <Button v-else type="primary" @click="check"
         >{{ btn.msg }}</Button
       >
-    </template>
-    <Button v-else type="primary" @click="check"
-      >{{ btn.msg }}</Button
-    >
-  </div>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -66,7 +65,7 @@ const tm = DateTime.local().toFormat("MMddHHmm");
 const store = useParamsStore()
 const data = reactive({
   caption: '摘要',
-  title: `计数与极值#${tm}`,
+  title: `数值分布#${tm}`,
   picked: [],
   id: ''
 })
@@ -76,10 +75,12 @@ if(store.picked && store.picked.length) {
 } else {
   data.picked = JSON.parse(localStorage.getItem('picked'))
 }
+if(localStorage.getItem('setting')) {
+  store.setting = JSON.parse(localStorage.getItem('setting'))
+}
 
 const confirm = async () => {
   btn.loading = true
-  // await startTask()
   const res = await getFields()
   const { fields } = res
   const params = {
@@ -89,8 +90,23 @@ const confirm = async () => {
         ds: res.dataSources[x]
       }
     }),
-    name: `计数与极值#${tm}`,
-    operator: {op:"aggregation",opArgs: {aggregation:{fns:["count","min","max"],fnArgs:{}}}},
+    name: `数值分布#${tm}`,
+    limit: store.limit,
+    operator: {
+      op:"group-aggregation",
+      opArgs: {
+        aggregation:{
+          fn:"count",
+          fnArgs:{}
+        }, 
+        groupBy: [{
+          field: data.picked[0].name,
+          from: store.setting.from,
+          step: store.setting.step,
+          to: store.setting.to
+        }]
+      }
+    },
     fields: JSON.parse(JSON.stringify(data.picked))
   }
   const result = await startTask(params)

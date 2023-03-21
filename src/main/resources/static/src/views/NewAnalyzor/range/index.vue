@@ -1,8 +1,8 @@
 <!--
-* @description  计数和极值
+* @description  数值分布
 * @fileName  index
 * @author 张忠迪
-* @date 2023-03-16 15:09:05
+* @date 2023-03-17 16:44:16
 !-->
 
 <style lang="scss" scoped>
@@ -24,14 +24,14 @@
 </style>
 
 <template>
-  <template v-if="route.name === 'Count'">
+  <template v-if="route.name === 'Range'">
     <div class="field-header">
       <span class="caption">{{ data.caption }}</span>
       <span class="title">{{ data.title }}</span>
     </div>
     <div class="field-list">
       <div class="box-field" v-for="(v, k) in data.fields" :key="k" @click="select(k)">
-        <input type="checkbox" name="field" :value="k" v-model="picked.keys"/>
+        <input type="radio" name="field" :value="k" v-model="picked"/>
         <span class="field-desc">{{ v.desc }}</span>
         <span class="field-desc mobile-none">{{
           v.name
@@ -63,7 +63,7 @@ const route = useRoute()
 const tm = DateTime.local().toFormat("MMddHHmm");
 const data = reactive({
   caption: "选择待分析的数据",
-  title: `计数与极值#${tm}`,
+  title: `数值分布#${tm}`,
   fields: [
     {
       name: 'chargingStatus',
@@ -87,19 +87,12 @@ const getData = async() => {
 }
 getData()
 
-const picked = reactive({
-  keys: [],
-  values: []
-});
+const picked = ref(-1)
 const select = (k: any) => {
-  if(picked.keys.indexOf(k) === -1) {
-    picked.keys.push(k)
-  } else {
-    const index = picked.keys.indexOf(k)
-    picked.keys.splice(index, index+1)
+  picked.value = k;
+  if (picked.value > 0) {
+    data.active = true;
   }
-  if(picked.keys && picked.keys.length) data.active = true
-  else data.active = false
 };
 
 const router = useRouter()
@@ -109,11 +102,11 @@ const prev = () => {
   })
 };
 const next = () => {
-  const values = data.fields.filter((v, k) => picked.keys.includes(k))
+  const values = data.fields.filter((v, k) => picked.value === k)
   const store = useParamsStore()
   store.picked = values
   router.push({
-    name: 'Summary'
+    name: 'RangeSetting'
   })
 }
 

@@ -8,6 +8,7 @@ import "element-plus/dist/index.css";
 import App from "./App.vue";
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import pinia from './store/index'
+import { ElMessage } from 'element-plus'
 
 const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

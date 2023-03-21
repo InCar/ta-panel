@@ -38,6 +38,8 @@ const ok = (i) => {
     router.push({ name: 'DataSheet' })
   } else if (TAMode[i.Mode] === 'Count') {
     router.push({ name: 'Count' })
+  } else if (TAMode[i.Mode] === 'SingleDistribution') {
+    router.push({name: 'Range'})
   }
 }
 
