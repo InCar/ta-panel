@@ -85,7 +85,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from "vue" 
+import { ref, reactive } from "vue" 
 import { useRoute, useRouter } from "vue-router";
 import dataHooks from "./dataHooks";
 
@@ -102,16 +102,10 @@ const listGroupTitle:any = reactive([
 const route = useRoute()
 const router = useRouter()
 const onClickGroup = (op) => {
-  if(op === 'aggregation') { // 计数与极值
-    router.push({
-      name: 'Aggregation'
-    })
-    // localStorage.setItem('op', op)
-  } else if(op === 'group-aggregation') { // 数值分布
-    router.push({
-      name: 'Group-aggregation'
-    })
-  }
+  const routeNames = {'aggregation': 'Aggregation', 'group-aggregation': 'Group-aggregation'}
+  router.push({
+    name: routeNames[op]
+  })
 }
 
 const { taskList } = dataHooks()

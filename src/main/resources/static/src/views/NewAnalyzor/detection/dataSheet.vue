@@ -38,16 +38,15 @@ import { toFixedTwo } from "@/utils/filter/index";
 export default defineComponent({
   name: "App",
   setup() {
+    interface Sheet{
+      collectionCount: number,
+      collectionName: string
+      collectionSize: number
+    }
     const data = reactive({
       caption: "选择待分析的数据",
       title: "数据侦测",
-      Sheets: [
-        {
-          collectionName: "",
-          collectionCount: "",
-          collectionSize: "",
-        },
-      ],
+      Sheets: [],
       active: false,
     });
     const router = useRouter();
@@ -56,7 +55,7 @@ export default defineComponent({
     const loading = ref(true)
     const getData = async () => {
       try {
-        const res = await collectionSheetSize();
+        const res: any = await collectionSheetSize();
         loading.value = false
         data.Sheets = res;
       } catch(err) {

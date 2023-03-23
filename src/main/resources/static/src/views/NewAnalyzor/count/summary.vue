@@ -63,7 +63,7 @@ import { DateTime } from "luxon";
 const route = useRoute()
 const tm = DateTime.local().toFormat("MMddHHmm");
 
-const store = useParamsStore()
+const store:any = useParamsStore()
 const data = reactive({
   caption: '摘要',
   title: `计数与极值#${tm}`,
@@ -80,8 +80,7 @@ if(store.picked && store.picked.length) {
 const confirm = async () => {
   try {
     btn.loading = true
-    const res = await getFields()
-    const { fields } = res
+    const res:any = await getFields()
     const params = {
       dataSources: Object.keys(res.dataSources).map(x => {
         return {
@@ -93,7 +92,7 @@ const confirm = async () => {
       operator: {op:"aggregation",opArgs: {aggregation:{fns:["count","min","max"],fnArgs:{}}}},
       fields: JSON.parse(JSON.stringify(data.picked))
     }
-    const result = await startTask(params)
+    const result:any = await startTask(params)
 
     if(result.result) {
       btn.loading = false

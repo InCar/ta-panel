@@ -1,5 +1,5 @@
 import { reactive, onMounted, nextTick } from "vue";
-import { getTasks } from "@/service/index.ts";
+import { getTasks } from "@/service/index";
 
 export default function () {
   const taskList = reactive([]);
@@ -13,7 +13,7 @@ export default function () {
       } catch (e) {}
       return false;
     }
-    const res = await getTasks();
+    const res:any = await getTasks();
     const filterData = res.data
       .filter((item) => item.finishTime && item.status === "3")
       .sort((a, b) => {

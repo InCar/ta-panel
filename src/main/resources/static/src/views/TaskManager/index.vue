@@ -152,7 +152,7 @@ const task = reactive({
 const status = ref('fail')
 
 const getTaskList = async () => {
-    const res = await getTasks()
+    const res:any = await getTasks()
     if(res.data && res.data.length) {
         const dt = DateTime.local(2017, 5, 15, 8, 30);
         task.list = res.data.filter(task => {

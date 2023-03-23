@@ -38,7 +38,7 @@ export default defineComponent({
     const route = useRoute();
     const picked = ref(-1);
     const getData = async () => {
-      const res = await collectionSheetFields({
+      const res: any = await collectionSheetFields({
         collectionName: route.params.id,
       });
       loading.value = false

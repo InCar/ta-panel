@@ -110,7 +110,7 @@ let taskResult = reactive({
 const getTaskById = async () => {
   try {
     taskResult.loading = true
-    const res = await getTask({id: route.params.id}) 
+    const res:any = await getTask({id: route.params.id}) 
     taskResult.data = res.data[0]
     taskResult.loading = false
   } catch(err) {

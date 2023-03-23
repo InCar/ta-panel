@@ -218,7 +218,7 @@ const getDetai = async () => {
   try{
     task.loading = true
     const { id: id } = route.params
-    const res = await getTask({id: id})
+    const res:any = await getTask({id: id})
     task.loading = false
     task.data = res.data[0]
   }catch(err) {
@@ -242,7 +242,7 @@ const btnText = computed(() => {
 const onClickCancel = async () => {
   const { id: id } = route.params
   try {
-    const res = await stopTask({
+    const res:any = await stopTask({
       ids: id
     })
     if(res.result) {

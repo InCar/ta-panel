@@ -34,13 +34,9 @@ const listModes:Array<TAModeBase> = [
 ]
 
 const ok = (i) => {
-  if(TAMode[i.Mode] === 'Detection') {
-    router.push({ name: 'DataSheet' })
-  } else if (TAMode[i.Mode] === 'Count') {
-    router.push({ name: 'Count' })
-  } else if (TAMode[i.Mode] === 'SingleDistribution') {
-    router.push({name: 'Range'})
-  }
+  const routeNames = {Detection: 'DataSheet', Count: 'Count', SingleDistribution: 'Range'}
+  const mode = TAMode[i.Mode]
+  router.push({name: routeNames[mode]})
 }
 
 </script>

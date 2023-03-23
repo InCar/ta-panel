@@ -74,7 +74,7 @@ const data = reactive({
   active: false
 })
 const getData = async() => {
-  const res = await getFields()
+  const res: any = await getFields()
   const { fields } = res
   data.fields = Object.keys(fields).map(x => {
     return {
