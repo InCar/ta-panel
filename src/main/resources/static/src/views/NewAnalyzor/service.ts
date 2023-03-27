@@ -9,8 +9,24 @@ export function collectionSheetSize() {
 
 export function collectionSheetFields(params) {
   return request({
-    url: 'api/mongo/collectionSheetFields',
+    url: '/api/mongo/collectionSheetFields',
     method: 'get',
     params: params
   })
 }
+
+export function getFields() {
+  return request({
+    url: '/api/fields',
+    method: 'get'
+  })
+}
+
+export function startTask(data) {
+  return request({
+    url: '/api/task/start',
+    method: 'post',
+    data: data
+  })
+}
+

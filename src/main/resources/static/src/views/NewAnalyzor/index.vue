@@ -3,18 +3,17 @@
     <div class="list-item" v-for="(i, k) in listModes" :key="k">
       <div class="title">{{ i.Title }}</div>
       <div class="desc">{{ i.Description }}</div>
-      <Button class="btn" type="primary" :active="!i.Active" @click="ok(i)">ok</Button>
+      <Button class="btn" type="primary" :active="!i.Active" @click="ok(i)">OK</Button>
     </div>
   </div>
-  <v-else>
+  <template v-else>
     <router-view />
-  </v-else>
+  </template>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue"
 import { useRouter, useRoute } from 'vue-router';
-import { collectionSheetSize } from './service'
 import {
         TAMode,
         TAModeBase,
@@ -34,14 +33,10 @@ const listModes:Array<TAModeBase> = [
     new TAModeMultipleGeo()
 ]
 
-collectionSheetSize().then(res => {
-}).catch(err => console.log(err))
-
 const ok = (i) => {
-  console.log(i)
-  if(TAMode[i.Mode] === 'Detection') {
-    router.push({ name: 'DataSheet' })
-  }
+  const routeNames = {Detection: 'DataSheet', Count: 'Count', SingleDistribution: 'Range'}
+  const mode = TAMode[i.Mode]
+  router.push({name: routeNames[mode]})
 }
 
 </script>
@@ -79,11 +74,10 @@ const ok = (i) => {
     .desc{
         flex-grow:1;
         color: theme.$color;
-        font-size: 1rem;
         padding: 8px 16px;
     }
     .btn{
-      min-width: 7em;
+      min-width: 5em;
       margin: 0.5em;
       align-self: flex-end;
       justify-self: end;

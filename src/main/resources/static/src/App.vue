@@ -57,7 +57,7 @@
           height: 40px;
           line-height: 40px;
           vertical-align: middle;
-          // padding: 0 15px;
+          padding: 0 15px;
           color: theme.$color;
           border-bottom: 1px solid theme.$color;
           display: flex;
@@ -65,16 +65,15 @@
           align-items: center;
           position: relative;
           visibility: visible;
-          justify-content: center;
+          // justify-content: center;
           &:hover {
             background-color: theme.$color-bk !important;
           }
           .item-text {
             margin-left: .5vw;
-            font-size: 14px;
+            font-size: 16px;
           }
           .none{
-            // visibility: hidden;
             display: none;
           }
           
@@ -90,7 +89,7 @@
             // font-size: 1.4rem;
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
           }
-          @media screen and (max-width: 720px) {
+          @media screen and (max-width: 862px) {
             .material-symbols-outlined {
               font-size: 36px;
             }
@@ -106,6 +105,11 @@
         // &:not(:last-child) {
         //   border-bottom: 1px solid theme.$color;
         // }
+        @media screen and (max-width: 862px) {
+          .list-item {
+            justify-content: center;
+          }
+        }
       }
     }
 
@@ -131,14 +135,14 @@
           cursor: pointer;
           color: theme.$color;
           display: flex;
-          font-size: 18px;
+          font-size: 22px;
           &:hover{
             color: theme.$color-2nd;
           }
         }
       }
       .el-breadcrumb {
-        height: 30px;
+        // height: 30px;
         line-height: 30px;
         padding: 5px 20px 5px 10px;
       }
@@ -230,13 +234,14 @@ li.down-item{
         </div>
       </div>
     </div>
-    <div class="frame-footer">英卡科技 dev50.161@4030930</div>
+    <div class="frame-footer">英卡科技 {{ currentVersion }}</div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, nextTick, onUnmounted, onMounted } from "vue";
+import { ref, reactive, nextTick, onUnmounted, onMounted, Ref } from "vue";
 import { useRouter, RouterLink } from "vue-router";
+import { getVersion } from "./service";
 
 const dictThemes = reactive({
   'theme': '默认主题',
@@ -260,10 +265,7 @@ const listRoutes = useRouter()
 const selectTheme = (v, k) => {
   curTheme.value = v
   activeTheme.value = k;
-  console.log(activeTheme.value, 'activeTheme')
-  console.log(dropdownMenu.value, 'dropdownMenu.value')
   dropdownMenu.value?.closeMenu()
-  console.log(dropdownMenu.value.childNodes,' dropdownMenu.value.childNodes')
   localStorage.setItem('themeName', k)
 }
 
@@ -271,7 +273,7 @@ const selectTheme = (v, k) => {
 const isCollapse = ref(false)
 const device = ref('')
 const { body } = document
-const WIDTH = 720
+const WIDTH = 862
 const isMobile = () => {
   const rect = body.getBoundingClientRect()
   if(rect.width < WIDTH) {
@@ -297,7 +299,6 @@ onUnmounted(() => {
 
 const menu = ref(null)
 nextTick(() => {
-  console.log(menu.value, 'menu')
   menu.value.forEach(element => {
     element.addEventListener('mouseover', (e) => {
       if (element.lastChild && element.lastChild.style) {
@@ -311,4 +312,13 @@ nextTick(() => {
     })
   })
 })
+
+// 获得版本号
+const currentVersion:Ref = ref('')
+const handleGetVersion = async () => {
+  const { version } = await getVersion()
+  currentVersion.value = version
+}
+handleGetVersion()
+
 </script>

@@ -21,7 +21,7 @@
       margin-left: 2vw;
     }
     .title {
-      font-size: 2.2rem;
+      font-size: 2rem;
       margin: 0 auto;
       text-align: center;
       flex-grow: 1;
@@ -44,21 +44,20 @@
 
     .body-left {
       width: 15vw;
-      // transition: 0.2s width ease-in;
       min-width: 50px;
       max-width: 150px;
       background-color: theme.$color-bk-2nd;;
       color: theme.$color;
-      font-size: 1rem;
+      font-size: 20px;
       .menu-list {
         a {
           text-decoration: none;
         }
         .list-item {
-          height: 32px;
+          height: 40px;
           line-height: 40px;
           vertical-align: middle;
-          padding: 0 15px;
+          // padding: 0 15px;
           color: theme.$color;
           border-bottom: 1px solid theme.$color;
           display: flex;
@@ -66,6 +65,7 @@
           align-items: center;
           position: relative;
           visibility: visible;
+          justify-content: center;
           &:hover {
             background-color: theme.$color-bk !important;
           }
@@ -74,7 +74,8 @@
             font-size: 14px;
           }
           .none{
-            visibility: hidden;
+            // visibility: hidden;
+            display: none;
           }
           
 
@@ -86,8 +87,13 @@
             transition: 0.2s ease-in;
           }
           .material-symbols-outlined{
-            font-size: 1.4rem;
+            // font-size: 1.4rem;
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+          }
+          @media screen and (max-width: 720px) {
+            .material-symbols-outlined {
+              font-size: 36px;
+            }
           }
           &.router-link-active {
             font-weight: bold;
@@ -124,6 +130,8 @@
           top: 8px;
           cursor: pointer;
           color: theme.$color;
+          display: flex;
+          font-size: 18px;
           &:hover{
             color: theme.$color-2nd;
           }
@@ -252,10 +260,7 @@ const listRoutes = useRouter()
 const selectTheme = (v, k) => {
   curTheme.value = v
   activeTheme.value = k;
-  console.log(activeTheme.value, 'activeTheme')
-  console.log(dropdownMenu.value, 'dropdownMenu.value')
   dropdownMenu.value?.closeMenu()
-  console.log(dropdownMenu.value.childNodes,' dropdownMenu.value.childNodes')
   localStorage.setItem('themeName', k)
 }
 
@@ -274,7 +279,12 @@ const isMobile = () => {
 }
 isMobile()
 const onCollapse = () => {
-  isCollapse.value = !isCollapse.value
+  if (isCollapse.value === true) {
+    isCollapse.value = false
+  } else {
+    isCollapse.value = true
+  }
+  
 }
 const resize = window.addEventListener('resize', isMobile)
 
@@ -284,7 +294,6 @@ onUnmounted(() => {
 
 const menu = ref(null)
 nextTick(() => {
-  console.log(menu.value, 'menu')
   menu.value.forEach(element => {
     element.addEventListener('mouseover', (e) => {
       if (element.lastChild && element.lastChild.style) {

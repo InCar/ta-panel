@@ -26,27 +26,28 @@ const tastStatus = {
     '6': 'warning',
     '5': 'warning',
     '4': 'exception',
-    '2': 'default',
+    '2': '',
 }
 
-const props = defineProps({
-  textInside: {
-    type: Boolean,
-    default: true
-  },
-  percent: {
-    type: Number,
-    default: 0
-  },
-  strokeWidth: {
-    type: Number,
-    default: 14
-  },
-  status: {
-    type: String,
-    default: ''
-  }
-})
+interface Props {
+  textInside?: Boolean
+  percent?: Number
+  strokeWidth?: Number
+  status?: String
+}
+
+// const props = defineProps({
+//   textInside: Boolean,
+//   percent: Number,
+//   strokeWidth: Number,
+//   status: String
+// })
+const props = withDefaults(defineProps<Props>(), {
+  textInside: () => true,
+  percent: () => 0,
+  strokeWidth: () => 14,
+  status: () => ''
+}) 
 const progress = ref(null)
 const div = ref(null)
 

@@ -24,16 +24,13 @@ class DropDown implements Drop {
 
 const menuHeader = ref<HTMLDivElement>(null)
 const menuList = ref<HTMLDivElement>(null)
-console.log(menuList, 'menuList')
 const visible = ref(false)
 
 const onClickHeader = () => {
   if(!visible.value) {
     const bo = menuHeader.value?.getBoundingClientRect().bottom
-    console.log(bo, '----bo')
     // menuList.value?.style.setProperty('top', `${bo}px`)
     visible.value = true
-    console.log(menuList.value.style.top, 'menuList.value.style.top')
     nextTick(()=>{
       menuList.value?.focus();
     });
@@ -43,7 +40,6 @@ const onClickHeader = () => {
 }
 
 const onFocusOut = (e) => {
-  console.log(e)
   closeMenu()
 }
 

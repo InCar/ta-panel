@@ -12,12 +12,12 @@
   height: 20px;
   line-height: 20px;
   // transform: translate(979px, 663px);
-  min-width: 50px;
-  width: auto;
-  // visibility: hidden;
-  display: none;
+  min-width: 60px;
+  // width: auto;
+  visibility: hidden;
   color: theme.$color-bk;
   transition: 0.1s 0.2s;
+  text-align: center;
   
   &-arrow{
     position: relative;

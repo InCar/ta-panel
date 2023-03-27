@@ -15,10 +15,9 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: "/TaskGroup",
-    name: "TaskGroup",
-    redirect: '/Analyzor',
-    component: () => import("@/views/Analyzor/index.vue"),
+    path: "/Analyzor",
+    name: "Analyzor",
+    component: () => import('@/views/Analyzor/taskGroup.vue'),
     meta: {
       hidden: false,
       title: "分析结果",
@@ -26,29 +25,41 @@ const routes: Array<RouteRecordRaw> = [
     },
     children: [
       {
-        path: '/Analyzor',
-        name: 'Analyzor',
-        component: () => import('@/views/Analyzor/taskGroup.vue'),
+        path: 'aggregation',
+        name: 'Aggregation',
+        component: () => import('@/views/Analyzor/aggregation.vue'),
         meta: {
-          hidden: true
+          hidden: true,
+          title: '计数&极值'
         },
         children: [
           {
-            path: ':op',
-            name: 'Aggregation',
-            component: () => import('@/views/Analyzor/aggregation.vue'),
+            path: ':id',
+            name: 'AnalyzorDetail',
+            component: () => import('@/views/Analyzor/analyzorDetail.vue'),
             meta: {
-              hidden: 'true',
-              title: '计数&极值'
+              hidden: true,
+              title: '详情'
             }
-          },
+          }
+        ]
+      },
+      {
+        path: 'group-aggregation',
+        name: 'Group-aggregation',
+        component: () => import('@/views/Analyzor/group-aggregation.vue'),
+        meta: {
+          hidden: 'true',
+          title: '数值分布'
+        },
+        children: [
           {
-            path: ':op',
-            name: 'Group-aggregation',
-            component: () => import('@/views/Analyzor/group-aggregation.vue'),
+            path: ':id',
+            name: 'AnalyzorDetailG',
+            component: () => import('@/views/Analyzor/analyzorDetailG.vue'),
             meta: {
-              hidden: 'true',
-              title: '数值分布'
+              hidden: true,
+              title: '详情'
             }
           }
         ]
@@ -82,7 +93,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/views/NewAnalyzor/index.vue"),
     meta: {
       hidden: false,
-      title: "新建任务",
+      title: "创建新任务",
       icon: "add_box"
     },
     children: [
@@ -96,13 +107,75 @@ const routes: Array<RouteRecordRaw> = [
         },
         children: [
           {
-            path: '/:id',
+            path: ':id',
             name: 'DataField',
             component: () => import("@/views/NewAnalyzor/detection/dataField.vue"),
             meta: {
               hidden: true,
               title: "摘要"
             }
+          }
+        ]
+      },
+      {
+        path: 'count',
+        name: 'Count',
+        component: () => import('@/views/NewAnalyzor/count/index.vue'),
+        meta: {
+          hidden: true,
+          title: '选择指标'
+        },
+        children: [
+          {
+            path: 'summary',
+            name: 'Summary',
+            component: () => import("@/views/NewAnalyzor/count/summary.vue"),
+            meta: {
+              hidden: true,
+              title: "摘要"
+            }
+          }
+        ]
+      },
+      {
+        path: 'range',
+        name: 'Range',
+        component: () => import('@/views/NewAnalyzor/range/index.vue'),
+        meta: {
+          hidden: true,
+          title: '选择指标'
+        },
+        children: [
+          {
+            path: 'setting',
+            name: 'RangeSetting',
+            component: () => import('@/views/NewAnalyzor/range/setting.vue'),
+            meta: {
+              hidden: true,
+              title: '设定数值区间'
+            },
+            children: [
+              {
+                path: 'gobalArgument',
+                name: 'GobalArgument',
+                component: () => import('@/views/NewAnalyzor/range/gobalArgument.vue'),
+                meta: {
+                  hidden: true,
+                  title: '全局参数'
+                },
+                children: [
+                  {
+                    path: 'summary',
+                    name: 'RangeSummary',
+                    component: () => import("@/views/NewAnalyzor/range/summary.vue"),
+                    meta: {
+                      hidden: true,
+                      title: "摘要"
+                    }
+                  }
+                ]
+              }
+            ]
           }
         ]
       }

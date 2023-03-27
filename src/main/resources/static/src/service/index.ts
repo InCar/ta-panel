@@ -15,12 +15,9 @@ export function getTask(params) {
   })
 }
 
-export function stopTask(params) {
+export function getVersion() {
   return request({
-    url: `/api/task/stop`,
-    method: 'post',
-    params: params
+    url: '/api/version',
+    method: 'get'
   })
 }
-
-

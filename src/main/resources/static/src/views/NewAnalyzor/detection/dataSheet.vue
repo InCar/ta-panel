@@ -5,7 +5,7 @@
       <span class="title">{{ data.title }}</span>
     </div>
     <div v-loading="loading" class="field-list">
-      <div class="box-field" v-for="(v, k) in data.Sheets" @click="select(k)">
+      <div class="box-field" v-for="(v, k) in data.Sheets" :key="k" @click="select(k)">
         <input type="radio" name="sheet" :value="k" v-model="picked" />
         <!-- <input v-else type="checkbox" name="field" :value="k" v-model="value"/> -->
         <span class="field-description">{{ v.collectionName }}</span>
@@ -24,9 +24,9 @@
       >
     </div>
   </template>
-  <v-else>
+  <template v-else>
     <router-view />
-  </v-else>
+  </template>
 </template>
 
 <script lang="ts">
@@ -38,16 +38,15 @@ import { toFixedTwo } from "@/utils/filter/index";
 export default defineComponent({
   name: "App",
   setup() {
+    interface Sheet{
+      collectionCount: number,
+      collectionName: string
+      collectionSize: number
+    }
     const data = reactive({
       caption: "选择待分析的数据",
       title: "数据侦测",
-      Sheets: [
-        {
-          collectionName: "",
-          collectionCount: "",
-          collectionSize: "",
-        },
-      ],
+      Sheets: [],
       active: false,
     });
     const router = useRouter();
@@ -55,36 +54,29 @@ export default defineComponent({
     const picked = ref(-1);
     const loading = ref(true)
     const getData = async () => {
-      const res = await collectionSheetSize();
-      // dataSourceFields = res || []
-      loading.value = false
-      console.log(res);
-      data.Sheets = res;
+      try {
+        const res: any = await collectionSheetSize();
+        loading.value = false
+        data.Sheets = res;
+      } catch(err) {
+        console.log(err)
+        loading.value = false
+      }
     };
     getData();
     const prev = () => {
       router.go(-1);
     };
     const next = async () => {
-      console.log(picked.value, "picked.value");
-      console.log(data.Sheets, "data.fields");
-      console.log(data.Sheets[picked.value], "data.fields[picked.value]");
-      console.log(data.Sheets[picked.value]);
-      const res = await collectionSheetFields({
-        collectionName: data.Sheets[picked.value].collectionName,
-      });
-      console.log(res);
       router.push({
         name: "DataField",
         params: {
-          id: data.Sheets[picked.value].collectionName,
+          id: data.Sheets[picked.value].collectionName
         },
       });
     };
     const select = (k: any) => {
-      console.log(k);
       picked.value = k;
-      console.log(picked, "picked");
       if (picked.value > 0) {
         data.active = true;
       }

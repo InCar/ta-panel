@@ -32,7 +32,7 @@ html{
   font-size: 16px
 }
 body {
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 /* ipad pro */
 @media screen and (max-width: 1024px) {
@@ -136,7 +136,7 @@ body {
       }
 
       .field-desc{
-          width: 6em;
+          width: 10em;
           @include field-gap;
       }
 

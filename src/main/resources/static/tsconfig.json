@@ -4,6 +4,11 @@
     "module": "esnext",
     "strict": false,
     "jsx": "preserve",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    // 进行文件系统路径别名设置
+    "baseUrl": "./",  // 解析非相对模块的基础地址，默认是当前目录
+    "paths": { // 路径映射，相对于baseUrl
+        "@/*": ["src/*"]
+  }
   }
 }

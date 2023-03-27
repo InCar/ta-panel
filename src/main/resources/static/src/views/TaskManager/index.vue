@@ -2,12 +2,12 @@
 @use '@/assets/scss/theme.scss';
     .container{
         display: grid;
-        grid-template-columns: repeat(auto-fill, 20em);
+        grid-template-columns: repeat(auto-fill, 25em);
         grid-gap: 8px;
         justify-content: center;
 
         &-item{
-            width: 20em;
+            width: 25em;
             height: 60px;
             border: 1px solid theme.$color;
             display: flex;
@@ -33,7 +33,7 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                font-size: 0.8rem;
+                font-size: 1rem;
                 width: 6em;
                 padding: 0 8px;
                 background-color: theme.$color;
@@ -103,7 +103,7 @@
 
 <template>
     <div v-if="route.name === 'TaskManager'" class="container">
-        <div class="container-item" v-for="(v, k) in task.list" :key="k" :class="{ 'is-success': v.status === '3', 'is-end': (v.status === '6' || v.status === '5'), 'is-fail': v.status === '4', 'is-running': v.status === '2' }" @click="goDetail(v)">
+        <div class="container-item" v-for="(v, k) in listTasks" :key="k" :class="{ 'is-success': v.status === '3', 'is-end': (v.status === '6' || v.status === '5'), 'is-fail': v.status === '4', 'is-running': v.status === '2' }" @click="goDetail(v)">
             <div class="item-title" :class="{ 'is-success': v.status === '3', 'is-end': (v.status === '6' || v.status === '5'), 'is-fail': v.status === '4', 'is-running': v.status === '2'  }">{{ v.name }}</div>
             <div class="item-content">
                 <div class="content-left">
@@ -129,20 +129,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from "vue" 
+import { ref, reactive, computed } from "vue" 
 import { getTasks } from './service'
 import { TaskStatus, tastStatus } from './Models'
 import { DateTime } from "luxon"
 import { formatDate } from "@/utils/filter/index"
 import { useRouter, useRoute } from "vue-router";
-
-// const tastStatus = {
-//     'success': '完成',
-//     'end': '中止',
-//     'cancel': '取消',
-//     'fail': '失败',
-//     'running': '运行',
-// }
 
 const task = reactive({
     name: '任务管理',
@@ -150,38 +142,9 @@ const task = reactive({
         name: '计数和极值#02171013',
         percent: 100,
         status: 'success',
-        createTime: '02月17日10:14',
-        startTime: '02月17日10:14'
-    },{
-        title: '计数和极值#02171013',
-        percent: 40,
-        status: 'end',
-        createTime: '02月17日10:14',
-        startTime: '02月17日10:14'
-    },{
-        name: '计数和极值#02171013',
-        percent: 100,
-        status: 'cancel',
-        createTime: '02月17日10:14',
-        startTime: '02月17日10:14'
-    },{
-        name: '计数和极值#02171013',
-        percent: 100,
-        status: 'fail',
-        createTime: '02月17日10:14',
-        startTime: '02月17日10:14'
-    },{
-        name: '计数和极值#02171013',
-        percent: 12,
-        status: 'running',
-        createTime: '02月17日10:14',
-        startTime: '02月17日10:14'
-    },{
-        name: '计数和极值#02171013',
-        percent: 33,
-        status: 'running',
-        createTime: '02月17日10:14',
-        startTime: '02月17日10:14'
+        createTime: 0,
+        startTime: 0,
+        finishTime: 0
     }],
     loading: false
 })
@@ -189,20 +152,13 @@ const task = reactive({
 const status = ref('fail')
 
 const getTaskList = async () => {
-    const res = await getTasks()
-    console.log(res)
-    // task.list = res.data || []
+    const res:any = await getTasks()
     if(res.data && res.data.length) {
         const dt = DateTime.local(2017, 5, 15, 8, 30);
         task.list = res.data.filter(task => {
             if(task?.status != TaskStatus.NA) return true
         })
     }
-    // task.list.map(item => {
-    //     return {
-    //         startTime: new Date(item.startTime)
-    //     }
-    // })
 }
 
 getTaskList()
@@ -215,5 +171,17 @@ const goDetail = (v) => {
         params: {id: v.id}
     })
 }
+
+const listTasks = computed(() => {
+    const tmNow = DateTime.local().toMillis();
+    
+    return task.list.filter(task=>{
+        if(task?.status != '3') return true // 成功的
+        if(!task?.finishTime) return true;
+        const dura = tmNow - task?.finishTime;
+        const days = dura/86400000;
+        return (days < 7.0);
+    });
+})
 
 </script>
