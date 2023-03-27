@@ -85,11 +85,10 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, computed } from "vue" 
+import { reactive, ref, computed, toRef } from "vue" 
 import { useRoute } from "vue-router";
 import { DateTime } from "luxon"
 import { getTask } from '@/service/index'
-import { xor } from "lodash";
 
 const route = useRoute()
 
@@ -144,8 +143,7 @@ const formatDateT = (value:number, format:string) => {
 // 字段类型
 const fieldName = computed(() => {
   const resData = isJsonString(taskResult.data.paramJson) ? JSON.parse(taskResult.data.paramJson) : null
-  const name = resData?.fields[0].name
-  return name
+  return resData?.fields[0].name
 })
 
 const listData = computed( () => {
@@ -164,27 +162,15 @@ const listData = computed( () => {
     listArgs = []
   }
   const transData = []
-  if(listArgs[0]?.name === 'tm') {
-    for(let x in resData) {
-      const item = {
-        label: formatDateT(Number.parseFloat(x.split('-')[0]), 'yyyyMMdd') + '-' + formatDateT(Number.parseFloat(x.split('-')[1]), 'yyyyMMdd'),
-        value: resData[x]
-      }
-      transData.push(item)
+  for(let x in resData) {
+    const item = {
+      label: listArgs[0]?.name === statisticsType.tm ? formatDateT(Number.parseFloat(x.split('-')[0]), 'yyyyMMdd') + '-' + formatDateT(Number.parseFloat(x.split('-')[1]), 'yyyyMMdd') : x,
+      value: resData[x]
     }
-  } else {
-    for(let x in resData) {
-      const item = {
-        label: x,
-        value: resData[x]
-      }
-      transData.push(item)
-    }
+    transData.push(item)
   }
-  const sortData = transData.sort((a, b) => a.label - b.label) // 按照x轴数据排序
-  return sortData
-
-  return transData
+  
+  return transData.sort((a, b) => a.label - b.label) // 按照x轴数据排序
 })
 
 const listArgs = computed(() => {
@@ -239,8 +225,7 @@ const listDataXYTm = computed(() => {
       y: Number.parseFloat(resData[i])
     })
   }
-  const sortData = transData.sort((a, b) => a.x - b.x) // 按照x轴数据排序
-  return sortData
+  return transData.sort((a, b) => a.x - b.x) // 按照x轴数据排序
 })
 
 // 统计类型
